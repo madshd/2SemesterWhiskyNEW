@@ -1,15 +1,23 @@
 package BatchArea;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.UUID;
 
-public class Product {
+import Enumerations.Unit;
+
+public class Product implements Serializable {
 	private String productName;
 	private String productID;
 	private Formula formula;
+	private Unit bottleUnits = Unit.MILLILITERS;
+	private int bottleSize;
 	private final ArrayList<Batch> batches = new ArrayList<Batch>();
 
-	public Product(String productName, String productID) {
+	public Product(String productName, int bottleSize) {
 		this.productName = productName;
+		this.bottleSize = bottleSize;
+		String productID = generateProductID(productName);
 		this.productID = productID;
 	}
 
@@ -25,6 +33,26 @@ public class Product {
 		batches.remove(batch);
 	}
 
+	/**
+	 * Generates a unique product ID based on the product name.
+	 * The ID consists of the initials of the product name followed by a unique
+	 * identifier.
+	 *
+	 * @param productName the name of the product
+	 * @return a unique product ID in uppercase
+	 */
+	public static String generateProductID(String productName) {
+		StringBuilder initials = new StringBuilder();
+		for (String word : productName.split("\\s+")) {
+			if (!word.isEmpty()) {
+				initials.append(word.charAt(0));
+			}
+		}
+		String uniqueID = UUID.randomUUID().toString().substring(0, 3);
+		String productID = initials.toString() + "_" + uniqueID;
+		return productID.toUpperCase();
+	}
+
 	// ---------------------------GENERIC-GETTERS----------------------------//
 
 	public String getProductName() {
@@ -33,6 +61,14 @@ public class Product {
 
 	public String getProductID() {
 		return productID;
+	}
+
+	public Unit getBottleUnits() {
+		return bottleUnits;
+	}
+
+	public int getBottleSize() {
+		return bottleSize;
 	}
 
 	public Formula getFormula() {
