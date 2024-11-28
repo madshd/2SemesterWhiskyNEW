@@ -1,4 +1,4 @@
-package GUI.LauchPad;
+package GUI.LaunchPad;
 
 public class Launch {
 }

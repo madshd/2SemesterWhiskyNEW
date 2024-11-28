@@ -59,6 +59,12 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
                 ,this.name,this.quantity,getRemainingQuantity());
     }
 
+    /**
+     *
+     * @param fillDistillate
+     * @return
+     * @throws IllegalStateException
+     */
     @Override
     public double updateQuantity(Filling fillDistillate) throws IllegalStateException{
         double newQuantity = getRemainingQuantity() - fillDistillate.getQuantity();
