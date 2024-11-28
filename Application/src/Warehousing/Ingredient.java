@@ -11,177 +11,171 @@ import java.util.List;
 import java.util.Observer;
 
 public class Ingredient implements OberverQuantitySubject, Item, Serializable, WarehousingSubject {
-    private final String name;
-    private String description;
-    private final int batchNo;
-    private final LocalDate productionDate;
-    private final LocalDate expirationDate;
-    private double quantity;
-    private Supplier supplier;
-    private IngredientType ingredientType;
-    private final Unit unit;
-    private final Stack<Filling> fillingStack = new Common.Stack<>();
-    private final List<ObserverQuantityObserver> observers = new ArrayList<>();
+	private final String name;
+	private String description;
+	private final int batchNo;
+	private final LocalDate productionDate;
+	private final LocalDate expirationDate;
+	private double quantity;
+	private Supplier supplier;
+	private IngredientType ingredientType;
+	private final Unit unit;
+	private final Stack<Filling> fillingStack = new Common.Stack<>();
+	private final List<ObserverQuantityObserver> observers = new ArrayList<>();
 
-    //Nullable
-    private StorageRack storageRack;
-    private List<WarehousingObserver> itemWarehousingObservers;
+	// Nullable
+	private StorageRack storageRack;
+	private List<WarehousingObserver> itemWarehousingObservers;
 
-    public Ingredient(String name, String description, int batchNo, LocalDate productionDate, LocalDate expirationDate,
-                      double quantity, Supplier supplier, Unit unit, IngredientType ingredientType) {
-        this.name = name;
-        this.description = description;
-        this.batchNo = batchNo;
-        this.productionDate = productionDate;
-        this.expirationDate = expirationDate;
-        this.unit = unit;
-        this.quantity = quantity;
-        this.supplier = supplier;
-        this.ingredientType = ingredientType;
-    }
+	public Ingredient(String name, String description, int batchNo, LocalDate productionDate, LocalDate expirationDate,
+			double quantity, Supplier supplier, Unit unit, IngredientType ingredientType) {
+		this.name = name;
+		this.description = description;
+		this.batchNo = batchNo;
+		this.productionDate = productionDate;
+		this.expirationDate = expirationDate;
+		this.unit = unit;
+		this.quantity = quantity;
+		this.supplier = supplier;
+		this.ingredientType = ingredientType;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public int getBatchNo() {
-        return batchNo;
-    }
+	public int getBatchNo() {
+		return batchNo;
+	}
 
-    public LocalDate getProductionDate() {
-        return productionDate;
-    }
-    public StorageRack getStorageRack () {
-        return storageRack;
-    }
+	public LocalDate getProductionDate() {
+		return productionDate;
+	}
 
-    public LocalDate getExpirationDate () {
-        return expirationDate;
-    }
-    public void setStorageRack (StorageRack storageRack){
-        this.storageRack = storageRack;
-    }
+	public StorageRack getStorageRack() {
+		return storageRack;
+	}
 
-    public double getQuantity () {
-        return quantity;
-    }
+	public LocalDate getExpirationDate() {
+		return expirationDate;
+	}
 
-    public void setQuantity ( double quantity){
-        this.quantity = quantity;
-        this.quantityChanged();
-    }
+	public void setStorageRack(StorageRack storageRack) {
+		this.storageRack = storageRack;
+	}
 
-    public void quantityChanged () {
+	public double getQuantity() {
+		return quantity;
+	}
 
-    }
-    public Supplier getSupplier () {
-        return supplier;
-    }
+	public void setQuantity(double quantity) {
+		this.quantity = quantity;
+		this.quantityChanged();
+	}
 
-    public void setSupplier (Supplier supplier){
-        this.supplier = supplier;
-    }
+	public void quantityChanged() {
 
-    public IngredientType getIngredientType () {
-        return ingredientType;
-    }
-    public void measurementsChanged () {
-        this.notifyObservers();
-    }
+	}
 
-    public void setIngredientType (IngredientType ingredientType){
-        this.ingredientType = ingredientType;
-    }
+	public Supplier getSupplier() {
+		return supplier;
+	}
 
-    @Override
-    public String getListInfo () {
-        //TODO
-        return "";
-    }
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
+	}
 
-    @Override
-    public double getQuantityStatus () {
-        double quantity = 0;
+	public IngredientType getIngredientType() {
+		return ingredientType;
+	}
 
-        for (Filling f : fillingStack) {
-            quantity += f.getQuantity();
-        }
+	public void measurementsChanged() {
+		this.notifyObservers();
+	}
 
-        return quantity;
-    }
+	public void setIngredientType(IngredientType ingredientType) {
+		this.ingredientType = ingredientType;
+	}
 
-    @Override
-    public double updateQuantity (Filling fillingredient) throws IllegalStateException {
-        double newQuantity = fillingredient.getQuantity() + getQuantityStatus();
+	@Override
+	public String getListInfo() {
+		// TODO
+		return "";
+	}
 
-        if (newQuantity <= quantity && newQuantity >= 0) {
-            fillingStack.push(fillingredient);
-            return newQuantity;
-        } else {
-            throw new IllegalStateException("Provided quantity does not fit into this cask");
-        }
-    }
+	@Override
+	public double getQuantityStatus() {
+		double quantity = 0;
 
-    @Override
-    public double getRemainingQuantity () {
-        return quantity - getQuantityStatus();
-    }
+		for (Filling f : fillingStack) {
+			quantity += f.getQuantity();
+		}
 
-    @Override
-    public void addObserver (ObserverQuantityObserver o){
-        observers.add(o);
-    }
+		return quantity;
+	}
 
-    @Override
-    public void removeObserver (ObserverQuantityObserver o){
-        observers.remove(o);
-    }
+	@Override
+	public double updateQuantity(Filling fillingredient) throws IllegalStateException {
+		double newQuantity = fillingredient.getQuantity() + getQuantityStatus();
 
-    @Override
-    public void registerObserver(Observer o) {
+		if (newQuantity <= quantity && newQuantity >= 0) {
+			fillingStack.push(fillingredient);
+			return newQuantity;
+		} else {
+			throw new IllegalStateException("Provided quantity does not fit into this cask");
+		}
+	}
 
-    }
+	@Override
+	public double getRemainingQuantity() {
+		return quantity - getQuantityStatus();
+	}
 
-    @Override
-    public void removeObserver(Observer o) {
+	@Override
+	public void addObserver(ObserverQuantityObserver o) {
+		observers.add(o);
+	}
 
-    }
+	@Override
+	public void removeObserver(ObserverQuantityObserver o) {
+		observers.remove(o);
+	}
 
-    @Override
-    public void notifyObservers () {
-        for (ObserverQuantityObserver o : observers)
-            o.update(this);
-    }
+	@Override
+	public void notifyObservers() {
+		for (ObserverQuantityObserver o : observers)
+			o.update(this);
+	}
 
-    @Override
-    public void registerWarehousingObserver(WarehousingObserver o) {
+	@Override
+	public void registerWarehousingObserver(WarehousingObserver o) {
 
-    }
+	}
 
-    @Override
-    public void removeWarehousingObserver(WarehousingObserver o) {
+	@Override
+	public void removeWarehousingObserver(WarehousingObserver o) {
 
-    }
+	}
 
-    @Override
-    public void notifyWarehousingObservers() {
+	@Override
+	public void notifyWarehousingObservers() {
 
-    }
+	}
 
-    @Override
-    public String toString() {
-        return "Ingredient{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", quantity=" + quantity +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Ingredient{" +
+				"name='" + name + '\'' +
+				", description='" + description + '\'' +
+				", quantity=" + quantity +
+				'}';
+	}
 }
