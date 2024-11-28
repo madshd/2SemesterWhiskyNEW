@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 
 public class Ingredient implements OberverQuantitySubject, Item, Serializable, WarehousingSubject {
     private final String name;
