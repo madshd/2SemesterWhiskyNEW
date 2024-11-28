@@ -54,19 +54,6 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 		return this.quantity - getQuantityStatus();
 	}
 
-	<<<<<<<HEAD
-
-	@Override
-	public String getListInfo() {
-		return String.format("Name: %-5s\t| Start capacity: %-4d\t| Remaining capacity %-4d", this.name, this.quantity,
-				getRemainingQuantity());
-	}
-
-	@Override
-	public double updateQuantity(FillDistillate fillDistillate) throws IllegalStateException {
-		double newQuantity = getRemainingQuantity() - fillDistillate.getQuantity();
-=======
-
 	@Override
 	public String getListInfo() {
 		return String.format("Name: %-5s\t| Start capacity: %,.2f\t| Remaining capacity %,.2f", this.name,
@@ -74,9 +61,8 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	}
 
 	@Override
-    public double updateQuantity(Filling fillDistillate) throws IllegalStateException{
-        double newQuantity = getRemainingQuantity() - fillDistillate.getQuantity();
->>>>>>> master
+	public double updateQuantity(Filling fillDistillate) throws IllegalStateException {
+		double newQuantity = getRemainingQuantity() - fillDistillate.getQuantity();
 
 		if (newQuantity >= 0) {
 			fillingStack.push(fillDistillate);
@@ -89,43 +75,36 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	public double getQuantityStatus() {
 		double quantity = 0;
 
-<<<<<<< HEAD
-		for (FillDistillate f : fillingStack) {
+		for (
+
+		Filling f : fillingStack) {
 			quantity += f.getQuantity();
 		}
 
 		return quantity;
-	}=======for(
-
-	Filling f:fillingStack)
-	{
-		quantity += f.getQuantity();
 	}
 
-	return quantity;
+	public void addStoryLine(StoryLine storyLine) {
+		storyLines.add(storyLine);
 	}
 
-	public void addStoryLine(StoryLine storyLine){
-        storyLines.add(storyLine);
-    }
+	public void addProductCutInformation(ProductCutInformation productCutInformation) {
+		productCutInformations.add(productCutInformation);
+	}
 
-	public void addProductCutInformation(ProductCutInformation productCutInformation){
-        productCutInformations.add(productCutInformation);
-    }
-
-	public void addAlcoholPercentage(AlcoholPercentage alcoholPercentage){
-        alcoholPercentages.add(alcoholPercentage);
-    }
+	public void addAlcoholPercentage(AlcoholPercentage alcoholPercentage) {
+		alcoholPercentages.add(alcoholPercentage);
+	}
 
 	public List<StoryLine> getStoryLines() {
-        return new ArrayList<>(storyLines);
-    }
+		return new ArrayList<>(storyLines);
+	}
 
 	public List<ProductCutInformation> getProductCutInformations() {
 		return new ArrayList<>(productCutInformations);
 	}
 
 	public List<AlcoholPercentage> getAlcoholPercentages() {
-        return new ArrayList<>(alcoholPercentages);
-    }>>>>>>>master
+		return new ArrayList<>(alcoholPercentages);
+	}
 }
