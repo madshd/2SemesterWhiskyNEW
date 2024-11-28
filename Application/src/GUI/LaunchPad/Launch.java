@@ -6,9 +6,12 @@ import GUI.Batch.BatchArea;
 import GUI.Production.ProductionArea;
 import GUI.Warehousing.WarehousingArea;
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.geometry.*;
-import javafx.scene.*;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
+import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -16,7 +19,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
 
 public class Launch extends Application {
 
@@ -28,16 +30,12 @@ public class Launch extends Application {
 	private static Rectangle2D screenBounds;
 
 	public static void main(String[] args) {
-
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
-		// dont know how to make it work other than assigning these here...
-		productionArea = new ProductionArea();
-		warehousingArea = new WarehousingArea();
-		batchArea = new BatchArea();
+		initAreaWindows();
 		screenBounds = Screen.getPrimary().getVisualBounds();
 
 		Launch.primaryStage = primaryStage;
@@ -50,29 +48,21 @@ public class Launch extends Application {
 		Scene scene = new Scene(dashboardPane, 300, screenBounds.getHeight());
 
 		primaryStage.setScene(scene);
-
 		primaryStage.setX(0);
 		primaryStage.setY(0);
-
 		primaryStage.setResizable(false);
 		primaryStage.initStyle(StageStyle.UNDECORATED);
 
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent event) {
-				closeProgram();
-				event.consume();
-			}
+		primaryStage.setOnCloseRequest(event -> {
+			closeProgram();
+			event.consume();
 		});
 
 		primaryStage.show();
-
 	}
 
 	public static void initContent(GridPane dashboardPane) {
-
 		// =================== TOP PANE ===================
-
 		GridPane topPane = new GridPane();
 
 		Label heading = new Label("LabelTales");
@@ -110,69 +100,59 @@ public class Launch extends Application {
 
 		// =================== MIDDLE PANE 1 ===================
 		GridPane midPane1 = new GridPane();
-
 		midPane1.setAlignment(Pos.CENTER);
-
 		midPane1.add(new Label("Dynamic Info Pane 1"), 0, 0);
-
 		midPane1.setVgap(10);
 		midPane1.setHgap(10);
 		midPane1.setPrefSize(300, 200);
 
 		// =================== MIDDLE PANE 2 ===================
 		GridPane midPane2 = new GridPane();
-
 		midPane2.setAlignment(Pos.CENTER);
-
 		midPane2.add(new Label("Dynamic Info Pane 2"), 0, 0);
-
 		midPane2.setVgap(10);
 		midPane2.setHgap(10);
 		midPane2.setPrefSize(300, 200);
 
 		// =================== MIDDLE PANE 3 ===================
 		GridPane midPane3 = new GridPane();
-
 		midPane3.setAlignment(Pos.CENTER);
-
 		midPane3.add(new Label("Dynamic Info Pane 3"), 0, 0);
-
 		midPane3.setVgap(10);
 		midPane3.setHgap(10);
 		midPane3.setPrefSize(300, 200);
 
 		// =================== BOTTOM PANE ===================
 		GridPane bottomPane = new GridPane();
-
 		Button quitButton = new Button("Quit");
 		quitButton.setFocusTraversable(false);
-		quitButton.setOnAction(e -> {
-			closeProgram();
-		});
+		quitButton.setOnAction(e -> closeProgram());
 
 		bottomPane.add(quitButton, 0, 0);
 		bottomPane.setAlignment(Pos.CENTER);
-
 		bottomPane.setVgap(10);
 		bottomPane.setHgap(10);
 		bottomPane.setPrefSize(300, 50);
 		GridPane.setValignment(quitButton, VPos.BOTTOM);
 
 		// =================== OUTER GRIDPANE ===================
-
 		dashboardPane.setHgap(10);
 		dashboardPane.setVgap(10);
 		dashboardPane.setPadding(new Insets(10, 10, 10, 10));
-
 		dashboardPane.add(topPane, 0, 0);
 		dashboardPane.add(midPane1, 0, 1);
 		dashboardPane.add(midPane2, 0, 2);
 		dashboardPane.add(midPane3, 0, 3);
 		dashboardPane.add(bottomPane, 0, 4);
-
 		dashboardPane.setAlignment(Pos.CENTER);
-
 		dashboardPane.setGridLinesVisible(false);
+	}
+
+	private static void flipButtons(Button button) {
+		for (Button b : buttons) {
+			b.setDisable(false);
+		}
+		button.setDisable(true);
 	}
 
 	private static void setButtonAction(Button button, String area) {
@@ -183,10 +163,7 @@ public class Launch extends Application {
 					batchArea.close();
 					if (!productionArea.getStage().isShowing() && !batchArea.getStage().isShowing()) {
 						warehousingArea.show();
-						for (Button b : buttons) {
-							b.setDisable(false);
-						}
-						button.setDisable(true);
+						flipButtons(button);
 					}
 					break;
 				case "Production":
@@ -194,10 +171,7 @@ public class Launch extends Application {
 					batchArea.close();
 					if (!warehousingArea.getStage().isShowing() && !batchArea.getStage().isShowing()) {
 						productionArea.show();
-						for (Button b : buttons) {
-							b.setDisable(false);
-						}
-						button.setDisable(true);
+						flipButtons(button);
 					}
 					break;
 				case "BatchArea":
@@ -205,17 +179,14 @@ public class Launch extends Application {
 					warehousingArea.close();
 					if (!productionArea.getStage().isShowing() && !warehousingArea.getStage().isShowing()) {
 						batchArea.show();
-						for (Button b : buttons) {
-							b.setDisable(false);
-						}
-						button.setDisable(true);
+						flipButtons(button);
 					}
 					break;
 			}
 		});
 	}
 
-	public static void enableButtons() {
+	public static void enableAllButtons() {
 		for (Button button : buttons) {
 			button.setDisable(false);
 		}
@@ -240,5 +211,15 @@ public class Launch extends Application {
 		} else {
 			Launch.primaryStage.close();
 		}
+	}
+
+	private static void initAreaWindows() {
+		productionArea = new ProductionArea();
+		warehousingArea = new WarehousingArea();
+		batchArea = new BatchArea();
+
+		productionArea.initGlobalSettings();
+		warehousingArea.initGlobalSettings();
+		batchArea.initGlobalSettings();
 	}
 }
