@@ -1,45 +1,26 @@
 package Controllers;
 
-import Interfaces.Item;
+import Enumerations.Unit;
+import Interfaces.StorageInterface;
 import Warehousing.Cask;
-import Warehousing.Ingredient;
-import Warehousing.Prototypes.StorageRack2dArray;
-import Warehousing.StorageRack;
-import Warehousing.Warehouse;
 
-public class Warehousing {
-        /*
-    Methods that is mainly used within the prodtion area
-     */
-    public static Warehouse createNewWarehouse(String warehouseName, String warehouseAddress) {
-//        TODO
-        return null;
+/*
+Methods that is mainly used within the Warehousing area
+*/
+public abstract class Warehousing {
+    private static StorageInterface storage;
+
+    public static void setStorage(StorageInterface storage){
+        Warehousing.storage = storage;
     }
 
-    public static Ingredient createNewIngredient(String ingredientName, String ingredientID) {
-//        TODO
-        return null;
+    public static Supplier createSupplier(String name, String address, String description, String story){
+        return new Supplier(name,address,description,story);
     }
 
-    public static Cask createNewCask(String caskName, String caskID) {
-//        TODO
-        return null;
+    public static Cask createCask(int caskID, double maxQuantity, Unit unit, Supplier supplier){
+        Cask cask = new Cask(caskID,maxQuantity,unit,supplier);
+        storage.storeCask(cask);
+        return cask;
     }
-
-    public static void storeIngredient(Ingredient ingredient, Warehouse warehouse, StorageRack rack) {
-//        TODO
-    }
-
-    public static void storeIngredient(Ingredient ingredient, Warehouse warehouse, StorageRack2dArray rack) {
-//        TODO
-    }
-
-    public static void MoveItemBetweenRacks(StorageRack sourceRack, StorageRack destinationRack, Item item) {
-//        TODO
-        
-    }
-    public static void MoveItemBetweenWarehouses(Warehouse sourceWarehouse, Warehouse destinationWarehouse, Item item) {
-//        TODO
-    }
-
 }

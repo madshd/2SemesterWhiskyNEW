@@ -2,7 +2,6 @@ package Warehousing;
 
 import Enumerations.Unit;
 import Interfaces.*;
-import Production.Supplier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
     @Override
     public String getListInfo() {
-        return String.format("ID: %-5d\t| Max capacity: %-4d\t| Remaining capacity %-4d"
+        return String.format("ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f"
         ,caskID,maxQuantity,getRemainingQuantity());
     }
 
@@ -70,5 +69,13 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
         }
 
         return quantity;
+    }
+
+    public String getFillingTextLines(){
+        StringBuilder sb = new StringBuilder();
+        for (Filling f : fillingStack){
+            sb.append(String.format("%s\n",f.toString()));
+        }
+        return sb.toString();
     }
 }

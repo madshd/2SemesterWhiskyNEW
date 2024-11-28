@@ -3,7 +3,6 @@ package Warehousing;
 import Enumerations.IngredientType;
 import Enumerations.Unit;
 import Interfaces.*;
-import Production.Supplier;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -17,11 +16,11 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
     private final LocalDate productionDate;
     private final LocalDate expirationDate;
     private double quantity;
+    private Supplier supplier;
     private IngredientType ingredientType;
     private final Unit unit;
     private final Stack<Filling> fillingStack = new Common.Stack<>();
     private final List<ObserverQuantityObserver> observers = new ArrayList<>();
-    private final Supplier supplier;
 
     //Nullable
     private StorageRack storageRack;
@@ -80,14 +79,21 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
     }
 
     public void quantityChanged () {
-        this.notifyObservers();
+
     }
     public Supplier getSupplier () {
         return supplier;
     }
 
+    public void setSupplier (Supplier supplier){
+        this.supplier = supplier;
+    }
+
     public IngredientType getIngredientType () {
         return ingredientType;
+    }
+    public void measurementsChanged () {
+        this.notifyObservers();
     }
 
     public void setIngredientType (IngredientType ingredientType){
@@ -112,11 +118,11 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
     }
 
     @Override
-    public double updateQuantity (Filling fillingrediant) throws IllegalStateException {
-        double newQuantity = fillingrediant.getQuantity() + getQuantityStatus();
+    public double updateQuantity (Filling fillingredient) throws IllegalStateException {
+        double newQuantity = fillingredient.getQuantity() + getQuantityStatus();
 
         if (newQuantity <= quantity && newQuantity >= 0) {
-            fillingStack.push(fillingrediant);
+            fillingStack.push(fillingredient);
             return newQuantity;
         } else {
             throw new IllegalStateException("Provided quantity does not fit into this cask");
@@ -136,6 +142,16 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
     @Override
     public void removeObserver (ObserverQuantityObserver o){
         observers.remove(o);
+    }
+
+    @Override
+    public void registerObserver(Observer o) {
+
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+
     }
 
     @Override

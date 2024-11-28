@@ -20,4 +20,9 @@ public class FillDistillate implements Filling {
     public double getQuantity() {
         return quantity;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s | Quantity: %,.2f", date.toString(),quantity);
+    }
 }
