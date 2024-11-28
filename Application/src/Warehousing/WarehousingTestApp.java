@@ -25,5 +25,22 @@ public class WarehousingTestApp {
         Ingredient ingredient1 = new Ingredient("Ingredient 1", "Cool ingredient", 1,
                 LocalDate.of(2024,11,27), LocalDate.of(2024,12,27), 10, supplier1, Unit.PIECES, IngredientType.OTHER);
 
+        storageRack1.addItem(2, ingredient1);
+
+
+//        StorageRack
+        System.out.println("Warehouse: " + warehouse.getName());
+        System.out.println("Address: " + warehouse.getAddress());
+        System.out.println("Racks: ");
+        for (String key : warehouse.getRacks().keySet()) {
+            System.out.println("  " + key);
+            System.out.println("  " + warehouse.getRacks().get(key).getItems());
+        }
+        storageRack1.moveItem(ingredient1, 2, 0);
+        System.out.println("Racks: ");
+        for (String key : warehouse.getRacks().keySet()) {
+            System.out.println("  " + key);
+            System.out.println("  " + warehouse.getRacks().get(key).getItems());
+        }
     }
 }

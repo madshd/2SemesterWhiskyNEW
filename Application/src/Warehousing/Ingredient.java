@@ -8,8 +8,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 
-public class Ingredient implements OberverQuantitySubject, Item, Serializable, ObservableItem {
+public class Ingredient implements OberverQuantitySubject, Item, Serializable, WarehousingSubject {
     private final String name;
     private String description;
     private final int batchNo;
@@ -24,7 +25,7 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, O
 
     //Nullable
     private StorageRack storageRack;
-    private List<Observer> itemObservers;
+    private List<WarehousingObserver> itemWarehousingObservers;
 
     public Ingredient(String name, String description, int batchNo, LocalDate productionDate, LocalDate expirationDate,
                       double quantity, Supplier supplier, Unit unit, IngredientType ingredientType) {
@@ -155,8 +156,32 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, O
     }
 
     @Override
-        public void notifyObservers () {
-            for (ObserverQuantityObserver o : observers)
-                o.update(this);
-        }
+    public void notifyObservers () {
+        for (ObserverQuantityObserver o : observers)
+            o.update(this);
+    }
+
+    @Override
+    public void registerWarehousingObserver(WarehousingObserver o) {
+
+    }
+
+    @Override
+    public void removeWarehousingObserver(WarehousingObserver o) {
+
+    }
+
+    @Override
+    public void notifyWarehousingObservers() {
+
+    }
+
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", quantity=" + quantity +
+                '}';
+    }
 }
