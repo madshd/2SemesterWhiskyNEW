@@ -133,38 +133,38 @@ public class BatchArea {
 
 		// Iterates over all reserved casks and pulls liquid from them if needed for
 		// production volume
-		for (TasteProfile tasteProfile : productionVolume.keySet()) {
-			for (Cask cask : batch.getReservedCasks().keySet()) {
-				// Checks if TasteProfile has already been fulfilled
-				if (productionVolume.get(tasteProfile) == 0)
-					continue;
-
-				if (cask.getTasteProfile().equals(tasteProfile)) {
-
-					// TODO: Ensure proper conversion of units here
-					int volume = productionVolume.get(tasteProfile);
-					int caskVolume = (int) cask.getRemainingQuantity();
-
-					if (volume >= caskVolume) {
-
-						// remove full volume from cask
-						cask.setRemainingQuantity(0);
-						// remove cask from reservedCasks
-						batch.removeCaskFromReserved(cask);
-						// remove volume from productionVolume
-						productionVolume.put(tasteProfile, volume - caskVolume);
-
-					} else { // if not full cask needed to fulfill volume needed
-
-						// cask stays in reservedCasks, reserved volume is decreased
-						cask.setReservedQuantity(caskVolume - volume);
-						// remove volume from productionVolume i.e. set to 0
-						productionVolume.put(tasteProfile, 0);
-
-					}
-				}
-			}
-		}
+//		for (TasteProfile tasteProfile : productionVolume.keySet()) {
+//			for (Cask cask : batch.getReservedCasks().keySet()) {
+//				// Checks if TasteProfile has already been fulfilled
+//				if (productionVolume.get(tasteProfile) == 0)
+//					continue;
+//
+//				if (cask.getTasteProfile().equals(tasteProfile)) {
+//
+//					// TODO: Ensure proper conversion of units here
+//					int volume = productionVolume.get(tasteProfile);
+//					int caskVolume = (int) cask.getRemainingQuantity();
+//
+//					if (volume >= caskVolume) {
+//
+//						// remove full volume from cask
+//						cask.setRemainingQuantity(0);
+//						// remove cask from reservedCasks
+//						batch.removeCaskFromReserved(cask);
+//						// remove volume from productionVolume
+//						productionVolume.put(tasteProfile, volume - caskVolume);
+//
+//					} else { // if not full cask needed to fulfill volume needed
+//
+//						// cask stays in reservedCasks, reserved volume is decreased
+//						cask.setReservedQuantity(caskVolume - volume);
+//						// remove volume from productionVolume i.e. set to 0
+//						productionVolume.put(tasteProfile, 0);
+//
+//					}
+//				}
+//			}
+//		}
 
 		batch.incNumProducedBottlesPreSpill(numBottlesToProduce);
 		if (batch.getNumProducedBottlesPreSpill() == batch.getNumExpectedBottles()) {
@@ -178,15 +178,15 @@ public class BatchArea {
 	 * @param formula the formula to match against the casks' taste profiles
 	 * @return a list of casks that match the given formula's taste profiles
 	 */
-	public ArrayList<Cask> searchCasksForFormula(Formula formula) {
-		Set<TasteProfile> formulaTasteProfiles = formula.getBlueprint().keySet();
-		ArrayList<Cask> casksThatMatchFormula = new ArrayList<>();
-
-		for (Cask cask : Warehousing.getReadyCasks()) {
-			if (formulaTasteProfiles.contains(cask.getTasteProfile())) {
-				casksThatMatchFormula.add(cask);
-			}
-		}
-		return casksThatMatchFormula;
-	}
+//	public ArrayList<Cask> searchCasksForFormula(Formula formula) {
+//		Set<TasteProfile> formulaTasteProfiles = formula.getBlueprint().keySet();
+//		ArrayList<Cask> casksThatMatchFormula = new ArrayList<>();
+//
+//		for (Cask cask : Warehousing.getReadyCasks()) {
+//			if (formulaTasteProfiles.contains(cask.getTasteProfile())) {
+//				casksThatMatchFormula.add(cask);
+//			}
+//		}
+//		return casksThatMatchFormula;
+//	}
 }
