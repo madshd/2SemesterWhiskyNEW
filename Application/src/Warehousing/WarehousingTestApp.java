@@ -25,7 +25,7 @@ public class WarehousingTestApp {
 
         Ingredient ingredient1 = new Ingredient("Ingredient 1", "Cool ingredient", 1,
                 LocalDate.of(2024,11,27), LocalDate.of(2024,12,27), 10, supplier1, Unit.PIECES, IngredientType.OTHER);
-    
+
         storageRack1.addItem(2, ingredient1);
 
 
