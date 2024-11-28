@@ -5,7 +5,7 @@ import Controllers.Warehousing;
 import Enumerations.Unit;
 import Production.Distillate;
 import Production.Distiller;
-import Production.Supplier;
+import Warehousing.Supplier;
 import Warehousing.Cask;
 
 import java.time.LocalDate;
