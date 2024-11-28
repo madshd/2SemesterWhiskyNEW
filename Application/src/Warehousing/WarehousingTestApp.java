@@ -2,7 +2,6 @@ package Warehousing;
 
 import Enumerations.IngredientType;
 import Enumerations.Unit;
-import Production.Supplier;
 
 import java.time.LocalDate;
 
