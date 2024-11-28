@@ -146,16 +146,6 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
     }
 
     @Override
-    public void registerObserver(Observer o) {
-
-    }
-
-    @Override
-    public void removeObserver(Observer o) {
-
-    }
-
-    @Override
     public void notifyObservers () {
         for (ObserverQuantityObserver o : observers)
             o.update(this);
