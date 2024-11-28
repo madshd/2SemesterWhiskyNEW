@@ -1,9 +1,9 @@
-package Controllers;
+package Warehousing.Prototypes.Controllers;
 
-import BatchArea.Batch;
-import BatchArea.Formula;
-import BatchArea.Product;
-import Warehousing.Cask;
+import Warehousing.Prototypes.BatchArea.Batch;
+import Warehousing.Prototypes.BatchArea.Formula;
+import Warehousing.Prototypes.BatchArea.Product;
+import Warehousing.Prototypes.Warehousing.Cask;
 
 import java.util.List;
 

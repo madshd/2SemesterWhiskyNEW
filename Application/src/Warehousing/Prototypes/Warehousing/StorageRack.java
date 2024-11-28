@@ -1,6 +1,6 @@
-package Warehousing;
+package Warehousing.Prototypes.Warehousing;
 
-import Interfaces.Item;
+import Warehousing.Prototypes.Interfaces.Item;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

@@ -1,8 +1,8 @@
-package Warehousing;
+package Warehousing.Prototypes.Warehousing;
 
-import Enumerations.IngredientType;
-import Enumerations.Unit;
-import Production.Supplier;
+import Warehousing.Prototypes.Enumerations.IngredientType;
+import Warehousing.Prototypes.Enumerations.Unit;
+import Warehousing.Prototypes.Production.Supplier;
 
 import java.time.LocalDate;
 

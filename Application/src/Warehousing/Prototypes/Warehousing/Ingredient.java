@@ -1,9 +1,13 @@
-package Warehousing;
+package Warehousing.Prototypes.Warehousing;
 
-import Enumerations.IngredientType;
-import Enumerations.Unit;
-import Interfaces.*;
-import Production.Supplier;
+import Warehousing.Prototypes.Common.Stack;
+import Warehousing.Prototypes.Enumerations.IngredientType;
+import Warehousing.Prototypes.Enumerations.Unit;
+import Warehousing.Prototypes.Interfaces.Filling;
+import Warehousing.Prototypes.Interfaces.Item;
+import Warehousing.Prototypes.Interfaces.OberverQuantitySubject;
+import Warehousing.Prototypes.Interfaces.ObserverQuantityObserver;
+import Warehousing.Prototypes.Production.Supplier;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -19,7 +23,7 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
     private double quantity;
     private IngredientType ingredientType;
     private final Unit unit;
-    private final Stack<Filling> fillingStack = new Common.Stack<>();
+    private final Warehousing.Prototypes.Interfaces.Stack<Filling> fillingStack = new Stack<>();
     private final List<ObserverQuantityObserver> observers = new ArrayList<>();
     private final Supplier supplier;
 

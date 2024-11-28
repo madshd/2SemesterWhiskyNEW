@@ -1,18 +1,23 @@
-package Warehousing;
+package Warehousing.Prototypes.Warehousing.Prototypes;
+
+import Warehousing.Prototypes.StorageRack2dArray;
+import Warehousing.WarehousingObserver;
+import Warehousing.WarehousingSubject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Warehouse implements WarehousingSubject {
+public class WarehouseProt implements WarehousingSubject {
     private String name;
     private String address;
-    private Map<String, StorageRack> racks = new HashMap<>();
+
+    private Map<String, Warehousing.Prototypes.StorageRack2dArray> racks = new HashMap<>();
 
     private List<WarehousingObserver> warehousingObservers;
 
-    public Warehouse(String name, String address) {
+    public WarehouseProt(String name, String address) {
         this.name = name;
         this.address = address;
         this.racks = racks;
@@ -27,15 +32,15 @@ public class Warehouse implements WarehousingSubject {
         return address;
     }
 
-    public Map<String, StorageRack> getRacks() {
+    public Map<String, Warehousing.Prototypes.StorageRack2dArray> getRacks() {
         return racks;
     }
 
-    public void addStorageRack(String string, StorageRack storageRack) {
-        racks.put(string, storageRack);
+
+    public void addStorageRack(String string, StorageRack2dArray rack) {
+        racks.put(string, rack);
         notifyWarehousingObservers();
     }
-
 
     public void removeStorageRack(String string) {
         racks.remove(string);
@@ -55,7 +60,7 @@ public class Warehouse implements WarehousingSubject {
     @Override
     public void notifyWarehousingObservers() {
         for (WarehousingObserver who : warehousingObservers) {
-            who.update(this);
+//            who.update(this);
         }
     }
 }

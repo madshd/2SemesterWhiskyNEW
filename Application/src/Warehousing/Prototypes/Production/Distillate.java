@@ -1,7 +1,11 @@
-package Production;
+package Warehousing.Prototypes.Production;
 
-import Enumerations.Unit;
-import Interfaces.*;
+import Warehousing.Prototypes.Common.Stack;
+import Warehousing.Prototypes.Enumerations.Unit;
+import Warehousing.Prototypes.Interfaces.Filling;
+import Warehousing.Prototypes.Interfaces.Item;
+import Warehousing.Prototypes.Interfaces.OberverQuantitySubject;
+import Warehousing.Prototypes.Interfaces.ObserverQuantityObserver;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -16,7 +20,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
     private final Distiller distiller;
     private final Unit unit;
     private String description;
-    private final Stack<FillDistillate> fillingStack = new Common.Stack<>();
+    private final Warehousing.Prototypes.Interfaces.Stack<FillDistillate> fillingStack = new Stack<>();
     private List<ObserverQuantityObserver> observers = new ArrayList<>();
 
     public Distillate(String name, LocalDate startDate, LocalDate endDate, double quantity, Distiller distiller, Unit unit) {

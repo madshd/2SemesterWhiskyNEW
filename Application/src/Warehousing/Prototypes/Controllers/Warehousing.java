@@ -1,11 +1,11 @@
-package Controllers;
+package Warehousing.Prototypes.Controllers;
 
-import Interfaces.Item;
-import Warehousing.Cask;
-import Warehousing.Ingredient;
-import Warehousing.Prototypes.StorageRack2dArray;
-import Warehousing.StorageRack;
-import Warehousing.Warehouse;
+import Warehousing.Prototypes.Interfaces.Item;
+import Warehousing.Prototypes.Warehousing.Cask;
+import Warehousing.Prototypes.Warehousing.Ingredient;
+import Warehousing.Prototypes.Warehousing.Prototypes.StorageRack2dArray;
+import Warehousing.Prototypes.Warehousing.StorageRack;
+import Warehousing.Prototypes.Warehousing.Warehouse;
 
 public class Warehousing {
         /*
