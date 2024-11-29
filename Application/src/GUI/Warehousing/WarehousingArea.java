@@ -58,7 +58,7 @@ public class WarehousingArea {
 		Label headerLabel = new Label("Warehousing Area");
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
-		gridPane.add(headerLabel, 0, 0, 3, 1); // Headeren spænder over 3 kolonner
+		gridPane.add(headerLabel, 0, 0);
 
 		// Laver lister
 		ListView<Warehouse> warehouseList = new ListView<>();
@@ -115,7 +115,7 @@ public class WarehousingArea {
 
 		// Nederste sektion (Warehouse Movements)
 		gridPane.add(warehouseMovementsList, 0, 2, 3, 1); // Spænd over alle kolonner
-		gridPane.add(headerLabel, 0, 0);
+//		gridPane.add(headerLabel, 0, 0);
 
 	}
 
