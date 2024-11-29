@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observer;
 
 public class Ingredient implements OberverQuantitySubject, Item, Serializable, WarehousingSubject {
 	private final String name;
@@ -172,10 +171,7 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 
 	@Override
 	public String toString() {
-		return "Ingredient{" +
-				"name='" + name + '\'' +
-				", description='" + description + '\'' +
-				", quantity=" + quantity +
-				'}';
+		return name + " " + description +
+				" " + quantity + " " + unit;
 	}
 }
