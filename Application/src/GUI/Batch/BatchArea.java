@@ -26,7 +26,7 @@ public class BatchArea {
 	private GridPane mainPane;
 	private static Scene scene;
 
-	public void initGlobalSettings() {
+	public BatchArea() {
 		stage = new Stage();
 		stage.setTitle("Batch Area");
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {

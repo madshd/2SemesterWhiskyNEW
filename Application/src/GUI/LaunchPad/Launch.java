@@ -225,9 +225,5 @@ public class Launch extends Application {
 		productionArea = new ProductionArea();
 		warehousingArea = new WarehousingArea();
 		batchArea = new BatchArea();
-
-		productionArea.initGlobalSettings();
-		warehousingArea.initGlobalSettings();
-		batchArea.initGlobalSettings();
 	}
 }
