@@ -1,5 +1,6 @@
 package GUI.LaunchPad;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 import GUI.Batch.BatchArea;
@@ -19,6 +20,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class Launch extends Application {
 
@@ -65,8 +68,13 @@ public class Launch extends Application {
 		// =================== TOP PANE ===================
 		GridPane topPane = new GridPane();
 
-		Label heading = new Label("LabelTales");
-		heading.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+		Image image = new Image(Launch.class.getResource("/logo.png").toExternalForm());
+
+		ImageView imageView = new ImageView(image);
+
+		imageView.setFitHeight(150);
+
+		imageView.setPreserveRatio(true);
 
 		HBox buttonBox = new HBox(10);
 		buttonBox.setAlignment(Pos.CENTER);
@@ -89,10 +97,10 @@ public class Launch extends Application {
 
 		buttonBox.getChildren().addAll(warehouseButton, productionButton, batchAreaButton);
 
-		topPane.add(heading, 0, 0);
+		topPane.add(imageView, 0, 0);
 		topPane.add(buttonBox, 0, 1);
 		topPane.setAlignment(Pos.CENTER);
-		GridPane.setHalignment(heading, HPos.CENTER);
+		GridPane.setHalignment(imageView, HPos.CENTER);
 
 		topPane.setVgap(50);
 		topPane.setHgap(10);
@@ -158,30 +166,30 @@ public class Launch extends Application {
 	private static void setButtonAction(Button button, String area) {
 		button.setOnAction(e -> {
 			switch (area) {
-				case "Warehouse":
+				case "Warehouse" -> {
 					productionArea.close();
 					batchArea.close();
 					if (!productionArea.getStage().isShowing() && !batchArea.getStage().isShowing()) {
 						warehousingArea.show();
 						flipButtons(button);
 					}
-					break;
-				case "Production":
+				}
+				case "Production" -> {
 					warehousingArea.close();
 					batchArea.close();
 					if (!warehousingArea.getStage().isShowing() && !batchArea.getStage().isShowing()) {
 						productionArea.show();
 						flipButtons(button);
 					}
-					break;
-				case "BatchArea":
+				}
+				case "BatchArea" -> {
 					productionArea.close();
 					warehousingArea.close();
 					if (!productionArea.getStage().isShowing() && !warehousingArea.getStage().isShowing()) {
 						batchArea.show();
 						flipButtons(button);
 					}
-					break;
+				}
 			}
 		});
 	}

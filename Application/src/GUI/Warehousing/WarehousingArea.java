@@ -50,6 +50,7 @@ public class WarehousingArea {
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
 		gridPane.add(headerLabel, 0, 0);
+
 	}
 
 	public void close() {
