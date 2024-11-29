@@ -1,19 +1,20 @@
 package Warehousing;
 
 import Interfaces.Item;
+import Interfaces.WarehousingObserver;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class StorageRack {
     private String id;
     private int shelves;
-
 //    Nullable
     private Warehouse warehouse;
 
     private LinkedList<Item> list = new LinkedList<>();
+
+    private List<WarehousingObserver> warehousingObservers;
 
     public StorageRack(String id, int shelves) {
         this.id = id;
@@ -35,31 +36,53 @@ public class StorageRack {
         return id;
     }
 
+    public List<WarehousingObserver> getWarehousingObservers() {
+        return warehousingObservers;
+    }
+
+    public LinkedList<Item> getList() {
+        return list;
+    }
+
     public void addItem(int shelfNo, Item item) {
         if (shelfNo >= 0 && shelfNo < shelves && list.get(shelfNo) == null) {
-            list.add(shelfNo, item);
-            System.out.println("Item added to shelf " + shelfNo);
+            item.setStorageRack(this);
+            list.set(shelfNo, item);
+            notifyWarehousingObservers( item + " added to shelf " + shelfNo + ": " + item.getListInfo());
         } else {
-            throw new IllegalStateException("No more space on the storage rack");
+            throw new IllegalStateException("Shelf is occupied or invalid");
         }
     }
 
-    public void removeItem(int shelfNo) {
-        list.remove(shelfNo);
-        System.out.println("Item removed at " + shelfNo);
+    public void removeItem(Item item, int shelfNo) {
+        if (list.get(shelfNo) != item) {
+            throw new IllegalStateException(item + " not found at " + shelfNo);
+        }
+        item.setStorageRack(null);
+        list.remove(item);
+        notifyWarehousingObservers( item + " removed at shelf " + shelfNo);
     }
 
     public void moveItem(Item item, int atIndex, int toIndex) {
         if (list.get(atIndex) == item && list.get(toIndex) == null) {
             list.set(toIndex, item);
             list.set(atIndex, null);
-            System.out.println("Item moved from " + atIndex + " to " + toIndex);
+//            System.out.println("Item moved from " + atIndex + " to " + toIndex);
+            notifyWarehousingObservers(item + " moved from shelf " + atIndex + " to shelf " + toIndex);
         } else {
             throw new IllegalStateException("No more space on the storage rack");
         }
     }
 
-    public List<Item> getItems() {
-        return new ArrayList<>(list);
+    public int getItemLocation(Item item) {
+        return list.indexOf(item);
+    }
+
+    private void notifyWarehousingObservers(String details) {
+        if (warehouse != null) { // Ensure rack is part of a warehouse
+            for (WarehousingObserver observer : warehouse.getWarehousingObservers()) {
+                observer.update(warehouse,  id + ": " + details);
+            }
+        }
     }
 }

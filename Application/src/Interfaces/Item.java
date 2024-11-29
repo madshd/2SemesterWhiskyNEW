@@ -1,8 +1,12 @@
 package Interfaces;
 
+import Warehousing.StorageRack;
+
 public interface Item {
     public String getListInfo();
     public double getQuantityStatus();
     public double updateQuantity(Filling fillDistillate) throws IllegalStateException;
     public double getRemainingQuantity();
+
+    void setStorageRack(StorageRack storageRack);
 }
