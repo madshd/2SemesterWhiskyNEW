@@ -1,5 +1,6 @@
 package GUI.Production;
 
+import Controllers.Production;
 import GUI.Common.Common;
 import GUI.Common.ConfirmationDialog;
 import Interfaces.Item;
@@ -9,18 +10,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductionArea {
 
@@ -79,10 +79,9 @@ public class ProductionArea {
 	private static int vgap = 20;
 	private static Insets padding = new Insets(20);
 	private static boolean gridLines = false;
-	private static Font fontSubTitel = new Font("Ariel",24);
+	private static Border border = Common.getBorder(1,0,0,0);
 
 	private class Distillates extends GridPane{
-		Border border = Common.getBorder(1,0,0,0);
 		private final ListView<Item> lvwDistillates = new ListView<>();
 		private final TextArea txaDistillateDetails = new TextArea();
 
@@ -98,7 +97,7 @@ public class ProductionArea {
 
 			// Subtitel
 			Label lblSubTitel = new Label("Distillates");
-			lblSubTitel.setFont(fontSubTitel);
+			lblSubTitel.setId("LabelSubtitle");
 			GridPane.setHalignment(lblSubTitel,HPos.CENTER);
 			lblSubTitel.setPrefWidth(areaWidth);
 			lblSubTitel.setAlignment(Pos.CENTER);
@@ -144,26 +143,106 @@ public class ProductionArea {
 			hBox.setAlignment(Pos.CENTER);
 			this.add(hBox,0,3,2,1);
 
+			updateList();
 		}
 
 		private void buttionAction(Button button){
 
 		}
+
+		private void updateList(){
+			List<Item> distilates = new ArrayList<>(Production.getDistillates());
+			lvwDistillates.getItems().setAll(distilates);
+
+			// We need to show specified text in the list aka different from toSting.
+			lvwDistillates.setCellFactory(lv -> new ListCell<>() {
+				@Override
+				protected void updateItem(Item item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if (empty || item == null) {
+						setText(null); // Hand empty cells
+					} else {
+						// Add new info text.
+						setText(item.getListInfo());
+					}
+				}
+			});
+		}
 	}
 
 	private class Casks extends GridPane{
-		Border border = Common.getBorder(1,0,0,0);
 		private final ListView<Item> lvwCasks = new ListView<>();
+		private final ListView<Item> txaCaskFillings = new ListView<>();
 
 		public Casks(ProductionArea pa){
+			// Generel settings
 			this.setBorder(border);
+			this.setPadding(padding);
+			this.setHgap(hgap);
+			this.setVgap(vgap);
+			this.setGridLinesVisible(gridLines);
+			double areaWidth = screenBounds.getWidth() - 300 * 0.9;
+			double areaHeight = screenBounds.getHeight() * 0.9;
+
+			// Subtitel
 			Label lblSubTitel = new Label("Casks");
-			lblSubTitel.setFont(fontSubTitel);
+			lblSubTitel.setId("LabelSubtitle");
 			GridPane.setHalignment(lblSubTitel,HPos.CENTER);
-			lblSubTitel.setPrefWidth(screenBounds.getWidth() - 300);
+			lblSubTitel.setPrefWidth(areaWidth);
 			lblSubTitel.setAlignment(Pos.CENTER);
-			this.add(lblSubTitel, 0, 0,3,1);
+			this.add(lblSubTitel, 0, 0,4,1);
+
+			// Labels
+			Label lblList = new Label("Avaliable Casks");
+			this.add(lblList, 0, 1);
+			Label lblDetails = new Label("Fillings in selected cask");
+			this.add(lblDetails, 2, 1);
+
+			// Lists
+			double lvwWithCol0 = areaWidth * 0.6;
+			double lvwHeightCol0Top = areaHeight * 0.3;
+
+			lvwCasks.setEditable(false);
+			lvwCasks.setPrefWidth(lvwWithCol0);
+			lvwCasks.setPrefHeight(lvwHeightCol0Top);
+			this.add(lvwCasks,0,2,2,1);
+
+			txaCaskFillings.setEditable(false);
+			txaCaskFillings.setPrefHeight(lvwHeightCol0Top);
+			txaCaskFillings.setPrefWidth(areaWidth - lvwWithCol0);
+			this.add(txaCaskFillings,2,2,2,1);
+
+			// Button panel
+			HBox hBox = new HBox(20);
+			int hboxBtnWidth = 250;
+			String[] buttonNames = {"Update cask details", "Cask to cask transfer"};
+			String [] abbreviations = {"update","transfer"};
+
+			for (int i = 0; i < buttonNames.length; i++) {
+				Button newBtn = new Button(buttonNames[i]);
+				hBox.getChildren().add(newBtn);
+				newBtn.setUserData(abbreviations[i]);
+				newBtn.setPrefWidth(hboxBtnWidth);
+				newBtn.setOnAction(actionEvent -> buttionAction(newBtn));
+			}
+
+			hBox.setPrefWidth(lvwWithCol0);
+			hBox.setAlignment(Pos.CENTER);
+			this.add(hBox,0,3,2,1);
+
+			// Close button
+			Button btnClose = new Button("Close");
+			GridPane.setHalignment(btnClose,HPos.RIGHT);
+			btnClose.setOnAction(actionEvent -> close());
+			this.add(btnClose, 3, 3);
+
 		}
+
+		private void buttionAction(Button button){
+
+		}
+
 	}
 
 	public void show() {

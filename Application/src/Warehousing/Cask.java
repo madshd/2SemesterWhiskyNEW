@@ -44,9 +44,21 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
     }
 
     @Override
-    public String getListInfo() {
+    public int compareTo(Item o) {
+        return this.getName().compareTo(o.getName());
+    }
+
+    @Override
+    public String toString() {
         return String.format("ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f"
         ,caskID,maxQuantity,getRemainingQuantity());
+    }
+
+    public String getListInfo() {
+        //TODO
+        // Leander needs to fix this
+        return String.format("ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f"
+                ,caskID,maxQuantity,getRemainingQuantity());
     }
 
     @Override
@@ -77,5 +89,9 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
             sb.append(String.format("%s\n",f.toString()));
         }
         return sb.toString();
+    }
+
+    public String getName(){
+        return Integer.toHexString(caskID);
     }
 }

@@ -108,6 +108,7 @@
     -fx-border-color: #e4c4a3; /* Lighter border for cells */
     -fx-padding: 5px;
     -fx-text-fill: #6b4226; /* Rich brown text */
+    -fx-font-family: "Courier New", Courier, monospace; /* Monospaced font */
     -fx-font-size: 14px;
     -fx-background-color: transparent; /* No background by default */
 }
