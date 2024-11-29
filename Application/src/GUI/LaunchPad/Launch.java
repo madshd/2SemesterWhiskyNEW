@@ -1,5 +1,6 @@
 package GUI.LaunchPad;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 import GUI.Batch.BatchArea;
@@ -8,17 +9,21 @@ import GUI.Warehousing.WarehousingArea;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class Launch extends Application {
 
@@ -46,6 +51,7 @@ public class Launch extends Application {
 		initContent(dashboardPane);
 
 		Scene scene = new Scene(dashboardPane, 300, screenBounds.getHeight());
+		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
 		primaryStage.setScene(scene);
 		primaryStage.setX(0);
@@ -65,8 +71,13 @@ public class Launch extends Application {
 		// =================== TOP PANE ===================
 		GridPane topPane = new GridPane();
 
-		Label heading = new Label("LabelTales");
-		heading.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+		Image image = new Image(Launch.class.getResource("/logo.png").toExternalForm());
+
+		ImageView imageView = new ImageView(image);
+
+		imageView.setFitHeight(150);
+
+		imageView.setPreserveRatio(true);
 
 		HBox buttonBox = new HBox(10);
 		buttonBox.setAlignment(Pos.CENTER);
@@ -89,14 +100,20 @@ public class Launch extends Application {
 
 		buttonBox.getChildren().addAll(warehouseButton, productionButton, batchAreaButton);
 
-		topPane.add(heading, 0, 0);
+		topPane.add(imageView, 0, 0);
 		topPane.add(buttonBox, 0, 1);
 		topPane.setAlignment(Pos.CENTER);
-		GridPane.setHalignment(heading, HPos.CENTER);
+		GridPane.setHalignment(imageView, HPos.CENTER);
 
-		topPane.setVgap(50);
+		topPane.setVgap(25);
 		topPane.setHgap(10);
 		topPane.setPrefSize(300, 200);
+
+		Separator sep1 = new Separator();
+		sep1.setOrientation(Orientation.HORIZONTAL);
+		sep1.setPrefWidth(300);
+
+		topPane.add(sep1, 0, 2);
 
 		// =================== MIDDLE PANE 1 ===================
 		GridPane midPane1 = new GridPane();
@@ -123,16 +140,23 @@ public class Launch extends Application {
 		midPane3.setPrefSize(300, 200);
 
 		// =================== BOTTOM PANE ===================
+		Separator sep2 = new Separator();
+		sep2.setOrientation(Orientation.HORIZONTAL);
+		sep2.setPrefWidth(300);
+
 		GridPane bottomPane = new GridPane();
-		Button quitButton = new Button("Quit");
+		Button quitButton = new Button("  Quit  ");
 		quitButton.setFocusTraversable(false);
 		quitButton.setOnAction(e -> closeProgram());
 
-		bottomPane.add(quitButton, 0, 0);
+		bottomPane.add(sep2, 0, 0);
+		bottomPane.add(quitButton, 0, 1);
 		bottomPane.setAlignment(Pos.CENTER);
-		bottomPane.setVgap(10);
+		bottomPane.setVgap(25);
 		bottomPane.setHgap(10);
 		bottomPane.setPrefSize(300, 50);
+		GridPane.setHalignment(quitButton, HPos.CENTER);
+		GridPane.setValignment(sep2, VPos.TOP);
 		GridPane.setValignment(quitButton, VPos.BOTTOM);
 
 		// =================== OUTER GRIDPANE ===================
@@ -165,7 +189,6 @@ public class Launch extends Application {
 						warehousingArea.show();
 						flipButtons(button);
 					}
-
 				}
 				case "Production" -> {
 					warehousingArea.close();
