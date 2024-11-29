@@ -4,9 +4,10 @@ import Storage.initStorage;
 
 public class App {
 	public static void main(String[] args) {
-		 StorageInterface storage = new Storage();
+		StorageInterface storage = new Storage();
 		// Controllers.Production.setStorage(storage);
-		 Controllers.Warehousing.setStorage(storage);
+		Controllers.Warehousing.setStorage(storage);
+		Controllers.BatchArea.setStorage(storage);
 		// Controllers.Common.setStorage(storage);
 		// initStorage.loadProduction();
 		initStorage.loadWarehousing();

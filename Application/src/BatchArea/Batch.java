@@ -75,6 +75,10 @@ public class Batch {
 		return numProducedBottlesPreSpill;
 	}
 
+	public int getNumProducedBottlesPostSpill() {
+		return numProducedBottlesPostSpill;
+	}
+
 	public boolean isProductionComplete() {
 		return productionComplete;
 	}

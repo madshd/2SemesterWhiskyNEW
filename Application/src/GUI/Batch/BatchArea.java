@@ -29,7 +29,6 @@ public class BatchArea {
 	private Stage stage;
 	private GridPane mainPane;
 	private static Scene scene;
-	private FormulaManager formulaManager = new FormulaManager();
 
 	public BatchArea() {
 		stage = new Stage();
@@ -58,6 +57,7 @@ public class BatchArea {
 		stage.show();
 	}
 
+	@SuppressWarnings("unused")
 	public static void initContent(GridPane gridPane) {
 		// Main GridPane setup
 		gridPane.setPadding(new Insets(10));
@@ -107,6 +107,7 @@ public class BatchArea {
 
 	}
 
+	@SuppressWarnings("unused")
 	private static GridPane createProductSection() {
 		GridPane productGrid = new GridPane();
 		productGrid.setPadding(new Insets(10));
@@ -165,6 +166,7 @@ public class BatchArea {
 		return productGrid;
 	}
 
+	@SuppressWarnings("unused")
 	private static GridPane createBatchSection() {
 		GridPane batchGrid = new GridPane();
 		batchGrid.setPadding(new Insets(10));
@@ -226,6 +228,7 @@ public class BatchArea {
 
 	}
 
+	@SuppressWarnings("unused")
 	private static GridPane createFormulaSection() {
 		GridPane formulaGrid = new GridPane();
 		formulaGrid.setHgap(10);

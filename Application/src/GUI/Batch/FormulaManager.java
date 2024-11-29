@@ -1,7 +1,10 @@
 package GUI.Batch;
 
-import org.checkerframework.checker.units.qual.t;
+import java.util.ArrayList;
 
+import BatchArea.Formula;
+import BatchArea.TasteProfile;
+import Enumerations.TastingNote;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,11 +14,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class FormulaManager {
+
+	ListView<Formula> formulaList = new ListView<Formula>();
+	ListView<TasteProfile> tasteList = new ListView<>();
+
+	TextArea infoArea = new TextArea();
 
 	public void showFormulaManagerWindow() {
 		// Create the Formula Manager modal window
@@ -36,6 +43,7 @@ public class FormulaManager {
 		formulaManagerStage.showAndWait();
 	}
 
+	@SuppressWarnings("unused")
 	public void initContent(GridPane mainPane) {
 
 		// Main GridPane setup
@@ -44,7 +52,7 @@ public class FormulaManager {
 		mainPane.setVgap(10);
 		mainPane.setAlignment(Pos.CENTER);
 
-		mainPane.setGridLinesVisible(true);
+		mainPane.setGridLinesVisible(false);
 
 		// For intuitive clearing of textarea focus
 		mainPane.setOnMouseClicked(event -> mainPane.requestFocus());
@@ -62,8 +70,6 @@ public class FormulaManager {
 		// mainPane.getScene().getWindow().hide();
 		// });
 		// mainPane.add(formulaManagerButton, 0, 0);
-		//
-		//
 
 		mainPane.add(formulaPane, 0, 0);
 		mainPane.add(tastePane, 0, 1);
@@ -76,7 +82,6 @@ public class FormulaManager {
 		infoPane.setVgap(10);
 		infoPane.setAlignment(Pos.CENTER);
 
-		TextArea infoArea = new TextArea();
 		infoArea.setMinHeight(620);
 		infoArea.setMaxWidth(300);
 		infoArea.setMinWidth(300);
@@ -97,15 +102,16 @@ public class FormulaManager {
 		formulaPane.setAlignment(Pos.CENTER);
 		int width = 400;
 		int height = 250;
-		ListView<String> formulaList = new ListView<String>();
+
 		formulaList.setPlaceholder(new Label("No formulas found"));
 		formulaList.setMinSize(width, height);
 		formulaList.setMaxSize(width, height);
 
 		HBox buttonBox = new HBox();
 		Button newFormulaButton = new Button("Create New");
+		Button editFormulaButton = new Button("Edit");
 		Button deleteFormulaButton = new Button("Delete");
-		buttonBox.getChildren().addAll(newFormulaButton, deleteFormulaButton);
+		buttonBox.getChildren().addAll(newFormulaButton, editFormulaButton, deleteFormulaButton);
 		buttonBox.setSpacing(25);
 		buttonBox.setAlignment(Pos.CENTER);
 
@@ -113,6 +119,7 @@ public class FormulaManager {
 		formulaPane.add(buttonBox, 0, 1);
 	}
 
+	@SuppressWarnings("unused")
 	public void tastePaneInit(GridPane tastePane) {
 		tastePane.setPadding(new Insets(10));
 		tastePane.setHgap(10);
@@ -120,20 +127,39 @@ public class FormulaManager {
 		tastePane.setAlignment(Pos.CENTER);
 		int width = 400;
 		int height = 250;
-		ListView<String> tasteList = new ListView<String>();
+
 		tasteList.setPlaceholder(new Label("No TasteProfiles found"));
 		tasteList.setMinSize(width, height);
 		tasteList.setMaxSize(width, height);
 
 		HBox buttonBox = new HBox();
 		Button newTasteButton = new Button("Create New");
+		Button editTasteButton = new Button("Edit");
 		Button deleteTasteButton = new Button("Delete");
-		buttonBox.getChildren().addAll(newTasteButton, deleteTasteButton);
+		buttonBox.getChildren().addAll(newTasteButton, editTasteButton, deleteTasteButton);
 		buttonBox.setSpacing(25);
 		buttonBox.setAlignment(Pos.CENTER);
 
 		tastePane.add(tasteList, 0, 0);
 		tastePane.add(buttonBox, 0, 1);
 
+		newTasteButton.setOnAction(e -> {
+			// Create a new TasteProfile
+			// TODO: Actually input the real data
+			ArrayList<TastingNote> tags = new ArrayList<>();
+			tags.add(TastingNote.APPLE);
+			Controllers.BatchArea.createNewTasteProfile("ID", "Description", tags);
+
+			updateLists();
+
+		});
+	}
+
+	public void updateLists() {
+		tasteList.getItems().clear();
+		tasteList.getItems().addAll(Controllers.BatchArea.getAllTasteProfiles());
+		formulaList.getItems().clear();
+		formulaList.getItems().addAll(Controllers.BatchArea.getAllFormulae());
+		infoArea.setText("Select a formula or taste profile to view its details");
 	}
 }

@@ -1,6 +1,5 @@
 package GUI.LaunchPad;
 
-import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -72,6 +71,7 @@ public class Launch extends Application {
 		primaryStage.show();
 	}
 
+	@SuppressWarnings("unused")
 	public static void initContent(GridPane dashboardPane) {
 		// =================== TOP PANE ===================
 		GridPane topPane = new GridPane();
@@ -206,6 +206,7 @@ public class Launch extends Application {
 		button.setDisable(true);
 	}
 
+	@SuppressWarnings("unused")
 	private static void setButtonAction(Button button, String area) {
 		button.setOnAction(e -> {
 			switch (area) {
