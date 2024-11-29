@@ -1,5 +1,6 @@
 package GUI.Batch;
 
+import GUI.Common.ConfirmationDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;

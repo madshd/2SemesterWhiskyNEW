@@ -59,7 +59,6 @@ public class Launch extends Application {
 		primaryStage.setResizable(false);
 		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setAlwaysOnTop(true);
-
 		primaryStage.setOnCloseRequest(event -> {
 			closeProgram();
 			event.consume();
