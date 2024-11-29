@@ -115,6 +115,8 @@ public class WarehousingArea {
 
 		// Nederste sektion (Warehouse Movements)
 		gridPane.add(warehouseMovementsList, 0, 2, 3, 1); // Spænd over alle kolonner
+		gridPane.add(headerLabel, 0, 0);
+
 	}
 
 	public void close() {

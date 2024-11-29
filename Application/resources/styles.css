@@ -1,0 +1,143 @@
+/* Root background styling */
+.root {
+    -fx-background-color: #f7ede2; /* Light beige background for warmth */
+}
+
+/* Button styling */
+.button {
+    -fx-background-color: #d4a373; /* Soft amber */
+    -fx-text-fill: white;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-size: 14px;
+}
+.button:hover {
+    -fx-background-color: #c0845f; /* Slightly darker amber on hover */
+}
+.button:pressed {
+    -fx-background-color: #8c5a32; /* Deeper amber when pressed */
+}
+
+/* Label styling */
+.label {
+    -fx-text-fill: #6b4226; /* Rich brown, reminiscent of whisky barrels */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* TextField styling */
+.text-field {
+    -fx-border-color: #d4a373;
+    -fx-border-radius: 5px;
+    -fx-background-color: #fffdf6; /* Creamy white background */
+    -fx-text-fill: #6b4226;
+    -fx-border-width: 2px;
+}
+.text-field:focused {
+    -fx-border-color: #c0845f; /* Highlighted amber tone */
+    -fx-border-width: 2px;
+}
+
+/* TextArea styling */
+.text-area {
+    -fx-border-color: #d4a373;
+    -fx-border-radius: 5px;
+    -fx-background-color: #fffdf6;
+    -fx-text-fill: #6b4226;
+}
+.text-area:focused {
+    -fx-border-color: #c0845f;
+    -fx-border-width: 2px;
+}
+
+/* CheckBox styling */
+.check-box {
+    -fx-text-fill: #6b4226;
+    -fx-font-size: 14px;
+}
+
+/* ComboBox styling */
+.combo-box {
+    -fx-border-color: #d4a373;
+    -fx-border-radius: 5px;
+    -fx-background-color: #fffdf6;
+    -fx-text-fill: #6b4226;
+}
+.combo-box:focused {
+    -fx-border-color: #c0845f;
+    -fx-border-width: 2px;
+}
+
+/* TableView styling */
+.table-view {
+    -fx-border-color: #d4a373;
+    -fx-border-radius: 5px;
+    -fx-background-color: #fffdf6;
+    -fx-text-fill: #6b4226;
+}
+.table-view .column-header {
+    -fx-background-color: #d4a373;
+    -fx-text-fill: white;
+}
+.table-view .cell {
+    -fx-border-color: #e4c4a3;
+    -fx-padding: 5px;
+}
+
+/* ListView styling */
+.list-view {
+    -fx-border-color: #d4a373; /* Amber border */
+    -fx-border-radius: 5px;
+    -fx-background-color: #fffdf6; /* Light cream background */
+}
+
+/* ListView cell styling */
+.list-view .cell {
+    -fx-border-color: #e4c4a3; /* Lighter border for cells */
+    -fx-padding: 5px;
+    -fx-text-fill: #6b4226; /* Rich brown text */
+    -fx-font-size: 14px;
+    -fx-background-color: transparent; /* No background by default */
+}
+.list-view .cell:hover {
+    -fx-background-color: #f0e4d7; /* Light amber hover effect */
+}
+.list-view .cell:selected {
+    -fx-background-color: #d4a373; /* Amber selection */
+    -fx-text-fill: white; /* White text for contrast */
+}
+
+/* ProgressBar styling */
+.progress-bar {
+    -fx-accent: #d4a373;
+    -fx-control-inner-background: #e9d8c1; /* Soft cream for background */
+}
+
+/* Slider styling */
+.slider .thumb {
+    -fx-background-color: #d4a373;
+}
+.slider .track {
+    -fx-background-color: #e9d8c1;
+}
+
+/* MenuBar styling */
+.menu-bar {
+    -fx-background-color: #d4a373; /* Amber tones */
+}
+.menu-bar .menu {
+    -fx-text-fill: white;
+}
+.menu-bar .menu:hover {
+    -fx-background-color: #c0845f; /* Highlighted amber on hover */
+}
+
+/* Tooltip styling */
+.tooltip {
+    -fx-background-color: #d4a373;
+    -fx-text-fill: white;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px;
+    -fx-font-size: 12px;
+}

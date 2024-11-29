@@ -49,6 +49,7 @@ public class ConfirmationDialog {
 
 		// Scene and stage
 		Scene scene = new Scene(layout, 350, 150);
+		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 		dialog.setScene(scene);
 		dialog.showAndWait(); // Show the dialog and wait for it to close
 	}
