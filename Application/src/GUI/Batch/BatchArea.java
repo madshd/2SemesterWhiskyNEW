@@ -1,7 +1,5 @@
 package GUI.Batch;
 
-//import org.checkerframework.checker.units.qual.s;
-
 import GUI.Common.ConfirmationDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;

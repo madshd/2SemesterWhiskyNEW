@@ -25,6 +25,18 @@
     -fx-font-weight: bold;
 }
 
+#LabelHeader {
+    -fx-text-fill: #6b4226; /* Rich brown, reminiscent of whisky barrels */
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+#LabelSubtitle {
+    -fx-text-fill: #6b4226; /* Rich brown, reminiscent of whisky barrels */
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
 /* TextField styling */
 .text-field {
     -fx-border-color: #d4a373;
