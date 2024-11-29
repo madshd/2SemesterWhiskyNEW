@@ -1,8 +1,5 @@
 package GUI.Batch;
 
-import org.checkerframework.checker.units.qual.s;
-
-import GUI.Common.ConfirmationDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
@@ -23,6 +20,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import GUI.Common.ConfirmationDialog;
 
 public class BatchArea {
 
@@ -96,6 +94,7 @@ public class BatchArea {
 		gridPane.add(productSection, 0, 1); // Column 0, Row 1 (Center column)
 		gridPane.add(formulaSection, 1, 0, 1, 2); // Column 1, spans both rows (Sidebar)
 		GridPane.setMargin(formulaSection, new Insets(10, 0, 0, 0));
+		gridPane.setGridLinesVisible(true);
 
 	}
 
