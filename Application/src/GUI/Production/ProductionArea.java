@@ -1,11 +1,13 @@
 package GUI.Production;
 
 import GUI.Common.ConfirmationDialog;
+import Interfaces.Item;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
@@ -20,7 +22,7 @@ public class ProductionArea {
 	private GridPane mainPane;
 	private Scene scene;
 
-	public void initGlobalSettings() {
+	public ProductionArea() {
 		stage = new Stage();
 		stage.setTitle("Production Area");
 
@@ -46,15 +48,22 @@ public class ProductionArea {
 		stage.setScene(scene);
 	}
 
-	public void show() {
-		stage.show();
-	}
+	private final ListView<Item> lvwDistillates = new ListView<>();
+	private final ListView<Item> lvwCasks = new ListView<>();
 
-	public static void initContent(GridPane gridPane) {
+	public void initContent(GridPane gridPane) {
 		Label headerLabel = new Label("Production Area");
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
 		gridPane.add(headerLabel, 0, 0);
+	}
+
+	private class Distillates extends GridPane{
+
+	}
+
+	public void show() {
+		stage.show();
 	}
 
 	public void close() {
