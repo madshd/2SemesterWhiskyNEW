@@ -20,7 +20,7 @@ public class BatchArea {
 	private GridPane mainPane;
 	private Scene scene;
 
-	public void initGlobalSettings() {
+	public BatchArea() {
 		stage = new Stage();
 		stage.setTitle("Batch Area");
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -45,7 +45,7 @@ public class BatchArea {
 		stage.show();
 	}
 
-	public static void initContent(GridPane gridPane) {
+	public void initContent(GridPane gridPane) {
 		Label headerLabel = new Label("Batch Area");
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
