@@ -1,6 +1,10 @@
 package GUI.Batch;
 
+import org.checkerframework.checker.units.qual.s;
+
 import GUI.Common.ConfirmationDialog;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -41,6 +46,7 @@ public class BatchArea {
 		mainPane.setAlignment(Pos.CENTER);
 		initContent(mainPane);
 		scene = new Scene(mainPane, screenBounds.getWidth() - 300, screenBounds.getHeight());
+		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 		stage.setResizable(false);
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.setX(300);
@@ -58,6 +64,9 @@ public class BatchArea {
 		gridPane.setHgap(10);
 		gridPane.setVgap(10);
 		gridPane.setAlignment(Pos.CENTER);
+
+		// For intuitive clearing of textarea focus
+		gridPane.setOnMouseClicked(event -> gridPane.requestFocus());
 
 		// Define column constraints
 		ColumnConstraints col1 = new ColumnConstraints();
@@ -78,10 +87,16 @@ public class BatchArea {
 		GridPane productSection = createProductSection();
 		GridPane formulaSection = createFormulaSection();
 
+		batchSection.setAlignment(Pos.BOTTOM_CENTER);
+		productSection.setAlignment(Pos.TOP_CENTER);
+		formulaSection.setAlignment(Pos.CENTER_LEFT);
+
 		// Add sections to the main GridPane
 		gridPane.add(batchSection, 0, 0); // Column 0, Row 0 (Center column)
 		gridPane.add(productSection, 0, 1); // Column 0, Row 1 (Center column)
 		gridPane.add(formulaSection, 1, 0, 1, 2); // Column 1, spans both rows (Sidebar)
+		GridPane.setMargin(formulaSection, new Insets(10, 0, 0, 0));
+
 	}
 
 	private static GridPane createProductSection() {
@@ -90,24 +105,54 @@ public class BatchArea {
 		productGrid.setHgap(10);
 		productGrid.setVgap(10);
 
+		// Search Bar
+		TextField searchBar = new TextField();
+		searchBar.setPromptText("Search Products");
+		searchBar.setMinWidth(200);
+		searchBar.setFocusTraversable(false);
+
 		// Products Table
 		TableView<String> productsTable = new TableView<>();
 		productsTable.setPlaceholder(new Label("No Products Available"));
-		productsTable.setMinHeight(200);
+		productsTable.setMinHeight(300);
 		productsTable.setMaxHeight(200);
-		productsTable.setPrefWidth(600);
+		productsTable.setMinWidth(700);
+		productsTable.setEditable(false);
+		productsTable.setFocusTraversable(false);
+
+		// Add search functionality
+		FilteredList<String> filteredData = new FilteredList<>(FXCollections.observableArrayList(), p -> true);
+		productsTable.setItems(filteredData);
+
+		searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(product -> {
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+				String lowerCaseFilter = newValue.toLowerCase();
+				return product.toLowerCase().contains(lowerCaseFilter);
+			});
+		});
+
+		searchBar.setOnAction(event -> {
+			scene.getRoot().requestFocus(); // Return focus to the scene
+		});
 
 		// Product Buttons
 		Button createProductButton = new Button("Create New Product");
 		Button defineFormulaButton = new Button("Define Formula");
 		Button deleteProductButton = new Button("Delete Product");
-		HBox productButtons = new HBox(10, createProductButton, defineFormulaButton, deleteProductButton);
+		HBox productButtons = new HBox(25, createProductButton, defineFormulaButton, deleteProductButton, searchBar);
 		productButtons.setAlignment(Pos.CENTER);
+
+		createProductButton.setFocusTraversable(false);
+		defineFormulaButton.setFocusTraversable(false);
+		deleteProductButton.setFocusTraversable(false);
 
 		// Add components to Product GridPane
 		productGrid.add(new Label("Products"), 0, 0); // Column 0, Row 0
-		productGrid.add(productsTable, 0, 1); // Column 0, Row 1
-		productGrid.add(productButtons, 0, 2); // Column 0, Row 2
+		productGrid.add(productsTable, 0, 2); // Column 0, Row 2
+		productGrid.add(productButtons, 0, 3); // Column 0, Row 3
 
 		return productGrid;
 	}
@@ -118,51 +163,84 @@ public class BatchArea {
 		batchGrid.setHgap(10);
 		batchGrid.setVgap(10);
 
+		// Search Bar
+		TextField searchBar = new TextField();
+		searchBar.setPromptText("Search Batches");
+		searchBar.setMinWidth(200);
+		searchBar.setFocusTraversable(false);
+
 		// Batches Table
 		TableView<String> batchesTable = new TableView<>();
 		batchesTable.setPlaceholder(new Label("No Batches Available"));
-		batchesTable.setMinHeight(200);
+		batchesTable.setMinHeight(300);
 		batchesTable.setMaxHeight(200);
-		batchesTable.setPrefWidth(600);
+		batchesTable.setMinWidth(700);
+		batchesTable.setEditable(false);
+		batchesTable.setFocusTraversable(false);
+
+		// Add search functionality
+		FilteredList<String> filteredData = new FilteredList<>(FXCollections.observableArrayList(), p -> true);
+		batchesTable.setItems(filteredData);
+
+		searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(batch -> {
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+				String lowerCaseFilter = newValue.toLowerCase();
+				return batch.toLowerCase().contains(lowerCaseFilter);
+			});
+		});
+
+		searchBar.setOnAction(event -> {
+			scene.getRoot().requestFocus(); // Return focus to the scene
+		});
 
 		// Batch Buttons
 		Button createBatchButton = new Button("Create New Batch");
 		Button filterBatchButton = new Button("Filter");
 		Button deleteBatchButton = new Button("Delete Batch");
-		HBox batchButtons = new HBox(10, createBatchButton, filterBatchButton, deleteBatchButton);
+		Button produceBatchButton = new Button("PRODUCE BATCH");
+		HBox batchButtons = new HBox(25, createBatchButton, filterBatchButton, deleteBatchButton, produceBatchButton,
+				searchBar);
 		batchButtons.setAlignment(Pos.CENTER);
 
-		// Produce Batch Button
-		Button produceBatchButton = new Button("PRODUCE BATCH");
-		produceBatchButton.setStyle("-fx-background-color: lightgreen; -fx-font-weight: bold;");
+		createBatchButton.setFocusTraversable(false);
+		filterBatchButton.setFocusTraversable(false);
+		deleteBatchButton.setFocusTraversable(false);
+		produceBatchButton.setFocusTraversable(false);
 
 		// Add components to Batch GridPane
 		batchGrid.add(new Label("Batches"), 0, 0); // Column 0, Row 0
-		batchGrid.add(batchesTable, 0, 1); // Column 0, Row 1
-		batchGrid.add(batchButtons, 0, 2); // Column 0, Row 2
-		batchGrid.add(produceBatchButton, 0, 3); // Column 0, Row 3
-
+		batchGrid.add(batchesTable, 0, 1); // Column 0, Row 2
+		batchGrid.add(batchButtons, 0, 2); // Column 0, Row 3
 		return batchGrid;
+
 	}
 
 	private static GridPane createFormulaSection() {
 		GridPane formulaGrid = new GridPane();
-		formulaGrid.setPadding(new Insets(10));
 		formulaGrid.setHgap(10);
 		formulaGrid.setVgap(10);
+		formulaGrid.setAlignment(Pos.CENTER);
 
 		// Formula List
 		ListView<String> formulaList = new ListView<>();
-		formulaList.setPrefWidth(200);
+		formulaList.setPlaceholder(new Label("No Formulae Available"));
+		formulaList.setPrefWidth(300);
+		formulaList.setMinHeight(702);
+		formulaList.setFocusTraversable(false);
+		formulaList.setEditable(false);
 
 		// Open Formula Manager Button
 		Button openFormulaManagerButton = new Button("Open Formula Manager");
+		openFormulaManagerButton.setFocusTraversable(false);
 
 		// Add components to Formula GridPane
 		formulaGrid.add(new Label("All Formulae"), 0, 0); // Column 0, Row 0
 		formulaGrid.add(formulaList, 0, 1, 1, 3); // Column 0, Row 1 (spanning 3 rows)
 		formulaGrid.add(openFormulaManagerButton, 0, 4); // Column 0, Row 4
-		GridPane.setHalignment(openFormulaManagerButton, javafx.geometry.HPos.RIGHT);
+		GridPane.setHalignment(openFormulaManagerButton, javafx.geometry.HPos.CENTER);
 
 		return formulaGrid;
 	}
