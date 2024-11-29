@@ -1,11 +1,15 @@
 package GUI.LaunchPad;
 
 import java.net.URL;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import GUI.Batch.BatchArea;
 import GUI.Production.ProductionArea;
 import GUI.Warehousing.WarehousingArea;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -22,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -100,8 +105,8 @@ public class Launch extends Application {
 
 		buttonBox.getChildren().addAll(warehouseButton, productionButton, batchAreaButton);
 
-		topPane.add(imageView, 0, 0);
-		topPane.add(buttonBox, 0, 1);
+		topPane.add(imageView, 0, 1);
+		topPane.add(buttonBox, 0, 2);
 		topPane.setAlignment(Pos.CENTER);
 		GridPane.setHalignment(imageView, HPos.CENTER);
 
@@ -113,31 +118,53 @@ public class Launch extends Application {
 		sep1.setOrientation(Orientation.HORIZONTAL);
 		sep1.setPrefWidth(300);
 
-		topPane.add(sep1, 0, 2);
+		topPane.add(sep1, 0, 3);
 
-		// =================== MIDDLE PANE 1 ===================
-		GridPane midPane1 = new GridPane();
-		midPane1.setAlignment(Pos.CENTER);
-		midPane1.add(new Label("Dynamic Info Pane 1"), 0, 0);
-		midPane1.setVgap(10);
-		midPane1.setHgap(10);
-		midPane1.setPrefSize(300, 200);
+		// =================== INFO PANE 1 ===================
+		GridPane infoPane1 = new GridPane();
+		infoPane1.setAlignment(Pos.CENTER);
+		infoPane1.setVgap(10);
+		infoPane1.setHgap(10);
+		infoPane1.setPrefSize(300, 200);
 
-		// =================== MIDDLE PANE 2 ===================
-		GridPane midPane2 = new GridPane();
-		midPane2.setAlignment(Pos.CENTER);
-		midPane2.add(new Label("Dynamic Info Pane 2"), 0, 0);
-		midPane2.setVgap(10);
-		midPane2.setHgap(10);
-		midPane2.setPrefSize(300, 200);
+		// Create a Label to display the time
+		Label timeLabel = new Label();
+		timeLabel.setId("timeLabel");
 
-		// =================== MIDDLE PANE 3 ===================
-		GridPane midPane3 = new GridPane();
-		midPane3.setAlignment(Pos.CENTER);
-		midPane3.add(new Label("Dynamic Info Pane 3"), 0, 0);
-		midPane3.setVgap(10);
-		midPane3.setHgap(10);
-		midPane3.setPrefSize(300, 200);
+		// Create a DateTimeFormatter to format the time
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+		// Create a Timeline to update the time every second
+		Timeline timeline = new Timeline(
+				new KeyFrame(Duration.seconds(0), event -> {
+					// Get the current time and format it
+					LocalTime currentTime = LocalTime.now();
+					timeLabel.setText(currentTime.format(timeFormatter));
+				}),
+				new KeyFrame(Duration.seconds(1)));
+		timeline.setCycleCount(Timeline.INDEFINITE); // Run indefinitely
+		timeline.play(); // Start the timeline
+
+		infoPane1.add(new Label("Dynamic Info Pane 1"), 0, 0);
+
+		infoPane1.add(timeLabel, 0, 1);
+		GridPane.setHalignment(timeLabel, HPos.CENTER);
+
+		// =================== INFO PANE 2 ===================
+		GridPane infoPane2 = new GridPane();
+		infoPane2.setAlignment(Pos.CENTER);
+		infoPane2.add(new Label("Dynamic Info Pane 2"), 0, 0);
+		infoPane2.setVgap(10);
+		infoPane2.setHgap(10);
+		infoPane2.setPrefSize(300, 200);
+
+		// =================== INFO PANE 3 ===================
+		GridPane infoPane3 = new GridPane();
+		infoPane3.setAlignment(Pos.CENTER);
+		infoPane3.add(new Label("Dynamic Info Pane 3"), 0, 0);
+		infoPane3.setVgap(10);
+		infoPane3.setHgap(10);
+		infoPane3.setPrefSize(300, 200);
 
 		// =================== BOTTOM PANE ===================
 		Separator sep2 = new Separator();
@@ -164,9 +191,9 @@ public class Launch extends Application {
 		dashboardPane.setVgap(10);
 		dashboardPane.setPadding(new Insets(10, 10, 10, 10));
 		dashboardPane.add(topPane, 0, 0);
-		dashboardPane.add(midPane1, 0, 1);
-		dashboardPane.add(midPane2, 0, 2);
-		dashboardPane.add(midPane3, 0, 3);
+		dashboardPane.add(infoPane1, 0, 1);
+		dashboardPane.add(infoPane2, 0, 2);
+		dashboardPane.add(infoPane3, 0, 3);
 		dashboardPane.add(bottomPane, 0, 4);
 		dashboardPane.setAlignment(Pos.CENTER);
 		dashboardPane.setGridLinesVisible(false);

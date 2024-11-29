@@ -152,4 +152,11 @@
     -fx-background-radius: 5px;
     -fx-padding: 10px;
     -fx-font-size: 12px;
+    -fx-letter-spacing: 4px; /* Add letter spacing here */
+}
+
+#timeLabel {
+    -fx-font-size: 20px;
+    -fx-text-fill: #6b4226;
+    -fx-text-alignment: center;
 }

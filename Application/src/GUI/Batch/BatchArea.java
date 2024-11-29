@@ -4,6 +4,7 @@ import GUI.Common.ConfirmationDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -21,7 +22,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import GUI.Common.ConfirmationDialog;
 
 public class BatchArea {
 
@@ -29,6 +29,7 @@ public class BatchArea {
 	private Stage stage;
 	private GridPane mainPane;
 	private static Scene scene;
+	private FormulaManager formulaManager = new FormulaManager();
 
 	public BatchArea() {
 		stage = new Stage();
@@ -76,10 +77,12 @@ public class BatchArea {
 
 		// Define row constraints
 		RowConstraints row1 = new RowConstraints();
-		row1.setPercentHeight(50); // Batches take 50% of the height
+		row1.setPercentHeight(5); // Heading
 		RowConstraints row2 = new RowConstraints();
-		row2.setPercentHeight(50); // Products take 50% of the height
-		gridPane.getRowConstraints().addAll(row1, row2);
+		row2.setPercentHeight(45); // Batches
+		RowConstraints row3 = new RowConstraints();
+		row3.setPercentHeight(50); // Products
+		gridPane.getRowConstraints().addAll(row1, row2, row3);
 
 		// Create individual sections
 		GridPane batchSection = createBatchSection();
@@ -90,12 +93,17 @@ public class BatchArea {
 		productSection.setAlignment(Pos.TOP_CENTER);
 		formulaSection.setAlignment(Pos.CENTER_LEFT);
 
+		Label lblHeader = new Label("Batch Area");
+		lblHeader.setId("LabelHeader");
+
 		// Add sections to the main GridPane
-		gridPane.add(batchSection, 0, 0); // Column 0, Row 0 (Center column)
-		gridPane.add(productSection, 0, 1); // Column 0, Row 1 (Center column)
-		gridPane.add(formulaSection, 1, 0, 1, 2); // Column 1, spans both rows (Sidebar)
-		GridPane.setMargin(formulaSection, new Insets(10, 0, 0, 0));
-		gridPane.setGridLinesVisible(true);
+		gridPane.add(lblHeader, 0, 0, 2, 1); // Column 0, spans both columns (Header)
+		gridPane.add(batchSection, 0, 1); // Column 0, Row 0 (Center column)
+		gridPane.add(productSection, 0, 2); // Column 0, Row 1 (Center column)
+		gridPane.add(formulaSection, 1, 1, 1, 2); // Column 1, spans both rows (Sidebar)
+		GridPane.setMargin(formulaSection, new Insets(0, 0, 40, 0));
+		gridPane.setGridLinesVisible(false);
+		GridPane.setHalignment(lblHeader, HPos.CENTER);
 
 	}
 
@@ -228,13 +236,17 @@ public class BatchArea {
 		ListView<String> formulaList = new ListView<>();
 		formulaList.setPlaceholder(new Label("No Formulae Available"));
 		formulaList.setPrefWidth(300);
-		formulaList.setMinHeight(702);
+		formulaList.setMinHeight(708);
 		formulaList.setFocusTraversable(false);
 		formulaList.setEditable(false);
 
 		// Open Formula Manager Button
 		Button openFormulaManagerButton = new Button("Open Formula Manager");
 		openFormulaManagerButton.setFocusTraversable(false);
+		openFormulaManagerButton.setOnAction(e -> {
+			FormulaManager formulaManager = new FormulaManager();
+			formulaManager.showFormulaManagerWindow();
+		});
 
 		// Add components to Formula GridPane
 		formulaGrid.add(new Label("All Formulae"), 0, 0); // Column 0, Row 0
