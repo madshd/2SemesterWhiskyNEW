@@ -104,15 +104,9 @@ public abstract class Warehousing {
      * @throws IllegalStateException if the target shelf is not empty in the destination storage rack
      */
 
-    public static void moveItemBetweenWarehouses(
-            Item item,
-            Warehouse fromWarehouse,
-            StorageRack fromStorageRack,
-            int fromIndex,
-            Warehouse toWarehouse,
-            StorageRack toStorageRack,
-            int toIndex
-    ) {
+    public static void moveItemBetweenWarehouses(Item item, Warehouse fromWarehouse, StorageRack fromStorageRack,
+                                                 int fromIndex, Warehouse toWarehouse, StorageRack toStorageRack, int toIndex) {
+
         if (fromStorageRack.getItemLocation(item) != fromIndex) {
             throw new IllegalArgumentException("Item not found at the specified index in the source storage rack.");
         }

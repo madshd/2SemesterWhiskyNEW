@@ -78,6 +78,9 @@ public abstract class initStorage {
         Warehouse warehouse = Warehousing.createWarehouse("Lager 1", "Lagervej 1");
         Warehouse warehouse2 = Warehousing.createWarehouse("Lager 2", "Lagervej 2");
 
+        Warehousing.createWarehouse("Warehouse 55", "Address 1");
+        Warehousing.createWarehouse("Warehouse 77", "Address 2");
+
         StorageRack rack1 = Warehousing.createStorageRack("Rack 1", 100);
         StorageRack rack2 = Warehousing.createStorageRack("Rack 2", 100);
         StorageRack rack3 = Warehousing.createStorageRack("Rack 3", 100);
