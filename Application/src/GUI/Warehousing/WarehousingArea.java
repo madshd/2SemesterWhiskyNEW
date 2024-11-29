@@ -34,6 +34,7 @@ public class WarehousingArea {
 		mainPane = new GridPane();
 		initContent(mainPane);
 		scene = new Scene(mainPane, screenBounds.getWidth() - 300, screenBounds.getHeight());
+		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 		stage.setResizable(false);
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.setX(300);
@@ -50,6 +51,7 @@ public class WarehousingArea {
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
 		gridPane.add(headerLabel, 0, 0);
+
 	}
 
 	public void close() {

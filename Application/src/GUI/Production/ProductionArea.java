@@ -40,6 +40,7 @@ public class ProductionArea {
 		initContent(mainPane);
 
 		scene = new Scene(mainPane, screenBounds.getWidth() - 300, screenBounds.getHeight());
+		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
 		stage.setResizable(false);
 		stage.initStyle(StageStyle.UNDECORATED);
@@ -58,7 +59,7 @@ public class ProductionArea {
 		gridPane.add(headerLabel, 0, 0);
 	}
 
-	private class Distillates extends GridPane{
+	private class Distillates extends GridPane {
 
 	}
 
