@@ -158,30 +158,31 @@ public class Launch extends Application {
 	private static void setButtonAction(Button button, String area) {
 		button.setOnAction(e -> {
 			switch (area) {
-				case "Warehouse":
+				case "Warehouse" -> {
 					productionArea.close();
 					batchArea.close();
 					if (!productionArea.getStage().isShowing() && !batchArea.getStage().isShowing()) {
 						warehousingArea.show();
 						flipButtons(button);
 					}
-					break;
-				case "Production":
+
+				}
+				case "Production" -> {
 					warehousingArea.close();
 					batchArea.close();
 					if (!warehousingArea.getStage().isShowing() && !batchArea.getStage().isShowing()) {
 						productionArea.show();
 						flipButtons(button);
 					}
-					break;
-				case "BatchArea":
+				}
+				case "BatchArea" -> {
 					productionArea.close();
 					warehousingArea.close();
 					if (!productionArea.getStage().isShowing() && !warehousingArea.getStage().isShowing()) {
 						batchArea.show();
 						flipButtons(button);
 					}
-					break;
+				}
 			}
 		});
 	}
@@ -217,9 +218,5 @@ public class Launch extends Application {
 		productionArea = new ProductionArea();
 		warehousingArea = new WarehousingArea();
 		batchArea = new BatchArea();
-
-		productionArea.initGlobalSettings();
-		warehousingArea.initGlobalSettings();
-		batchArea.initGlobalSettings();
 	}
 }

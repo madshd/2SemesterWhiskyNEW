@@ -20,7 +20,7 @@ public class WarehousingArea {
 	private GridPane mainPane;
 	private Scene scene;
 
-	public void initGlobalSettings() {
+	public WarehousingArea() {
 		stage = new Stage();
 		stage.setTitle("Warehousing Area");
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -45,7 +45,7 @@ public class WarehousingArea {
 		stage.show();
 	}
 
-	public static void initContent(GridPane gridPane) {
+	public void initContent(GridPane gridPane) {
 		Label headerLabel = new Label("Warehousing Area");
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
