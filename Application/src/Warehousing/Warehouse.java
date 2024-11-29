@@ -1,5 +1,9 @@
 package Warehousing;
 
+import Interfaces.Item;
+import Interfaces.WarehousingObserver;
+import Interfaces.WarehousingSubject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,15 +35,44 @@ public class Warehouse implements WarehousingSubject {
         return racks;
     }
 
-    public void addStorageRack(String string, StorageRack storageRack) {
-        racks.put(string, storageRack);
-        notifyWarehousingObservers();
+    public List<WarehousingObserver> getWarehousingObservers() {
+        return warehousingObservers;
+    }
+
+    public void addStorageRack(String id, StorageRack storageRack) {
+        racks.put(id, storageRack);
+        storageRack.setWarehouse(this); // Bind rack to warehouse
+        notifyWarehousingObserversWithDetails("StorageRack added: " + id);
     }
 
 
-    public void removeStorageRack(String string) {
-        racks.remove(string);
-        notifyWarehousingObservers();
+    public void removeStorageRack(String id) {
+        StorageRack removedRack = racks.remove(id);
+        if (removedRack != null) {
+            notifyWarehousingObserversWithDetails("StorageRack removed: " + id);
+        }
+    }
+
+    public void notifyWarehousingObserversWithDetails(String details) {
+        for (WarehousingObserver observer : warehousingObservers) {
+            observer.update(this, details);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return name + ", " + address;
+    }
+
+    public String getItemLocation(Item item) {
+        for (Map.Entry<String, StorageRack> entry : racks.entrySet()) {
+            StorageRack rack = entry.getValue();
+            int location = rack.getItemLocation(item);
+            if (location != -1) {
+                return "Rack: " + entry.getKey() + ", Shelf: " + location;
+            }
+        }
+        return "Item not found in any rack";
     }
 
     @Override
@@ -54,8 +87,8 @@ public class Warehouse implements WarehousingSubject {
 
     @Override
     public void notifyWarehousingObservers() {
-        for (WarehousingObserver who : warehousingObservers) {
-            who.update(this);
+        for (WarehousingObserver observer : warehousingObservers) {
+            observer.update(this, "General update in warehouse: " + this.name);
         }
     }
 }
