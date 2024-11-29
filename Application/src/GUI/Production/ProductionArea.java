@@ -63,8 +63,9 @@ public class ProductionArea {
 
 	public void initContent(GridPane gridPane) {
 		Label headerLabel = new Label("Production Area");
-		headerLabel.setFont(new Font("Arial", 32));
+//		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
+		headerLabel.setId("LabelHeader");
 		headerLabel.setPrefWidth(screenBounds.getWidth() - 300);
 		headerLabel.setAlignment(Pos.CENTER);
 
@@ -164,7 +165,6 @@ public class ProductionArea {
 			this.add(lblSubTitel, 0, 0,3,1);
 		}
 	}
-
 
 	public void show() {
 		stage.show();
