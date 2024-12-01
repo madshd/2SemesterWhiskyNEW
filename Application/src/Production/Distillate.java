@@ -6,6 +6,7 @@ import Interfaces.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Distillate implements Item, OberverQuantitySubject, Serializable {
@@ -65,6 +66,10 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 				this.quantity, getRemainingQuantity());
 	}
 
+	/**
+	 * Used for presenting info in listviews
+	 * @return
+	 */
 	public String getListInfo() {
 		int maxNameLength = 20;
 		String listName = (name.trim().length() > maxNameLength) ? name.substring(0,maxNameLength - 3) + "..." :
@@ -129,5 +134,30 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+	public LocalDate getStartDate() {
+		return startDate;
+	}
+
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public Distiller getDistiller() {
+		return distiller;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getNewMakeID(){
+		return String.format("SWD-Y%dM%dD%d%s", startDate.getYear(), startDate.getMonthValue(),
+				startDate.getDayOfYear(), distiller.getInitials());
 	}
 }

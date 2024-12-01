@@ -10,6 +10,8 @@ import Warehousing.Cask;
 
 import java.time.LocalDate;
 
+import static Controllers.Production.addDescriotionToDistillate;
+
 public abstract class initStorage {
 
     public static void loadProduction(){
@@ -190,6 +192,17 @@ public abstract class initStorage {
                 distiller_03,
                 Unit.LITERS
         );
+
+        addDescriotionToDistillate(distillate_01, "A rich and complex distillate characterized by honeyed sweetness and notes of dried fruits.");
+        addDescriotionToDistillate(distillate_02, "Crafted with Islay peat, this distillate exudes bold smoky aromas and a hint of seaweed brine.");
+        addDescriotionToDistillate(distillate_03, "A delicate distillate with floral undertones, hints of vanilla, and a creamy texture, perfect for blending.");
+        addDescriotionToDistillate(distillate_04, "Matured using Highland water, this distillate balances citrus zest with a malty backbone.");
+        addDescriotionToDistillate(distillate_05, "Rich in spices and toffee notes, this distillate showcases the influence of sherry-seasoned oak.");
+        addDescriotionToDistillate(distillate_06, "A light distillate with green apple freshness and subtle nutty undertones from American oak aging.");
+        addDescriotionToDistillate(distillate_07, "This distillate boasts caramelized sugar aromas and a velvety depth of chocolate and dried cherries.");
+        addDescriotionToDistillate(distillate_08, "Crafted with barley grown in local fields, this distillate carries earthy tones and a hint of caramel.");
+        addDescriotionToDistillate(distillate_09, "Peaty and robust, this distillate reflects the rugged character of coastal winds and marine influence.");
+        addDescriotionToDistillate(distillate_10, "A harmonious distillate with subtle hints of fresh bread, honey, and a lingering smoky finish.");
 
     }
 

@@ -25,6 +25,16 @@ public abstract class Production {
 		Production.storage = storage;
 	}
 
+	/**
+	 *
+	 * @param name
+	 * @param startDate
+	 * @param endDate
+	 * @param quantity
+	 * @param distiller
+	 * @param unit
+	 * @return
+	 */
 	public static Distillate createDistillate(String name, LocalDate startDate, LocalDate endDate, double quantity,
 									   Distiller distiller, Unit unit){
 		Distillate distillate = new Distillate(name,startDate,endDate,quantity,distiller,unit);
@@ -32,11 +42,30 @@ public abstract class Production {
 		return distillate;
 	}
 
+	public static void addDescriotionToDistillate(Distillate distillate, String description){
+		distillate.setDescription(description);
+	}
+
+	/**
+	 *
+	 * @param name
+	 * @param initials
+	 * @param story
+	 * @return
+	 */
 	public static Distiller createDistiller(String name, String initials, String story){
 		Distiller distiller = new Distiller(name,initials,story);
 		return distiller;
 	}
 
+	/**
+	 *
+	 * @param distillate
+	 * @param cask
+	 * @param quantity
+	 * @param date
+	 * @return
+	 */
 	public static double fillDistillateIntoCask(Distillate distillate, Cask cask, double quantity ,LocalDate date){
 		Filling filling = new FillDistillate(date, quantity);
 		distillate.updateQuantity(filling);

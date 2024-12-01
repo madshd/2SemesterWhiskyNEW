@@ -12,4 +12,20 @@ public class Supplier {
         this.description = description;
         this.story = story;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getStory() {
+        return story;
+    }
 }

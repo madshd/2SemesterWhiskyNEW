@@ -55,12 +55,21 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
     }
 
     public String getListInfo() {
-        //TODO
-        // Leander needs to fix this
-        return String.format("ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f"
-                ,caskID,maxQuantity,getRemainingQuantity());
+        int maxNameLength = 15;
+        String supplierName = supplier.getName();
+        String listName = (supplierName.trim().length() > maxNameLength) ? supplierName.substring(0,maxNameLength - 3) + "..." :
+                supplierName.trim() + " ".repeat(maxNameLength - supplierName.trim().length());
+
+        return String.format("ID: %-4d | \t Supplier: %s \t | \t  Max capacity: %,-4.2f\t | \tRemaining capacity %,-4.2f"
+                ,caskID,listName,maxQuantity,getRemainingQuantity());
     }
 
+    /**
+     *
+     * @param fillDistillate
+     * @return
+     * @throws IllegalStateException
+     */
     @Override
     public double updateQuantity(Filling fillDistillate) throws IllegalStateException {
         double newQuantity = fillDistillate.getQuantity() + getQuantityStatus();
@@ -92,6 +101,16 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
     }
 
     public String getName(){
-        return Integer.toHexString(caskID);
+        return Integer.toString(caskID);
+    }
+
+    public String getDetails(){
+        return String.format("""
+                *****\t Supplier description\t ***** 
+                %s
+                
+                *****\t Filling details\t *****
+                %s 
+                """, supplier.getDescription(),getFillingTextLines());
     }
 }

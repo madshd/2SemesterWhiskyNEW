@@ -4,6 +4,7 @@ import Controllers.Production;
 import GUI.Common.Common;
 import GUI.Common.ConfirmationDialog;
 import Interfaces.Item;
+import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -18,9 +19,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-
+import Production.Distillate;
 import java.util.ArrayList;
 import java.util.List;
+import Warehousing.Cask;
+
+import static Controllers.Warehousing.*;
 
 public class ProductionArea {
 
@@ -117,7 +121,10 @@ public class ProductionArea {
 			lvwDistillates.setPrefWidth(lvwWithCol0);
 			lvwDistillates.setPrefHeight(lvwHeightCol0Top);
 			this.add(lvwDistillates,0,2,2,1);
-
+			ChangeListener<Item> lvwDistillateListener = (ov, o, n) -> {
+				updateDistillateDetails();
+			};
+			lvwDistillates.getSelectionModel().selectedItemProperty().addListener(lvwDistillateListener);
 
 			// TextArea
 			txaDistillateDetails.setEditable(false);
@@ -143,37 +150,51 @@ public class ProductionArea {
 			hBox.setAlignment(Pos.CENTER);
 			this.add(hBox,0,3,2,1);
 
-			updateList();
+			updateLists();
 		}
 
 		private void buttionAction(Button button){
 
 		}
 
-		private void updateList(){
+		private void updateLists(){
 			List<Item> distilates = new ArrayList<>(Production.getDistillates());
 			lvwDistillates.getItems().setAll(distilates);
 
-			// We need to show specified text in the list aka different from toSting.
-			lvwDistillates.setCellFactory(lv -> new ListCell<>() {
-				@Override
-				protected void updateItem(Item item, boolean empty) {
-					super.updateItem(item, empty);
+			Common.useSpecifiedListView(lvwDistillates);
+		}
 
-					if (empty || item == null) {
-						setText(null); // Hand empty cells
-					} else {
-						// Add new info text.
-						setText(item.getListInfo());
-					}
-				}
-			});
+		private void updateDistillateDetails(){
+			Distillate selectedDistillate = (Distillate) lvwDistillates.getSelectionModel().getSelectedItem();
+			casks.updatelist(selectedDistillate);
+
+			if (selectedDistillate != null){
+				String infoText = String.format("""
+						*****\t Distillate Created By \t*****
+						Distiller: %s
+						Story: %s
+						
+						*****\t Distillate Details \t*****
+						New Make ID: %s
+						Production Start Date: %s
+						Productino End Date: %s
+						Description: %s 
+						""",
+						selectedDistillate.getDistiller().toString(),
+						Common.insertLfIntoSting(selectedDistillate.getDistiller().getStory(),70),
+						selectedDistillate.getNewMakeID(), selectedDistillate.getStartDate().toString(),
+						selectedDistillate.getEndDate().toString(),
+						Common.insertLfIntoSting(selectedDistillate.getDescription(),70));
+				txaDistillateDetails.setText(infoText);
+			}else {
+				txaDistillateDetails.clear();
+			}
 		}
 	}
 
 	private class Casks extends GridPane{
 		private final ListView<Item> lvwCasks = new ListView<>();
-		private final ListView<Item> txaCaskFillings = new ListView<>();
+		private final TextArea txaCaskDetails = new TextArea();
 
 		public Casks(ProductionArea pa){
 			// Generel settings
@@ -207,11 +228,15 @@ public class ProductionArea {
 			lvwCasks.setPrefWidth(lvwWithCol0);
 			lvwCasks.setPrefHeight(lvwHeightCol0Top);
 			this.add(lvwCasks,0,2,2,1);
+			ChangeListener<Item> lvwCasksListener = (ov, o, n) -> {
+				updateFillingList();
+			};
+			lvwCasks.getSelectionModel().selectedItemProperty().addListener(lvwCasksListener);
 
-			txaCaskFillings.setEditable(false);
-			txaCaskFillings.setPrefHeight(lvwHeightCol0Top);
-			txaCaskFillings.setPrefWidth(areaWidth - lvwWithCol0);
-			this.add(txaCaskFillings,2,2,2,1);
+			txaCaskDetails.setEditable(false);
+			txaCaskDetails.setPrefHeight(lvwHeightCol0Top);
+			txaCaskDetails.setPrefWidth(areaWidth - lvwWithCol0);
+			this.add(txaCaskDetails,2,2,2,1);
 
 			// Button panel
 			HBox hBox = new HBox(20);
@@ -241,6 +266,27 @@ public class ProductionArea {
 
 		private void buttionAction(Button button){
 
+		}
+
+		public void updatelist(Distillate distillate){
+			if (distillate != null){
+				List<Item> casks = new ArrayList<>(getCaskFitToDistillate(distillate));
+				lvwCasks.getItems().setAll(casks);
+
+				Common.useSpecifiedListView(lvwCasks);
+			}else {
+				lvwCasks.getItems().clear();
+			}
+		}
+
+		private void updateFillingList(){
+			Cask selectedCask = (Cask) lvwCasks.getSelectionModel().getSelectedItem();
+
+			if (selectedCask != null){
+				txaCaskDetails.setText(selectedCask.getDetails());
+			}else {
+				txaCaskDetails.clear();
+			}
 		}
 
 	}
