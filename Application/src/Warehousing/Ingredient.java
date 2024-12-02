@@ -104,12 +104,6 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 	}
 
 	@Override
-	public String getListInfo() {
-		// TODO
-		return "";
-	}
-
-	@Override
 	public double getQuantityStatus() {
 		double quantity = 0;
 
@@ -135,6 +129,11 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 	@Override
 	public double getRemainingQuantity() {
 		return quantity - getQuantityStatus();
+	}
+
+	@Override
+	public int compareTo(Item o) {
+		return this.name.compareTo(o.getName());
 	}
 
 	@Override
@@ -172,5 +171,15 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 	public String toString() {
 		return name + " " + description +
 				" " + quantity + " " + unit;
+	}
+
+	public String getListInfo() {
+		//TODO
+		// Leander needs for fix this!!
+		return "Ingredient{" +
+				"name='" + name + '\'' +
+				", description='" + description + '\'' +
+				", quantity=" + quantity +
+				'}';
 	}
 }
