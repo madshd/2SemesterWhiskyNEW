@@ -51,6 +51,7 @@
 }
 
 /* TextArea styling */
+/*
 .text-area {
     -fx-border-color: #d4a373;
     -fx-border-radius: 5px;
@@ -60,6 +61,27 @@
 .text-area:focused {
     -fx-border-color: #c0845f;
     -fx-border-width: 2px;
+}
+*/
+.text-area {
+    -fx-border-color: #d4a373;         /* Samme kantfarve som ListView */
+    -fx-border-radius: 5px;           /* Behold samme kant-form */
+    -fx-background-color: #fffdf6;    /* Match ListView baggrundsfarve */
+    -fx-text-fill: #6b4226;           /* Match ListView tekstfarve */
+    -fx-padding: 10px;                /* Sikrer ensartet padding */
+    -fx-font-family: "Courier New", monospace; /* Monospace font matching ListView */
+}
+.text-area:focused {
+    -fx-border-color: #c0845f;        /* Samme fokusfarve som ListView */
+    -fx-border-width: 2px;
+}
+
+.text-area .content {
+    -fx-background-color: #fffdf6;
+}
+
+.text-area:hover {
+    -fx-background-color: #f0e4d7;    /* Lys beige hover-effekt */
 }
 
 /* CheckBox styling */
@@ -108,6 +130,7 @@
     -fx-border-color: #e4c4a3; /* Lighter border for cells */
     -fx-padding: 5px;
     -fx-text-fill: #6b4226; /* Rich brown text */
+    -fx-font-family: "Courier New", Courier, monospace; /* Monospaced font */
     -fx-font-size: 14px;
     -fx-background-color: transparent; /* No background by default */
 }
