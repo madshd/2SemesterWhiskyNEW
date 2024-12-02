@@ -7,6 +7,7 @@ import Storage.Storage;
 import Warehousing.Warehouse;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -41,8 +42,12 @@ public class WarehousingArea {
 		});
 		screenBounds = Screen.getPrimary().getVisualBounds();
 		mainPane = new GridPane();
+		mainPane.setAlignment(Pos.CENTER);
+//		Grid lines visibility
+		mainPane.setGridLinesVisible(true);
 		initContent(mainPane);
 		scene = new Scene(mainPane, screenBounds.getWidth() - 300, screenBounds.getHeight());
+		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 		stage.setResizable(false);
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.setX(300);
@@ -59,6 +64,7 @@ public class WarehousingArea {
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
 		gridPane.add(headerLabel, 0, 0);
+
 
 		// Laver lister
 		ListView<Warehouse> warehouseList = new ListView<>();
@@ -95,27 +101,44 @@ public class WarehousingArea {
 		HBox warehouseButtons = new HBox(10, new Button("Delete"), new Button("Update"), new Button("Create"));
 		HBox storageRackButtons = new HBox(10, new Button("Delete"), new Button("Update"), new Button("Create"));
 		HBox inventoryButtons = new HBox(10, new Button("Delete"), new Button("Update"), new Button("Create"));
-		HBox createButtons = new HBox(10, new Button("Create Ingredient"), new Button("Create Cask"));
+
+		HBox createButtons = new HBox();
+		Button createIngredient = new Button("Create Ingredient");
+		Button createProduct = new Button("Create Cask");
 
 		// Layoutkonfiguration
 		gridPane.setHgap(10);
 		gridPane.setVgap(10);
 
 		// Venstre sektion (Warehouses)
+		Label warehouseLabel = new Label("Warehouses");
 		VBox warehouseSection = new VBox(10, warehouseList, warehouseButtons);
 		gridPane.add(warehouseSection, 0, 1);
 
 		// Midt sektion (Storage Racks)
+		Label storageRacksLabel = new Label("Storage Racks");
 		VBox storageRacksSection = new VBox(10, storageRacksList, storageRackButtons);
 		gridPane.add(storageRacksSection, 1, 1);
 
 		// Højre sektion (Inventory)
+		Label inventoryLabel = new Label("Inventory");
 		VBox inventorySection = new VBox(10, inventoryList, inventoryButtons, createButtons);
+		inventorySection.setAlignment(Pos.CENTER);
 		gridPane.add(inventorySection, 2, 1);
 
+		createButtons.getChildren().addAll(createIngredient, createProduct);
+		createButtons.setSpacing(10);
+
+
+		createIngredient.setOnAction(e -> {
+			CreateIngredientDialog createIngredientDialog = new CreateIngredientDialog();
+			createIngredientDialog.start(new Stage());
+		});
+
 		// Nederste sektion (Warehouse Movements)
-		gridPane.add(warehouseMovementsList, 0, 2, 3, 1); // Spænd over alle kolonner
-//		gridPane.add(headerLabel, 0, 0);
+		Label warehouseMovementsLabel = new Label("Warehouse Movements");
+		gridPane.add(warehouseMovementsList, 0, 4, 3, 1); // Spænd over alle kolonner
+		gridPane.add(warehouseMovementsLabel, 0, 3);
 
 	}
 
