@@ -15,11 +15,22 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
     private final Stack<Filling> fillingStack = new Common.Stack<>();
     private final List<ObserverQuantityObserver> observers = new ArrayList<>();
 
+    //Nullable
+    private StorageRack storageRack;
+
     public Cask(int caskID, double maxQuantity, Unit unit, Supplier supplier) {
         this.caskID = caskID;
         this.maxQuantity = maxQuantity;
         this.unit = unit;
         this.supplier = supplier;
+    }
+
+    public StorageRack getStorageRack() {
+        return storageRack;
+    }
+
+    public void setStorageRack(StorageRack storageRack) {
+        this.storageRack = storageRack;
     }
 
     @Override

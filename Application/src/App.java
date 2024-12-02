@@ -11,7 +11,9 @@ public class App {
 		 Controllers.Warehousing.setStorage(storage);
 		 Controllers.Common.setStorage(storage);
 		 initStorage.loadProduction();
+     initStorage.loadWarehousing();
 //		TestProduction.firstTest();
+
 		System.out.println("LAUNCHING LABELTALES");
 		GUI.LaunchPad.Launch.main(args);
 

@@ -2,11 +2,15 @@ package Storage;
 
 import Controllers.Production;
 import Controllers.Warehousing;
+import Enumerations.IngredientType;
 import Enumerations.Unit;
 import Production.Distillate;
 import Production.Distiller;
 import Warehousing.Supplier;
 import Warehousing.Cask;
+import Warehousing.Warehouse;
+import Warehousing.StorageRack;
+import Warehousing.Ingredient;
 
 import java.time.LocalDate;
 
@@ -203,6 +207,30 @@ public abstract class initStorage {
         addDescriotionToDistillate(distillate_08, "Crafted with barley grown in local fields, this distillate carries earthy tones and a hint of caramel.");
         addDescriotionToDistillate(distillate_09, "Peaty and robust, this distillate reflects the rugged character of coastal winds and marine influence.");
         addDescriotionToDistillate(distillate_10, "A harmonious distillate with subtle hints of fresh bread, honey, and a lingering smoky finish.");
+
+    }
+
+    public static void loadWarehousing() {
+        Warehouse warehouse = Warehousing.createWarehouse("Lager 1", "Lagervej 1");
+        Warehouse warehouse2 = Warehousing.createWarehouse("Lager 2", "Lagervej 2");
+
+        Warehousing.createWarehouse("Warehouse 55", "Address 1");
+        Warehousing.createWarehouse("Warehouse 77", "Address 2");
+
+        StorageRack rack1 = Warehousing.createStorageRack("Rack 1", 100);
+        StorageRack rack2 = Warehousing.createStorageRack("Rack 2", 100);
+        StorageRack rack3 = Warehousing.createStorageRack("Rack 3", 100);
+        StorageRack rack4 = Warehousing.createStorageRack("Rack 4", 100);
+
+        warehouse.addStorageRack("W1R1",rack1);
+        warehouse.addStorageRack("W1R2", rack2);
+
+        Supplier supplier1 = new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story");
+
+        Ingredient ingredient1 = new Ingredient("Lars Tyndskids Grain", "Finest Grain ", 1,
+                LocalDate.of(2024,11,27), LocalDate.of(2024,12,27), 1, supplier1, Unit.TONNES, IngredientType.GRAIN);
+
+        rack1.addItem(2, ingredient1);
 
     }
 

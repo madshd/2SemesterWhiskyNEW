@@ -2,6 +2,7 @@ package Production;
 
 import Enumerations.Unit;
 import Interfaces.*;
+import Warehousing.StorageRack;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -53,6 +54,12 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	@Override
 	public double getRemainingQuantity() {
 		return this.quantity - getQuantityStatus();
+	}
+
+	// Future possibility to add a StorageRack association to a Distillate
+	@Override
+	public void setStorageRack(StorageRack storageRack) {
+
 	}
 
 	@Override

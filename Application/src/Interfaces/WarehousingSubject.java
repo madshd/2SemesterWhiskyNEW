@@ -1,4 +1,4 @@
-package Warehousing;
+package Interfaces;
 
 public interface WarehousingSubject {
     void registerWarehousingObserver(WarehousingObserver o);
