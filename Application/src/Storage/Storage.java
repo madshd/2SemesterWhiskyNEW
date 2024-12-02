@@ -11,8 +11,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.checkerframework.checker.units.qual.A;
-
 import BatchArea.Formula;
 import BatchArea.Product;
 import BatchArea.TasteProfile;
