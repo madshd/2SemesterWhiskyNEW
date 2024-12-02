@@ -55,6 +55,21 @@ public class Batch {
 
 	// ---------------------------GENERIC-GETTERS----------------------------//
 
+	public String getListInfo() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Batch ID: ");
+		sb.append(" - ");
+		sb.append("Product: ");
+		sb.append(product);
+		sb.append(" - ");
+		sb.append("Creation Date: ");
+		sb.append(creationDate);
+		sb.append(" - ");
+		sb.append("Expected Bottles: ");
+		sb.append(numExpectedBottles);
+		return sb.toString();
+	}
+
 	public int getBatchID() {
 		return batchID;
 	}

@@ -43,6 +43,7 @@ public class ProductCRUD {
 
 	public void show() {
 		// Show the modal and wait for it to be closed
+
 		productCrudStage.showAndWait();
 	}
 
@@ -121,10 +122,10 @@ public class ProductCRUD {
 			return;
 		}
 		if (updating) {
-			Controllers.BatchArea.updateProduct(name, bottleSize, product);
+			product = Controllers.BatchArea.updateProduct(name, bottleSize, product);
 
 		} else {
-			Controllers.BatchArea.createNewProduct(name, bottleSize);
+			product = Controllers.BatchArea.createNewProduct(name, bottleSize);
 		}
 		clearFields();
 		productCrudStage.close();

@@ -12,6 +12,7 @@ import BatchArea.TasteProfile;
 public class Cask implements OberverQuantitySubject, Item, Serializable {
 	private final int caskID;
 	private final double maxQuantity;
+	private final String caskType;
 	private final Unit unit;
 	private final Supplier supplier;
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
@@ -21,7 +22,8 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	// Nullable
 	private StorageRack storageRack;
 
-	public Cask(int caskID, double maxQuantity, Unit unit, Supplier supplier) {
+	public Cask(int caskID, double maxQuantity, Unit unit, Supplier supplier, String caskType) {
+		this.caskType = caskType;
 		this.caskID = caskID;
 		this.maxQuantity = maxQuantity;
 		this.unit = unit;
