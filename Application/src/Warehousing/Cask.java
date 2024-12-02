@@ -58,11 +58,34 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	@Override
-	public String getListInfo() {
+	public int compareTo(Item o) {
+		return this.getName().compareTo(o.getName());
+	}
+
+	@Override
+	public String toString() {
 		return String.format("ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f", caskID, maxQuantity,
 				getRemainingQuantity());
 	}
 
+	public String getListInfo() {
+		int maxNameLength = 15;
+		String supplierName = supplier.getName();
+		String listName = (supplierName.trim().length() > maxNameLength)
+				? supplierName.substring(0, maxNameLength - 3) + "..."
+				: supplierName.trim() + " ".repeat(maxNameLength - supplierName.trim().length());
+
+		return String.format(
+				"ID: %-4d | \t Supplier: %s \t | \t  Max capacity: %,-4.2f\t | \tRemaining capacity %,-4.2f", caskID,
+				listName, maxQuantity, getRemainingQuantity());
+	}
+
+	/**
+	 *
+	 * @param fillDistillate
+	 * @return
+	 * @throws IllegalStateException
+	 */
 	@Override
 	public double updateQuantity(Filling fillDistillate) throws IllegalStateException {
 		double newQuantity = fillDistillate.getQuantity() + getQuantityStatus();
@@ -101,4 +124,25 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		this.tasteProfile = tasteProfile;
 	}
 
+	public String getFillingTextLines() {
+		StringBuilder sb = new StringBuilder();
+		for (Filling f : fillingStack) {
+			sb.append(String.format("%s\n", f.toString()));
+		}
+		return sb.toString();
+	}
+
+	public String getName() {
+		return Integer.toString(caskID);
+	}
+
+	public String getDetails() {
+		return String.format("""
+				*****\t Supplier description\t *****
+				%s
+
+				*****\t Filling details\t *****
+				%s
+				""", supplier.getDescription(), getFillingTextLines());
+	}
 }

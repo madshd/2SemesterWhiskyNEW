@@ -26,4 +26,9 @@ public class Distiller {
     public void setStory(String story) {
         this.story = story;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Name: %s\t Initials: %s",name,initials);
+    }
 }

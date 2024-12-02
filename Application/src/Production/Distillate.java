@@ -7,6 +7,7 @@ import Warehousing.StorageRack;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Distillate implements Item, OberverQuantitySubject, Serializable {
@@ -62,8 +63,25 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	}
 
 	@Override
+	public int compareTo(Item o) {
+		return this.name.compareTo(o.getName());
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Name:\t %s \t | \t Start capacity:\t %,-6.2f \t | \t Remaining capacity: \t %,.2f", name,
+				this.quantity, getRemainingQuantity());
+	}
+
+	/**
+	 * Used for presenting info in listviews
+	 * @return
+	 */
 	public String getListInfo() {
-		return String.format("Name: %-5s\t| Start capacity: %,.2f\t| Remaining capacity %,.2f", this.name,
+		int maxNameLength = 20;
+		String listName = (name.trim().length() > maxNameLength) ? name.substring(0,maxNameLength - 3) + "..." :
+				name.trim() + " ".repeat(maxNameLength - name.trim().length());
+		return String.format("Name: %s \t | \t Start capacity: %,-4.2f \t | \t Remaining capacity: %,-4.2f", listName,
 				this.quantity, getRemainingQuantity());
 	}
 
@@ -119,5 +137,34 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 
 	public List<AlcoholPercentage> getAlcoholPercentages() {
 		return new ArrayList<>(alcoholPercentages);
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public LocalDate getStartDate() {
+		return startDate;
+	}
+
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public Distiller getDistiller() {
+		return distiller;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getNewMakeID(){
+		return String.format("SWD-Y%dM%dD%d%s", startDate.getYear(), startDate.getMonthValue(),
+				startDate.getDayOfYear(), distiller.getInitials());
 	}
 }
