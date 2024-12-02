@@ -5,7 +5,7 @@ public enum Unit {
     MILLILITERS,
     KILOGRAM,
     GRAMS,
-    POUINDS,
+    POUNDS,
     PIECES,
     CASKS,
     PERCENT,

@@ -24,7 +24,6 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 
 	// Nullable
 	private StorageRack storageRack;
-	private List<WarehousingObserver> itemWarehousingObservers;
 
 	public Ingredient(String name, String description, int batchNo, LocalDate productionDate, LocalDate expirationDate,
 			double quantity, Supplier supplier, Unit unit, IngredientType ingredientType) {
