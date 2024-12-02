@@ -108,14 +108,6 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return quantity;
 	}
 
-	public String getFillingTextLines() {
-		StringBuilder sb = new StringBuilder();
-		for (Filling f : fillingStack) {
-			sb.append(String.format("%s\n", f.toString()));
-		}
-		return sb.toString();
-	}
-
 	public TasteProfile getTasteProfile() {
 		return this.tasteProfile;
 	}
