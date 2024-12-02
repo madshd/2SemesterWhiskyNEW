@@ -64,18 +64,17 @@ public class ProductionArea {
 		stage.setScene(scene);
 	}
 
-
 	public void initContent(GridPane gridPane) {
 		Label headerLabel = new Label("Production Area");
-//		headerLabel.setFont(new Font("Arial", 32));
+		// headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
 		headerLabel.setId("LabelHeader");
 		headerLabel.setPrefWidth(screenBounds.getWidth() - 300);
 		headerLabel.setAlignment(Pos.CENTER);
 
 		gridPane.add(headerLabel, 0, 0);
-		gridPane.add(distillates,0,1);
-		gridPane.add(casks,0,2);
+		gridPane.add(distillates, 0, 1);
+		gridPane.add(casks, 0, 2);
 	}
 
 	// Shared settings
@@ -83,13 +82,13 @@ public class ProductionArea {
 	private static int vgap = 20;
 	private static Insets padding = new Insets(20);
 	private static boolean gridLines = false;
-	private static Border border = Common.getBorder(1,0,0,0);
+	private static Border border = Common.getBorder(1, 0, 0, 0);
 
-	private class Distillates extends GridPane{
+	private class Distillates extends GridPane {
 		private final ListView<Item> lvwDistillates = new ListView<>();
 		private final TextArea txaDistillateDetails = new TextArea();
 
-		public Distillates(ProductionArea pa){
+		public Distillates(ProductionArea pa) {
 			// Generel settings
 			this.setBorder(border);
 			this.setPadding(padding);
@@ -102,10 +101,10 @@ public class ProductionArea {
 			// Subtitel
 			Label lblSubTitel = new Label("Distillates");
 			lblSubTitel.setId("LabelSubtitle");
-			GridPane.setHalignment(lblSubTitel,HPos.CENTER);
+			GridPane.setHalignment(lblSubTitel, HPos.CENTER);
 			lblSubTitel.setPrefWidth(areaWidth);
 			lblSubTitel.setAlignment(Pos.CENTER);
-			this.add(lblSubTitel, 0, 0,4,1);
+			this.add(lblSubTitel, 0, 0, 4, 1);
 
 			// Labels
 			Label lblList = new Label("Avaliable distillates");
@@ -120,7 +119,7 @@ public class ProductionArea {
 			lvwDistillates.setEditable(false);
 			lvwDistillates.setPrefWidth(lvwWithCol0);
 			lvwDistillates.setPrefHeight(lvwHeightCol0Top);
-			this.add(lvwDistillates,0,2,2,1);
+			this.add(lvwDistillates, 0, 2, 2, 1);
 			ChangeListener<Item> lvwDistillateListener = (ov, o, n) -> {
 				updateDistillateDetails();
 			};
@@ -130,13 +129,13 @@ public class ProductionArea {
 			txaDistillateDetails.setEditable(false);
 			txaDistillateDetails.setPrefHeight(lvwHeightCol0Top);
 			txaDistillateDetails.setPrefWidth(areaWidth - lvwWithCol0);
-			this.add(txaDistillateDetails,2,2,2,1);
+			this.add(txaDistillateDetails, 2, 2, 2, 1);
 
 			// Button panel
 			HBox hBox = new HBox(20);
 			int hboxBtnWidth = 250;
-			String[] buttonNames = {"Create or update distillate", "Fill distillate into cask"};
-			String [] abbreviations = {"create","Fill"};
+			String[] buttonNames = { "Create or update distillate", "Fill distillate into cask" };
+			String[] abbreviations = { "create", "Fill" };
 
 			for (int i = 0; i < buttonNames.length; i++) {
 				Button newBtn = new Button(buttonNames[i]);
@@ -148,55 +147,55 @@ public class ProductionArea {
 
 			hBox.setPrefWidth(lvwWithCol0);
 			hBox.setAlignment(Pos.CENTER);
-			this.add(hBox,0,3,2,1);
+			this.add(hBox, 0, 3, 2, 1);
 
 			updateLists();
 		}
 
-		private void buttionAction(Button button){
+		private void buttionAction(Button button) {
 
 		}
 
-		private void updateLists(){
+		private void updateLists() {
 			List<Item> distilates = new ArrayList<>(Production.getDistillates());
 			lvwDistillates.getItems().setAll(distilates);
 
 			Common.useSpecifiedListView(lvwDistillates);
 		}
 
-		private void updateDistillateDetails(){
+		private void updateDistillateDetails() {
 			Distillate selectedDistillate = (Distillate) lvwDistillates.getSelectionModel().getSelectedItem();
 			casks.updatelist(selectedDistillate);
 
-			if (selectedDistillate != null){
+			if (selectedDistillate != null) {
 				String infoText = String.format("""
 						*****\t Distillate Created By \t*****
 						Distiller: %s
 						Story: %s
-						
+
 						*****\t Distillate Details \t*****
 						New Make ID: %s
 						Production Start Date: %s
 						Productino End Date: %s
-						Description: %s 
+						Description: %s
 						""",
 						selectedDistillate.getDistiller().toString(),
-						Common.insertLfIntoSting(selectedDistillate.getDistiller().getStory(),70),
+						Common.insertLfIntoSting(selectedDistillate.getDistiller().getStory(), 70),
 						selectedDistillate.getNewMakeID(), selectedDistillate.getStartDate().toString(),
 						selectedDistillate.getEndDate().toString(),
-						Common.insertLfIntoSting(selectedDistillate.getDescription(),70));
+						Common.insertLfIntoSting(selectedDistillate.getDescription(), 70));
 				txaDistillateDetails.setText(infoText);
-			}else {
+			} else {
 				txaDistillateDetails.clear();
 			}
 		}
 	}
 
-	private class Casks extends GridPane{
+	private class Casks extends GridPane {
 		private final ListView<Item> lvwCasks = new ListView<>();
 		private final TextArea txaCaskDetails = new TextArea();
 
-		public Casks(ProductionArea pa){
+		public Casks(ProductionArea pa) {
 			// Generel settings
 			this.setBorder(border);
 			this.setPadding(padding);
@@ -209,10 +208,10 @@ public class ProductionArea {
 			// Subtitel
 			Label lblSubTitel = new Label("Casks");
 			lblSubTitel.setId("LabelSubtitle");
-			GridPane.setHalignment(lblSubTitel,HPos.CENTER);
+			GridPane.setHalignment(lblSubTitel, HPos.CENTER);
 			lblSubTitel.setPrefWidth(areaWidth);
 			lblSubTitel.setAlignment(Pos.CENTER);
-			this.add(lblSubTitel, 0, 0,4,1);
+			this.add(lblSubTitel, 0, 0, 4, 1);
 
 			// Labels
 			Label lblList = new Label("Avaliable Casks");
@@ -227,7 +226,7 @@ public class ProductionArea {
 			lvwCasks.setEditable(false);
 			lvwCasks.setPrefWidth(lvwWithCol0);
 			lvwCasks.setPrefHeight(lvwHeightCol0Top);
-			this.add(lvwCasks,0,2,2,1);
+			this.add(lvwCasks, 0, 2, 2, 1);
 			ChangeListener<Item> lvwCasksListener = (ov, o, n) -> {
 				updateFillingList();
 			};
@@ -236,13 +235,13 @@ public class ProductionArea {
 			txaCaskDetails.setEditable(false);
 			txaCaskDetails.setPrefHeight(lvwHeightCol0Top);
 			txaCaskDetails.setPrefWidth(areaWidth - lvwWithCol0);
-			this.add(txaCaskDetails,2,2,2,1);
+			this.add(txaCaskDetails, 2, 2, 2, 1);
 
 			// Button panel
 			HBox hBox = new HBox(20);
 			int hboxBtnWidth = 250;
-			String[] buttonNames = {"Update cask details", "Cask to cask transfer"};
-			String [] abbreviations = {"update","transfer"};
+			String[] buttonNames = { "Update cask details", "Cask to cask transfer" };
+			String[] abbreviations = { "update", "transfer" };
 
 			for (int i = 0; i < buttonNames.length; i++) {
 				Button newBtn = new Button(buttonNames[i]);
@@ -254,37 +253,37 @@ public class ProductionArea {
 
 			hBox.setPrefWidth(lvwWithCol0);
 			hBox.setAlignment(Pos.CENTER);
-			this.add(hBox,0,3,2,1);
+			this.add(hBox, 0, 3, 2, 1);
 
 			// Close button
 			Button btnClose = new Button("Close");
-			GridPane.setHalignment(btnClose,HPos.RIGHT);
+			GridPane.setHalignment(btnClose, HPos.RIGHT);
 			btnClose.setOnAction(actionEvent -> close());
 			this.add(btnClose, 3, 3);
 
 		}
 
-		private void buttionAction(Button button){
+		private void buttionAction(Button button) {
 
 		}
 
-		public void updatelist(Distillate distillate){
-			if (distillate != null){
+		public void updatelist(Distillate distillate) {
+			if (distillate != null) {
 				List<Item> casks = new ArrayList<>(getCaskFitToDistillate(distillate));
 				lvwCasks.getItems().setAll(casks);
 
 				Common.useSpecifiedListView(lvwCasks);
-			}else {
+			} else {
 				lvwCasks.getItems().clear();
 			}
 		}
 
-		private void updateFillingList(){
+		private void updateFillingList() {
 			Cask selectedCask = (Cask) lvwCasks.getSelectionModel().getSelectedItem();
 
-			if (selectedCask != null){
+			if (selectedCask != null) {
 				txaCaskDetails.setText(selectedCask.getDetails());
-			}else {
+			} else {
 				txaCaskDetails.clear();
 			}
 		}
