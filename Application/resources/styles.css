@@ -62,6 +62,10 @@
     -fx-border-width: 2px;
 }
 
+#infoArea {
+	-fx-font-family: "Courier New", Courier, monospace;
+}
+
 /* CheckBox styling */
 .check-box {
     -fx-text-fill: #6b4226;

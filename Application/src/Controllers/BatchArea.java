@@ -26,8 +26,18 @@ public abstract class BatchArea {
 
 	public static Product createNewProduct(String productName, int bottleSize) {
 		Product product = new Product(productName, bottleSize);
-		// TODO: save this object in storage
+		storage.storeProduct(product);
 		return product;
+	}
+
+	public static Product updateProduct(String productName, int bottleSize, Product product) {
+		product.setProductName(productName);
+		product.setBottleSize(bottleSize);
+		return product;
+	}
+
+	public static ArrayList<Product> getAllProducts() {
+		return (ArrayList<Product>) storage.getAllProducts();
 	}
 
 	public static void defineFormulaForProduct(Product product, Formula formula) {
@@ -54,18 +64,14 @@ public abstract class BatchArea {
 	 *                                  or if the total percentage is not 100
 	 */
 	public static Formula createNewFormula(String formulaName, HashMap<TasteProfile, Integer> blueprint) {
-		int totalPercantage = 0;
-		for (Integer percentage : blueprint.values()) {
-			if (percentage < 1 || percentage > 100) {
-				throw new IllegalArgumentException("Percentage must be between 1 and 100.");
-			}
-			totalPercantage += percentage;
-		}
-		if (totalPercantage != 100) {
-			throw new IllegalArgumentException("The total percentage of the taste profiles must be 100.");
-		}
 		Formula formula = new Formula(formulaName, blueprint);
-		// TODO: Save this object in storage
+		storage.storeFormula(formula);
+		return formula;
+	}
+
+	public static Formula updateFormula(String formulaName, HashMap<TasteProfile, Integer> blueprint, Formula formula) {
+		formula.setFormulaName(formulaName);
+		formula.setBlueprint(blueprint);
 		return formula;
 	}
 
@@ -82,16 +88,37 @@ public abstract class BatchArea {
 	 */
 	public static TasteProfile createNewTasteProfile(String profileID, String description,
 			ArrayList<TastingNote> tags) {
-		if (tags.isEmpty()) {
-			throw new IllegalArgumentException("A TasteProfile must have at least one tag.");
-		} else {
-			TasteProfile tasteProfile = new TasteProfile(profileID, description);
-			for (TastingNote tag : tags) {
-				tasteProfile.addTag(tag);
-			}
-			storage.storeTasteProfile(tasteProfile);
-			return tasteProfile;
+		TasteProfile tasteProfile = new TasteProfile(profileID, description);
+		for (TastingNote tag : tags) {
+			tasteProfile.addTastingNote(tag);
 		}
+		storage.storeTasteProfile(tasteProfile);
+		return tasteProfile;
+	}
+
+	public static TasteProfile updateTasteProfile(String profileID, String description, ArrayList<TastingNote> tags,
+			TasteProfile tp) {
+		tp.setProfileName(profileID);
+		tp.setDescription(description);
+		tp.clearTastingNotes();
+		for (TastingNote tn : tags) {
+			tp.addTastingNote(tn);
+		}
+		return tp;
+	}
+
+	public static boolean deleteTasteProfile(TasteProfile tp) {
+		for (Formula formula : storage.getFormulae()) {
+			if (formula.getBlueprint().containsKey(tp)) {
+				return false;
+			}
+		}
+		storage.deleteTasteProfile(tp);
+		return true;
+	}
+
+	public static void setTasteProfileName(String profileName, TasteProfile tp) {
+		tp.setProfileName(profileName);
 	}
 
 	public Batch createNewBatch(Product product, int numExpectedBottles) {
@@ -100,6 +127,10 @@ public abstract class BatchArea {
 		Batch batch = new Batch(product, numExpectedBottles);
 		// TODO: Save this object in storage
 		return batch;
+	}
+
+	public static ArrayList<Batch> getAllBatches() {
+		return (ArrayList<Batch>) storage.getAllBatches();
 	}
 
 	/**
@@ -123,6 +154,10 @@ public abstract class BatchArea {
 			productionVolume.put(tasteProfile, volume);
 		}
 		return productionVolume;
+	}
+
+	public static void deleteFormula(Formula selectedFormula) {
+		storage.deleteFormula(selectedFormula);
 	}
 
 	/**

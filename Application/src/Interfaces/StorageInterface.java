@@ -11,6 +11,7 @@ import java.util.List;
 import BatchArea.Formula;
 import BatchArea.Product;
 import BatchArea.TasteProfile;
+import BatchArea.Batch;
 
 public interface StorageInterface {
 	public List<Distillate> getDistillates();
@@ -43,7 +44,7 @@ public interface StorageInterface {
 
 	public void deleteIngredient(Ingredient ingredient);
 
-	public List<Product> getProducts();
+	public List<Product> getAllProducts();
 
 	public void storeProduct(Product product);
 
@@ -60,5 +61,11 @@ public interface StorageInterface {
 	public void storeTasteProfile(TasteProfile tasteProfile);
 
 	public void deleteTasteProfile(TasteProfile tasteProfile);
+
+	public void storeBatch(Batch batch);
+
+	public void deleteBatch(Batch batch);
+
+	public List<Batch> getAllBatches();
 
 }

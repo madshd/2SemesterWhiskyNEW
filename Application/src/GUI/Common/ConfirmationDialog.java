@@ -3,6 +3,7 @@ package GUI.Common;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -50,6 +51,16 @@ public class ConfirmationDialog {
 		// Scene and stage
 		Scene scene = new Scene(layout, 350, 150);
 		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+		// Key event handlers
+		scene.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				yesButton.fire();
+			} else if (event.getCode() == KeyCode.ESCAPE) {
+				noButton.fire();
+			}
+		});
+
 		dialog.setScene(scene);
 		dialog.showAndWait(); // Show the dialog and wait for it to close
 	}

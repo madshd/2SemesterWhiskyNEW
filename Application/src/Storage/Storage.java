@@ -11,9 +11,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.checkerframework.checker.units.qual.A;
+
 import BatchArea.Formula;
 import BatchArea.Product;
 import BatchArea.TasteProfile;
+import BatchArea.Batch;
 
 public class Storage implements StorageInterface, Serializable {
 	private List<Distillate> distillates = new ArrayList<>();
@@ -24,9 +27,10 @@ public class Storage implements StorageInterface, Serializable {
 	private List<Product> products = new ArrayList<>();
 	private List<Formula> formulae = new ArrayList<>();
 	private List<TasteProfile> tasteProfiles = new ArrayList<>();
+	private List<Batch> batches = new ArrayList<>();
 
 	@Override
-	public List<Product> getProducts() {
+	public List<Product> getAllProducts() {
 		return new ArrayList<>(products);
 	}
 
@@ -62,13 +66,27 @@ public class Storage implements StorageInterface, Serializable {
 
 	@Override
 	public void storeTasteProfile(TasteProfile tasteProfile) {
-		System.out.println("TasteProfile stored in storage");
 		tasteProfiles.add(tasteProfile);
 	}
 
 	@Override
 	public void deleteTasteProfile(TasteProfile tasteProfile) {
 		tasteProfiles.remove(tasteProfile);
+	}
+
+	@Override
+	public List<Batch> getAllBatches() {
+		return new ArrayList<>(batches);
+	}
+
+	@Override
+	public void storeBatch(Batch batch) {
+		batches.add(batch);
+	}
+
+	@Override
+	public void deleteBatch(Batch batch) {
+		batches.remove(batch);
 	}
 
 	@Override
@@ -145,4 +163,5 @@ public class Storage implements StorageInterface, Serializable {
 	public void deleteIngredient(Ingredient ingredient) {
 		ingredients.remove(ingredient);
 	}
+
 }

@@ -33,6 +33,14 @@ public class Product implements Serializable {
 		batches.remove(batch);
 	}
 
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public void setBottleSize(int bottleSize) {
+		this.bottleSize = bottleSize;
+	}
+
 	/**
 	 * Generates a unique product ID based on the product name.
 	 * The ID consists of the initials of the product name followed by a unique
@@ -54,6 +62,11 @@ public class Product implements Serializable {
 	}
 
 	// ---------------------------GENERIC-GETTERS----------------------------//
+
+	@Override
+	public String toString() {
+		return productName;
+	}
 
 	public String getProductName() {
 		return productName;
