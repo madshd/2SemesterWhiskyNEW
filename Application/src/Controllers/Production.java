@@ -84,4 +84,26 @@ public abstract class Production {
 		Collections.sort(distillates);
 		return distillates;
 	}
+
+	/**
+	 * Will return story based on storylines and fillings.
+	 * @param cask
+	 * @param date
+	 * @return
+	 */
+	public static String getCaskStory(Cask cask, LocalDate date){
+		//TODO by leander
+
+		return "To be implemented";
+	}
+
+	/**
+	 * Used for bottling and updateing quantity after measuring.
+	 * @param cask
+	 * @param Quantity
+	 */
+	public static void caskBottling(Cask cask, double Quantity){
+		//TODO by leander
+
+	}
 }
