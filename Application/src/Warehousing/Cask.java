@@ -4,6 +4,7 @@ import Enumerations.Unit;
 import Interfaces.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
 	private final List<ObserverQuantityObserver> observers = new ArrayList<>();
 	private TasteProfile tasteProfile = null;
+	private final ArrayList<LocalDate> emptyDates = new ArrayList<>();
 
 	// Nullable
 	private StorageRack storageRack;
@@ -26,6 +28,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		this.maxQuantity = maxQuantity;
 		this.unit = unit;
 		this.supplier = supplier;
+		emptyDates.add(LocalDate.now());
 	}
 
 	public StorageRack getStorageRack() {
