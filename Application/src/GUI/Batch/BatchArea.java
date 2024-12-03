@@ -1,8 +1,6 @@
 package GUI.Batch;
 
 import GUI.Common.ConfirmationDialog;
-import javafx.collections.FXCollections;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -11,6 +9,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
@@ -22,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import BatchArea.Formula;
+import GUI.Common.*;
 
 import BatchArea.Batch;
 import BatchArea.Product;
@@ -32,6 +32,7 @@ public class BatchArea {
 	private Stage stage;
 	private GridPane mainPane;
 	private static Scene scene;
+	private static ErrorWindow errorWindow = new ErrorWindow();
 
 	private static ListView<Formula> formulaList = new ListView<>();
 	private static ListView<Batch> batchesTable = new ListView<>();
@@ -178,6 +179,28 @@ public class BatchArea {
 		createProductButton.setOnAction(e -> {
 			productCRUD.show();
 			updateLists();
+			productsTable.getSelectionModel().select(Controllers.BatchArea.getMostRecentlyModifiedProduct());
+		});
+
+		defineFormulaButton.setOnAction(e -> {
+			Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();
+			Formula selectedFormula = formulaList.getSelectionModel().getSelectedItem();
+
+			if (selectedProduct != null && selectedFormula != null) {
+				Controllers.BatchArea.defineFormulaForProduct(selectedProduct, selectedFormula);
+				updateLists();
+			} else {
+				errorWindow.showError("Please select a Formula from the list on the right.");
+			}
+		});
+
+		deleteProductButton.setOnAction(e -> {
+			Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();
+			if (selectedProduct != null) {
+				// TODO: If product is used in a batch, deny deletion
+				Controllers.BatchArea.deleteProduct(selectedProduct);
+				updateLists();
+			}
 		});
 
 		// Add components to Product GridPane
@@ -303,12 +326,35 @@ public class BatchArea {
 		formulaList.getItems().addAll(Controllers.BatchArea.getAllFormulae());
 		batchesTable.getItems().addAll(Controllers.BatchArea.getAllBatches());
 		productsTable.getItems().addAll(Controllers.BatchArea.getAllProducts());
+		useSpecifiedListView(productsTable, "Product");
+		useSpecifiedListView(batchesTable, "Batch");
 	}
 
 	private static void clearLists() {
 		batchesTable.getItems().clear();
 		productsTable.getItems().clear();
 		formulaList.getItems().clear();
+	}
+
+	private static <T> void useSpecifiedListView(ListView<T> listView, String dataType) {
+		// We need to show specified text in the list aka different from toSting.
+		listView.setCellFactory(lv -> new ListCell<>() {
+			@Override
+			protected void updateItem(T item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty || item == null) {
+					setText(null); // Handle empty cells
+				} else {
+					// Add new info text.
+					if (dataType.equals("Batch")) {
+						setText(((Batch) item).getListInfo());
+					}
+					if (dataType.equals("Product")) {
+						setText(((Product) item).getListInfo());
+					}
+				}
+			}
+		});
 	}
 
 	public void close() {

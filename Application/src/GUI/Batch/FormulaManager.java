@@ -91,8 +91,8 @@ public class FormulaManager {
 		infoPane.setAlignment(Pos.CENTER);
 
 		infoArea.setMinHeight(610);
-		infoArea.setMaxWidth(300);
-		infoArea.setMinWidth(300);
+		infoArea.setMaxWidth(350);
+		infoArea.setMinWidth(350);
 		infoArea.setEditable(false);
 		infoArea.setFocusTraversable(false);
 		infoArea.setWrapText(true);
