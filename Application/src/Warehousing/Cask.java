@@ -6,6 +6,9 @@ import Interfaces.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.List;
 import BatchArea.Batch;
@@ -114,6 +117,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 		if (newQuantity <= maxQuantity && newQuantity >= 0) {
 			fillingStack.push(fillDistillate);
+			notifyObservers();
 			return newQuantity;
 		} else {
 			throw new IllegalStateException("Provided quantity does not fit into this cask");
@@ -160,6 +164,15 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 				""", supplier.getDescription(), getFillingTextLines());
 	}
 
+	public List<Filling> getFillingStack(){
+		List<Filling> fillings = new ArrayList<>();
+
+		for (Filling f : fillingStack){
+			fillings.add(f);
+		}
+
+		return fillings;
+	}
 	// FAKE METHOD FOR INJECTING FAKE DATA
 	public double getFakeQuantity() {
 		return 1000;
