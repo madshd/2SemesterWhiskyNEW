@@ -6,29 +6,48 @@ import Interfaces.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import BatchArea.Batch;
 
 import BatchArea.TasteProfile;
 
 public class Cask implements OberverQuantitySubject, Item, Serializable {
 	private final int caskID;
 	private final double maxQuantity;
+	private final String caskType;
 	private final Unit unit;
-	private final Supplier supplier;
-	private final Stack<Filling> fillingStack = new Common.Stack<>();
+	private int maturityMonths;
+	private final HashMap<Batch, Double> reservedBatchesAmount = new HashMap<>();
 	private final List<ObserverQuantityObserver> observers = new ArrayList<>();
-	private TasteProfile tasteProfile = null;
+	private final Stack<Filling> fillingStack = new Common.Stack<>();
 	private final ArrayList<LocalDate> emptyDates = new ArrayList<>();
+	private final Supplier supplier;
+	private TasteProfile tasteProfile = null;
 
 	// Nullable
 	private StorageRack storageRack;
 
-	public Cask(int caskID, double maxQuantity, Unit unit, Supplier supplier) {
+	public Cask(int caskID, double maxQuantity, Unit unit, Supplier supplier, String caskType) {
+		this.caskType = caskType;
 		this.caskID = caskID;
 		this.maxQuantity = maxQuantity;
 		this.unit = unit;
 		this.supplier = supplier;
 		emptyDates.add(LocalDate.now());
+		maturityMonths = 0;
+	}
+
+	public Unit getUnit() {
+		return unit;
+	}
+
+	public int getMaturityMonths() {
+		return maturityMonths;
+	}
+
+	public String getCaskType() {
+		return caskType;
 	}
 
 	public StorageRack getStorageRack() {
@@ -140,4 +159,10 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 				%s
 				""", supplier.getDescription(), getFillingTextLines());
 	}
+
+	// FAKE METHOD FOR INJECTING FAKE DATA
+	public double getFakeQuantity() {
+		return 1000;
+	}
+
 }

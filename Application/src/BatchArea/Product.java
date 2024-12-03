@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.checkerframework.checker.units.qual.s;
+
 import Enumerations.Unit;
 
 public class Product implements Serializable {
@@ -66,6 +68,24 @@ public class Product implements Serializable {
 	@Override
 	public String toString() {
 		return productName;
+	}
+
+	public String getListInfo() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(productName);
+		sb.append(" - ");
+		sb.append(productID);
+		sb.append(" - ");
+		sb.append(bottleSize);
+		sb.append(" ");
+		sb.append(bottleUnits);
+		sb.append(" - ");
+		if (formula == null) {
+			sb.append("No formula defined");
+		} else {
+			sb.append(formula);
+		}
+		return sb.toString();
 	}
 
 	public String getProductName() {

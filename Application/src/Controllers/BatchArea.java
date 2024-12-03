@@ -3,6 +3,8 @@ package Controllers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.checkerframework.checker.units.qual.m;
+
 import BatchArea.*;
 import Enumerations.TastingNote;
 import Interfaces.StorageInterface;
@@ -11,6 +13,7 @@ import Storage.Storage;
 public abstract class BatchArea {
 
 	static StorageInterface storage = new Storage();
+	private static Product mostRecentlyModifiedProduc;
 
 	public static void setStorage(StorageInterface storage) {
 		BatchArea.storage = storage;
@@ -27,21 +30,31 @@ public abstract class BatchArea {
 	public static Product createNewProduct(String productName, int bottleSize) {
 		Product product = new Product(productName, bottleSize);
 		storage.storeProduct(product);
+		mostRecentlyModifiedProduc = product;
 		return product;
+	}
+
+	public static void deleteProduct(Product product) {
+		storage.deleteProduct(product);
 	}
 
 	public static Product updateProduct(String productName, int bottleSize, Product product) {
 		product.setProductName(productName);
 		product.setBottleSize(bottleSize);
+		mostRecentlyModifiedProduc = product;
 		return product;
 	}
 
-	public static ArrayList<Product> getAllProducts() {
-		return (ArrayList<Product>) storage.getAllProducts();
+	public static Product getMostRecentlyModifiedProduct() {
+		return mostRecentlyModifiedProduc;
 	}
 
 	public static void defineFormulaForProduct(Product product, Formula formula) {
 		product.defineFormula(formula);
+	}
+
+	public static ArrayList<Product> getAllProducts() {
+		return (ArrayList<Product>) storage.getAllProducts();
 	}
 
 	public static ArrayList<TasteProfile> getAllTasteProfiles() {
