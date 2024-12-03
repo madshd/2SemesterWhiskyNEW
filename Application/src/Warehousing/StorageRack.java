@@ -88,7 +88,6 @@ public class StorageRack {
 
     @Override
     public String toString() {
-        return "ID: " + id +
-                ", Items: " + getList();
+        return "ID: " + id + ", Shelves: " + shelves;
     }
 }
