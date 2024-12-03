@@ -22,10 +22,10 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import BatchArea.Formula;
 import GUI.Common.*;
-
 import BatchArea.Batch;
 import BatchArea.Product;
 
+@SuppressWarnings("unused")
 public class BatchArea {
 
 	private Rectangle2D screenBounds;
@@ -33,13 +33,10 @@ public class BatchArea {
 	private GridPane mainPane;
 	private static Scene scene;
 	private static ErrorWindow errorWindow = new ErrorWindow();
-
 	private static ListView<Formula> formulaList = new ListView<>();
 	private static ListView<Batch> batchesTable = new ListView<>();
 	private static ListView<Product> productsTable = new ListView<>();
-
 	private static Button createBatchButton = new Button("Create New Batch");
-
 	private static ProductCRUD productCRUD = new ProductCRUD();
 	private static BatchCRUD batchCRUD = new BatchCRUD();
 
@@ -71,7 +68,6 @@ public class BatchArea {
 		stage.show();
 	}
 
-	@SuppressWarnings("unused")
 	public static void initContent(GridPane gridPane) {
 		// Main GridPane setup
 		gridPane.setPadding(new Insets(10));
@@ -103,7 +99,7 @@ public class BatchArea {
 		row3.setPercentHeight(50); // Products
 		gridPane.getRowConstraints().addAll(row1, row2, row3);
 
-		// Create individual sections GridPane batchSection = createBatchSection();
+		// Create individual sections
 		GridPane productSection = createProductSection();
 		GridPane formulaSection = createFormulaSection();
 		GridPane batchSection = createBatchSection();
@@ -116,17 +112,15 @@ public class BatchArea {
 		lblHeader.setId("LabelHeader");
 
 		// Add sections to the main GridPane
-		gridPane.add(lblHeader, 0, 0, 2, 1); // Column 0, spans both columns (Header)
-		gridPane.add(batchSection, 0, 1); // Column 0, Row 0 (Center column)
-		gridPane.add(productSection, 0, 2); // Column 0, Row 1 (Center column)
-		gridPane.add(formulaSection, 1, 1, 1, 2); // Column 1, spans both rows (Sidebar)
+		gridPane.add(lblHeader, 0, 0, 2, 1);
+		gridPane.add(batchSection, 0, 1);
+		gridPane.add(productSection, 0, 2);
+		gridPane.add(formulaSection, 1, 1, 1, 2);
 		GridPane.setMargin(formulaSection, new Insets(0, 0, 40, 0));
 		gridPane.setGridLinesVisible(false);
 		GridPane.setHalignment(lblHeader, HPos.CENTER);
-
 	}
 
-	@SuppressWarnings("unused")
 	private static GridPane createProductSection() {
 		GridPane productGrid = new GridPane();
 		productGrid.setPadding(new Insets(10));
@@ -146,25 +140,6 @@ public class BatchArea {
 		productsTable.setMinWidth(700);
 		productsTable.setEditable(false);
 		productsTable.setFocusTraversable(false);
-
-		// // Add search functionality
-		// FilteredList<Product> filteredData = new
-		// FilteredList<>(FXCollections.observableArrayList(), p -> true);
-		// productsTable.setItems(filteredData);
-		//
-		// searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
-		// filteredData.setPredicate(product -> {
-		// if (newValue == null || newValue.isEmpty()) {
-		// return true;
-		// }
-		// String lowerCaseFilter = newValue.toLowerCase();
-		// return product.getProductName().toLowerCase().contains(lowerCaseFilter);
-		// });
-		// });
-		//
-		// searchBar.setOnAction(event -> {
-		// scene.getRoot().requestFocus(); // Return focus to the scene
-		// });
 
 		// Product Buttons
 		Button createProductButton = new Button("Create New Product");
@@ -199,20 +174,19 @@ public class BatchArea {
 
 		deleteProductButton.setOnAction(e -> {
 			Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();
-			if (selectedProduct != null) {
-				// TODO: If product is used in a batch, deny deletion
+			if (selectedProduct != null && !Controllers.BatchArea.isProductUsedInBatch(selectedProduct)) {
 				Controllers.BatchArea.deleteProduct(selectedProduct);
 				updateLists();
 			}
 		});
 
 		// Add components to Product GridPane
-		productGrid.add(new Label("Products"), 0, 0); // Column 0, Row 0
-		productGrid.add(productsTable, 0, 2); // Column 0, Row 2
-		productGrid.add(productButtons, 0, 3); // Column 0, Row 3
+		productGrid.add(new Label("Products"), 0, 0);
+		productGrid.add(productsTable, 0, 2);
+		productGrid.add(productButtons, 0, 3);
 
 		productsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			createBatchButton.setDisable(newValue == null); // Disable if no item is
+			createBatchButton.setDisable(newValue == null); // Disable if no item is selected
 			defineFormulaButton.setDisable(newValue == null); // Disable if no item is selected
 			deleteProductButton.setDisable(newValue == null); // Disable if no item is selected
 		});
@@ -220,7 +194,6 @@ public class BatchArea {
 		return productGrid;
 	}
 
-	@SuppressWarnings("unused")
 	private static GridPane createBatchSection() {
 		GridPane batchGrid = new GridPane();
 		batchGrid.setPadding(new Insets(10));
@@ -241,31 +214,10 @@ public class BatchArea {
 		batchesTable.setEditable(false);
 		batchesTable.setFocusTraversable(false);
 
-		// // Add search functionality
-		// FilteredList<Batch> filteredData = new
-		// FilteredList<>(FXCollections.observableArrayList(), p -> true);
-		// batchesTable.setItems(filteredData);
-		//
-		// searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
-		// filteredData.setPredicate(batch -> {
-		// if (newValue == null || newValue.isEmpty()) {
-		// return true;
-		// }
-		// String lowerCaseFilter = newValue.toLowerCase();
-		// return String.valueOf(batch.getBatchID()).contains(lowerCaseFilter);
-		// });
-		// });
-		//
-		// searchBar.setOnAction(event -> {
-		// scene.getRoot().requestFocus(); // Return focus to the scene
-		// });
-
 		// Batch Buttons
-
 		Button filterBatchButton = new Button("Filter");
 		Button deleteBatchButton = new Button("Delete Batch");
-		HBox batchButtons1 = new HBox(25, createBatchButton, filterBatchButton, deleteBatchButton,
-				searchBar);
+		HBox batchButtons1 = new HBox(25, createBatchButton, filterBatchButton, deleteBatchButton, searchBar);
 		batchButtons1.setAlignment(Pos.CENTER);
 
 		createBatchButton.setFocusTraversable(false);
@@ -289,31 +241,33 @@ public class BatchArea {
 		batchButtons2.setAlignment(Pos.CENTER);
 
 		// Add components to Batch GridPane
-		batchGrid.add(new Label("Batches"), 0, 0); // Column 0, Row 0
-		batchGrid.add(batchesTable, 0, 1); // Column 0, Row 2
-		batchGrid.add(batchButtons1, 0, 2); // Column 0, Row 3
-		batchGrid.add(batchButtons2, 0, 3); // Column 0, Row 4
+		batchGrid.add(new Label("Batches"), 0, 0);
+		batchGrid.add(batchesTable, 0, 1);
+		batchGrid.add(batchButtons1, 0, 2);
+		batchGrid.add(batchButtons2, 0, 3);
 
-		assignButtonActions(createBatchButton, filterBatchButton, deleteBatchButton, produceBatchButton,
+		assignBatchButtonActions(createBatchButton, filterBatchButton, deleteBatchButton, produceBatchButton,
 				generateLabels, showLabels);
 
 		batchesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			produceBatchButton.setDisable(newValue == null); // Disable if no item is selected
-			deleteBatchButton.setDisable(newValue == null); // Disable if no item is selected
-			produceBatchButton.setDisable(newValue == null); // Disable if no item is selected
-			generateLabels.setDisable(newValue == null); // Disable if no item is selected
-			showLabels.setDisable(newValue == null); // Disable if no item is selected
+			if (newValue == null) {
+				produceBatchButton.setDisable(true);
+				deleteBatchButton.setDisable(true);
+				generateLabels.setDisable(true);
+				showLabels.setDisable(true);
+			} else {
+				produceBatchButton.setDisable(Controllers.BatchArea.isProductionComplete(newValue));
+				deleteBatchButton.setDisable(!Controllers.BatchArea.isProductionStarted(newValue));
+				generateLabels.setDisable(!Controllers.BatchArea.isProductionComplete(newValue)||Controllers.BatchArea.isLabelGenerate(newValue));
+				showLabels.setDisable(!Controllers.BatchArea.isLabelGenerate(newValue));
+			}
 		});
 
 		return batchGrid;
-
 	}
 
-	@SuppressWarnings("unused")
-	private static void assignButtonActions(Button createBatchButton, Button filterBatchButton,
-			Button deleteBatchButton, Button produceBatchButton, Button generateLabels,
-			Button showLabels) {
-
+	private static void assignBatchButtonActions(Button createBatchButton, Button filterBatchButton,
+			Button deleteBatchButton, Button produceBatchButton, Button generateLabels, Button showLabels) {
 		createBatchButton.setOnAction(e -> {
 			Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();
 			if (selectedProduct == null) {
@@ -331,13 +285,39 @@ public class BatchArea {
 		deleteBatchButton.setOnAction(e -> {
 			Batch selectedBatch = batchesTable.getSelectionModel().getSelectedItem();
 			if (selectedBatch != null) {
+				if (Controllers.BatchArea.isProductionStarted(selectedBatch)) {
+					errorWindow.showError(
+							"Production has already started for this batch and therefore it cannot be deleted.");
+					return;
+				}
 				Controllers.BatchArea.deleteBatch(selectedBatch);
 				updateLists();
 			}
 		});
+
+		produceBatchButton.setOnAction(e -> {
+			// TODO: Implement functionality
+			// Popup window with list of reserved casks
+			// Button to bottle batch with input field asking how many bottles to make.
+			// Clicking okay will generate a list with what casks to use and how much
+			// quantity to take from each.
+		});
+
+		generateLabels.setOnAction(e -> {
+			Batch selectedBatch = batchesTable.getSelectionModel().getSelectedItem();
+			if (selectedBatch != null) {
+				Controllers.BatchArea.generateLabelForBatch(selectedBatch);
+			}
+		});
+
+		showLabels.setOnAction(e -> {
+			Batch selectedBatch = batchesTable.getSelectionModel().getSelectedItem();
+			if (selectedBatch != null) {
+				Controllers.BatchArea.getLabelForBatch(selectedBatch);
+			}
+		});
 	}
 
-	@SuppressWarnings("unused")
 	private static GridPane createFormulaSection() {
 		GridPane formulaGrid = new GridPane();
 		formulaGrid.setHgap(10);
@@ -366,7 +346,7 @@ public class BatchArea {
 		formulaGrid.add(new Label("All Formulae"), 0, 0); // Column 0, Row 0
 		formulaGrid.add(formulaList, 0, 1, 1, 3); // Column 0, Row 1 (spanning 3 rows)
 		formulaGrid.add(openFormulaManagerButton, 0, 4); // Column 0, Row 4
-		GridPane.setHalignment(openFormulaManagerButton, javafx.geometry.HPos.CENTER);
+		GridPane.setHalignment(openFormulaManagerButton, HPos.CENTER);
 
 		return formulaGrid;
 	}
@@ -396,15 +376,13 @@ public class BatchArea {
 	}
 
 	private static <T> void useSpecifiedListView(ListView<T> listView, String dataType) {
-		// We need to show specified text in the list aka different from toSting.
 		listView.setCellFactory(lv -> new ListCell<>() {
 			@Override
 			protected void updateItem(T item, boolean empty) {
 				super.updateItem(item, empty);
 				if (empty || item == null) {
-					setText(null); // Handle empty cells
+					setText(null);
 				} else {
-					// Add new info text.
 					if (dataType.equals("Batch")) {
 						setText(((Batch) item).getListInfo());
 					}

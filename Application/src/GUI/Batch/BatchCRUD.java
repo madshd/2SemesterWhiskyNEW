@@ -14,6 +14,7 @@ import GUI.Common.ErrorWindow;
 import BatchArea.Product;
 import Controllers.BatchArea;
 
+@SuppressWarnings("unused")
 public class BatchCRUD {
 
 	private final ErrorWindow errorWindow = new ErrorWindow();
@@ -35,17 +36,13 @@ public class BatchCRUD {
 		// Set the scene for the modal window
 		Scene batchCrudScene = new Scene(gridPane);
 		batchCrudStage.setScene(batchCrudScene);
-		batchCrudStage.initModality(javafx.stage.Modality.APPLICATION_MODAL); // Block interaction with main
-																				// window
+		batchCrudStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
 		batchCrudScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
-		// Initialize content
 		initContent(gridPane);
 	}
 
 	public void show(Product product) {
-		// Show the modal and wait for it to be closed
-
 		updateContent(product);
 		batchCrudStage.showAndWait();
 	}
@@ -58,7 +55,6 @@ public class BatchCRUD {
 	}
 
 	// Initialize the content of the window
-	@SuppressWarnings("unused")
 	private void initContent(GridPane mainPane) {
 		// Main GridPane setup
 		mainPane.setPadding(new Insets(50));

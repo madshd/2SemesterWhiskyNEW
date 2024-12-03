@@ -15,6 +15,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import GUI.Common.ErrorWindow;
 
+@SuppressWarnings("unused")
 public class FormulaManager {
 
 	ListView<Formula> formulaList = new ListView<Formula>();
@@ -25,15 +26,13 @@ public class FormulaManager {
 	TextArea infoArea = new TextArea();
 
 	public void showFormulaManagerWindow() {
-		// Create the Formula Manager modal window
 		Stage formulaManagerStage = new Stage();
-		formulaManagerStage.initModality(Modality.APPLICATION_MODAL); // Block interaction with main window
+		formulaManagerStage.initModality(Modality.APPLICATION_MODAL);
 		formulaManagerStage.setTitle("Formula Manager");
 
 		GridPane gridPane = new GridPane();
 		formulaManagerStage.setResizable(false);
 
-		// Set the scene for the modal window
 		Scene formulaManagerScene = new Scene(gridPane);
 		formulaManagerStage.setScene(formulaManagerScene);
 		formulaManagerScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
@@ -41,14 +40,11 @@ public class FormulaManager {
 
 		updateLists();
 
-		// Show the modal and wait for it to be closed
 		formulaManagerStage.showAndWait();
 	}
 
-	@SuppressWarnings("unused")
 	public void initContent(GridPane mainPane) {
 
-		// Main GridPane setup
 		mainPane.setPadding(new Insets(50));
 		mainPane.setHgap(10);
 		mainPane.setVgap(10);
@@ -105,7 +101,6 @@ public class FormulaManager {
 		infoArea.setId("infoArea");
 	}
 
-	@SuppressWarnings("unused")
 	public void formulaPaneInit(GridPane formulaPane) {
 		formulaPane.setPadding(new Insets(10));
 		formulaPane.setHgap(10);
@@ -114,7 +109,7 @@ public class FormulaManager {
 		int width = 300;
 		int height = 250;
 
-		formulaList.setPlaceholder(new Label("No formulas found"));
+		formulaList.setPlaceholder(new Label("No formulae found"));
 		formulaList.setMinSize(width, height);
 		formulaList.setMaxSize(width, height);
 
@@ -168,7 +163,6 @@ public class FormulaManager {
 		formulaPane.add(buttonBox, 0, 2);
 	}
 
-	@SuppressWarnings("unused")
 	public void tastePaneInit(GridPane tastePane) {
 		tastePane.setPadding(new Insets(10));
 		tastePane.setHgap(10);
@@ -231,8 +225,7 @@ public class FormulaManager {
 					updateLists();
 				} else {
 					errorWindow.showError(
-							"This Taste Profile is currently used in atleast 1 Formula. \n It cannot be deleted.");
-
+						"This Taste Profile is currently used in atleast 1 Formula. \n It cannot be deleted.");
 				}
 			}
 		});

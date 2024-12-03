@@ -201,8 +201,8 @@ public abstract class BatchArea {
 			double percentage = blueprint.get(tp) / 100.0;
 			double totalVolumePerTP = 0;
 			for (Cask cask : storage.getCasks()) {
-				if (cask.getTasteProfile().equals(tp)) {
-					totalVolumePerTP += cask.getFakeQuantity();
+				if (cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)) {
+					totalVolumePerTP += cask.getQuantityStatus();
 				}
 			}
 			double amountBottlesPossiblePerTP = (totalVolumePerTP / bottleSizeLITERS) * percentage;
@@ -211,4 +211,55 @@ public abstract class BatchArea {
 		return maxNumBottles;
 	}
 
+	/**
+	 * Checks if a given product is used in any batch.
+	 *
+	 * @param p the product to check
+	 * @return true if the product is used in any batch, false otherwise
+	 */
+	public static boolean isProductUsedInBatch(Product p) {
+		for (Batch batch : storage.getAllBatches()) {
+			if (batch.getProduct().equals(p)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isProductionStarted(Batch b) {
+		if (b.getNumProducedBottles() > 0) {
+			return true;
+		} else
+			return false;
+	}
+
+	public static boolean isProductionComplete(Batch b) {
+		return b.isProductionComplete();
+	}
+
+	public static boolean generateLabelForBatch(Batch batch) {
+		if (batch.getCompletionDate() == null) {
+			return false;
+		} else {
+			batch.generateLabel();
+			return true;
+		}
+	}
+
+	public static boolean isLabelGenerate(Batch batch) {
+		return batch.isLabelGenerated();
+	}
+
+	public static String getLabelForBatch(Batch batch) {
+		String label = batch.getLabel();
+		if (label != null) {
+			return label;
+		} else {
+			return "Label not generated yet.";
+		}
+	}
+
+	public static void setBatchProductionComplete(Batch batch) {
+		batch.markProductionComplete();
+	}
 }

@@ -16,6 +16,7 @@ public class Batch {
 	private LocalDate completionDate;
 	private int numExpectedBottles;
 	private int numProducedBottles;
+	private String label = null;
 
 	private boolean productionComplete;
 
@@ -47,7 +48,19 @@ public class Batch {
 		this.reservedCasks.remove(cask);
 	}
 
+	public void generateLabel() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(product.getProductName());
+		sb.append(" - ");
+		sb.append(creationDate);
+		sb.append(" - Batch ID: ");
+		sb.append(batchID);
+		sb.append(" - Bottle X of ");
+		sb.append(numProducedBottles);
+		label = sb.toString();
+	}
 	// ---------------------------GENERIC-GETTERS----------------------------//
+
 
 	public String getListInfo() {
 		StringBuilder sb = new StringBuilder();
@@ -88,6 +101,10 @@ public class Batch {
 		return productionComplete;
 	}
 
+	public boolean isLabelGenerated() {
+		return label != null;
+	}
+
 	public LocalDate getCompletionDate() {
 		return completionDate;
 	}
@@ -99,5 +116,9 @@ public class Batch {
 	public static int getBatchIDglobalCount() {
 		int count = batchIDglobalCount;
 		return count + 1;
+	}
+
+	public String getLabel() {
+		return label;
 	}
 }
