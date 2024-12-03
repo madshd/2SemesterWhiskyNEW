@@ -14,10 +14,8 @@ public class Batch {
 	private final Product product;
 	private final LocalDate creationDate;
 	private LocalDate completionDate;
-
 	private int numExpectedBottles;
-	private int numProducedBottlesPreSpill;
-	private int numProducedBottlesPostSpill;
+	private int numProducedBottles;
 
 	private boolean productionComplete;
 
@@ -41,12 +39,8 @@ public class Batch {
 		this.completionDate = LocalDate.now();
 	}
 
-	public void incNumProducedBottlesPreSpill(int producedBottles) {
-		this.numProducedBottlesPreSpill += producedBottles;
-	}
-
-	public void incNumProducedBottlesPostSpill(int producedBottles) {
-		this.numProducedBottlesPostSpill += producedBottles;
+	public void incNumProducedBottles(int producedBottles) {
+		this.numProducedBottles += producedBottles;
 	}
 
 	public void removeCaskFromReserved(Cask cask) {
@@ -86,12 +80,8 @@ public class Batch {
 		return numExpectedBottles;
 	}
 
-	public int getNumProducedBottlesPreSpill() {
-		return numProducedBottlesPreSpill;
-	}
-
-	public int getNumProducedBottlesPostSpill() {
-		return numProducedBottlesPostSpill;
+	public int getNumProducedBottles() {
+		return numProducedBottles;
 	}
 
 	public boolean isProductionComplete() {
@@ -104,5 +94,10 @@ public class Batch {
 
 	public Map<Cask, Integer> getReservedCasks() {
 		return new HashMap<>(reservedCasks);
+	}
+
+	public static int getBatchIDglobalCount() {
+		int count = batchIDglobalCount;
+		return count + 1;
 	}
 }

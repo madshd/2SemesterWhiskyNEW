@@ -21,8 +21,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	private final HashMap<Batch, Double> reservedBatchesAmount = new HashMap<>();
 	private final List<ObserverQuantityObserver> observers = new ArrayList<>();
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
-	private final ArrayList<LocalDate> emptyDates = new ArrayList<>();
-	private final Supplier supplier;
+	private final ArrayList<LocalDate> emptyDates = new ArrayList<>(); private final Supplier supplier;
 	private TasteProfile tasteProfile = null;
 
 	// Nullable

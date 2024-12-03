@@ -1,4 +1,3 @@
-
 package GUI.Batch;
 
 import BatchArea.Product;
@@ -25,7 +24,7 @@ public class ProductCRUD {
 	private Label header = new Label("Create New Product");
 
 	public ProductCRUD() {
-		productCrudStage.setTitle("Formula Manager");
+		productCrudStage.setTitle("Create Product");
 
 		GridPane gridPane = new GridPane();
 		productCrudStage.setResizable(false);
@@ -57,6 +56,7 @@ public class ProductCRUD {
 	public void setFields(Product product) {
 		createButton.setText("Update");
 		header.setText("Update Existing Product");
+		productCrudStage.setTitle("Update Product");
 		updating = true;
 		nameInput.setText(product.getProductName());
 	}
@@ -112,6 +112,7 @@ public class ProductCRUD {
 		cancelButton.setOnAction(event -> {
 			clearFields();
 			productCrudStage.close();
+			Controllers.BatchArea.clearMostRecentlyModifiedProduct();
 		});
 	}
 
@@ -137,6 +138,7 @@ public class ProductCRUD {
 		updating = false;
 		createButton.setText("Create");
 		header.setText("Create New Taste Profile");
+		productCrudStage.setTitle("Create Product");
 		nameInput.clear();
 		bottleSizeInput.clear();
 	}

@@ -27,6 +27,57 @@ import static Controllers.Production.addDescriotionToDistillate;
 
 public abstract class initStorage {
 
+	// =================== TASTE PROFILES =================
+
+	static ArrayList<TastingNote> notesTEST = new ArrayList<>();
+	static TasteProfile tasteProfileTEST = BatchArea.createNewTasteProfile("TEST",
+			"TEST", notesTEST);
+
+	static ArrayList<TastingNote> notes1 = new ArrayList<>();
+	static TasteProfile tasteProfile1 = BatchArea.createNewTasteProfile("Velvet Ember",
+			"\'Velvet Ember\' is a taste profile that combines the silky smoothness of honeyed vanilla with a subtle smoky warmth, finished with a whisper of spiced citrus zest for a lingering, refined complexity.",
+			notes1);
+
+	static ArrayList<TastingNote> notes2 = new ArrayList<>();
+	static TasteProfile tasteProfile2 = BatchArea.createNewTasteProfile("Frosted Grove",
+			"\'Frosted Grove\' delivers a crisp and refreshing blend of cool mint and green apple, accented by delicate floral undertones and a hint of piney freshness for an invigorating finish.",
+			notes2);
+
+	static ArrayList<TastingNote> notes3 = new ArrayList<>();
+	static TasteProfile tasteProfile3 = BatchArea.createNewTasteProfile("Crimson Ember",
+			"\'Crimson Ember\' offers a bold fusion of dark cherry and spiced cinnamon, balanced with earthy undertones of roasted cacao and a whisper of smoky oak for a rich, warming experience.",
+			notes3);
+
+	static ArrayList<TastingNote> notes4 = new ArrayList<>();
+	static TasteProfile tasteProfile4 = BatchArea.createNewTasteProfile("Golden Harvest",
+			"\'Golden Harvest\' combines the buttery sweetness of caramelized pears with toasted almonds, complemented by a hint of nutmeg and a smooth, creamy finish reminiscent of warm custard.",
+			notes4);
+
+	// =================== FORMULAE =================
+
+	static HashMap<TasteProfile, Integer> blueprintTEST = new HashMap<>();
+
+	static HashMap<TasteProfile, Integer> blueprint1 = new HashMap<>();
+	Formula formula1 = BatchArea.createNewFormula("Formula 1", blueprint1);
+
+	static HashMap<TasteProfile, Integer> blueprint2 = new HashMap<>();
+	Formula formula2 = BatchArea.createNewFormula("Formula 2", blueprint2);
+
+	static HashMap<TasteProfile, Integer> blueprint3 = new HashMap<>();
+	Formula formula3 = BatchArea.createNewFormula("Formula 3", blueprint3);
+
+	static HashMap<TasteProfile, Integer> blueprint4 = new HashMap<>();
+	Formula formula4 = BatchArea.createNewFormula("Formula 4", blueprint4);
+
+	// =================== PRODUCTS =================
+
+	Product product1 = BatchArea.createNewProduct("Product 1", 700);
+	Product product2 = BatchArea.createNewProduct("Product 2", 500);
+	Product product3 = BatchArea.createNewProduct("Product 3", 1000);
+	Product product4 = BatchArea.createNewProduct("Product TEST", 1000);
+
+	// =================== CASKS =================
+
 	public static void loadProduction() {
 		Supplier sub_01 = Warehousing.createSupplier(
 				"Highland Barley Co.",
@@ -93,19 +144,33 @@ public abstract class initStorage {
 				"IF",
 				"Specialist in blending and balancing bold and delicate whisky flavors.");
 
-		Cask cask_01 = Warehousing.createCask(1, 200, Unit.LITERS, sub_03); // Bourbon cask from Oak Master Barrels
-		Cask cask_02 = Warehousing.createCask(2, 250, Unit.LITERS, sub_03); // American Oak cask from Oak Master Barrels
-		Cask cask_03 = Warehousing.createCask(3, 225, Unit.LITERS, sub_05); // Sherry cask from Sherry Bliss Co.
-		Cask cask_04 = Warehousing.createCask(4, 500, Unit.LITERS, sub_03); // Large European Oak cask from Oak Master
-																			// Barrels
-		Cask cask_05 = Warehousing.createCask(5, 300, Unit.LITERS, sub_05); // Seasoned sherry cask from Sherry Bliss
-																			// Co.
-		Cask cask_06 = Warehousing.createCask(6, 200, Unit.LITERS, sub_03); // Toasted Oak cask from Oak Master Barrels
-		Cask cask_07 = Warehousing.createCask(7, 225, Unit.LITERS, sub_03); // Ex-Port cask from Oak Master Barrels
-		Cask cask_08 = Warehousing.createCask(8, 180, Unit.LITERS, sub_03); // Peated Oak cask from Peat & Smolder
-		Cask cask_09 = Warehousing.createCask(9, 300, Unit.LITERS, sub_05); // Spanish Oak cask from Sherry Bliss Co.
-		Cask cask_10 = Warehousing.createCask(10, 600, Unit.LITERS, sub_03); // Large blending cask from Oak Master
-																				// Barrels
+		// Cask cask_01 = Warehousing.createCask(1, 200, Unit.LITERS, sub_03); //
+		// Bourbon cask from Oak Master Barrels
+		// Cask cask_02 = Warehousing.createCask(2, 250, Unit.LITERS, sub_03); //
+		// American Oak cask from Oak Master Barrels
+		// Cask cask_03 = Warehousing.createCask(3, 225, Unit.LITERS, sub_05); // Sherry
+		// cask from Sherry Bliss Co.
+		// Cask cask_04 = Warehousing.createCask(4, 500, Unit.LITERS, sub_03); // Large
+		// European Oak cask from Oak Master
+		// // Barrels
+		// Cask cask_05 = Warehousing.createCask(5, 300, Unit.LITERS, sub_05); //
+		// Seasoned sherry cask from Sherry Bliss
+		// // Co.
+		// Cask cask_06 = Warehousing.createCask(6, 200, Unit.LITERS, sub_03); //
+		// Toasted Oak cask from Oak Master Barrels
+		// Cask cask_07 = Warehousing.createCask(7, 225, Unit.LITERS, sub_03); //
+		// Ex-Port cask from Oak Master Barrels
+		// Cask cask_08 = Warehousing.createCask(8, 180, Unit.LITERS, sub_03); // Peated
+		// Oak cask from Peat & Smolder
+		// Cask cask_09 = Warehousing.createCask(9, 300, Unit.LITERS, sub_05); //
+		// Spanish Oak cask from Sherry Bliss Co.
+		// Cask cask_10 = Warehousing.createCask(10, 600, Unit.LITERS, sub_03); // Large
+		// blending cask from Oak Master
+
+		Cask casksTestBATCHAREA = Warehousing.createCask(11, 200, Unit.LITERS, sub_03);
+		casksTestBATCHAREA.setTasteProfile(tasteProfileTEST);
+
+		// Barrels
 
 		Distillate distillate_01 = Production.createDistillate(
 				"Highland Essence",
@@ -238,67 +303,30 @@ public abstract class initStorage {
 	@SuppressWarnings("unused")
 	public static void loadBatchArea() {
 
-		// =================== TASTE PROFILES =================
+		notesTEST.add(TastingNote.SMOKEY);
+		blueprintTEST.put(tasteProfileTEST, 100);
 
-		ArrayList<TastingNote> notes1 = new ArrayList<>();
 		notes1.add(TastingNote.SMOKEY);
 		notes1.add(TastingNote.APPLE);
 		notes1.add(TastingNote.LEMON);
 		notes1.add(TastingNote.VANILLA);
-		TasteProfile tasteProfile1 = BatchArea.createNewTasteProfile("Velvet Ember",
-				"\'Velvet Ember\' is a taste profile that combines the silky smoothness of honeyed vanilla with a subtle smoky warmth, finished with a whisper of spiced citrus zest for a lingering, refined complexity.",
-				notes1);
-
-		ArrayList<TastingNote> notes2 = new ArrayList<>();
 		notes2.add(TastingNote.VANILLA);
 		notes2.add(TastingNote.BLACK_PEPPER);
-		TasteProfile tasteProfile2 = BatchArea.createNewTasteProfile("Frosted Grove",
-				"\'Frosted Grove\' delivers a crisp and refreshing blend of cool mint and green apple, accented by delicate floral undertones and a hint of piney freshness for an invigorating finish.",
-				notes2);
-
-		ArrayList<TastingNote> notes3 = new ArrayList<>();
 		notes3.add(TastingNote.COFFEE);
 		notes3.add(TastingNote.LEMON);
-		TasteProfile tasteProfile3 = BatchArea.createNewTasteProfile("Crimson Ember",
-				"\'Crimson Ember\' offers a bold fusion of dark cherry and spiced cinnamon, balanced with earthy undertones of roasted cacao and a whisper of smoky oak for a rich, warming experience.",
-				notes3);
-
-		ArrayList<TastingNote> notes4 = new ArrayList<>();
 		notes4.add(TastingNote.OAK);
 		notes4.add(TastingNote.BLACK_PEPPER);
 		notes4.add(TastingNote.HONEY);
-		TasteProfile tasteProfile4 = BatchArea.createNewTasteProfile("Golden Harvest",
-				"\'Golden Harvest\' combines the buttery sweetness of caramelized pears with toasted almonds, complemented by a hint of nutmeg and a smooth, creamy finish reminiscent of warm custard.",
-				notes4);
-
-		// =================== FORMULAE =================
-
-		HashMap<TasteProfile, Integer> blueprint1 = new HashMap<>();
 		blueprint1.put(tasteProfile1, 50);
 		blueprint1.put(tasteProfile2, 25);
 		blueprint1.put(tasteProfile3, 25);
-		Formula formula1 = BatchArea.createNewFormula("Formula 1", blueprint1);
-
-		HashMap<TasteProfile, Integer> blueprint2 = new HashMap<>();
 		blueprint2.put(tasteProfile1, 50);
 		blueprint2.put(tasteProfile4, 50);
-		Formula formula2 = BatchArea.createNewFormula("Formula 2", blueprint2);
-
-		HashMap<TasteProfile, Integer> blueprint3 = new HashMap<>();
 		blueprint3.put(tasteProfile4, 100);
-		Formula formula3 = BatchArea.createNewFormula("Formula 3", blueprint3);
-
-		HashMap<TasteProfile, Integer> blueprint4 = new HashMap<>();
 		blueprint4.put(tasteProfile1, 25);
 		blueprint4.put(tasteProfile3, 50);
 		blueprint4.put(tasteProfile4, 25);
-		Formula formula4 = BatchArea.createNewFormula("Formula 4", blueprint4);
 
-		// =================== PRODUCTS =================
-
-		Product product1 = BatchArea.createNewProduct("Product 1", 700);
-		Product product2 = BatchArea.createNewProduct("Product 2", 500);
-		Product product3 = BatchArea.createNewProduct("Product 3", 1000);
 	}
 
 }

@@ -38,7 +38,10 @@ public class BatchArea {
 	private static ListView<Batch> batchesTable = new ListView<>();
 	private static ListView<Product> productsTable = new ListView<>();
 
+	private static Button createBatchButton = new Button("Create New Batch");
+
 	private static ProductCRUD productCRUD = new ProductCRUD();
+	private static BatchCRUD batchCRUD = new BatchCRUD();
 
 	public BatchArea() {
 		stage = new Stage();
@@ -100,10 +103,10 @@ public class BatchArea {
 		row3.setPercentHeight(50); // Products
 		gridPane.getRowConstraints().addAll(row1, row2, row3);
 
-		// Create individual sections
-		GridPane batchSection = createBatchSection();
+		// Create individual sections GridPane batchSection = createBatchSection();
 		GridPane productSection = createProductSection();
 		GridPane formulaSection = createFormulaSection();
+		GridPane batchSection = createBatchSection();
 
 		batchSection.setAlignment(Pos.BOTTOM_CENTER);
 		productSection.setAlignment(Pos.TOP_CENTER);
@@ -209,6 +212,7 @@ public class BatchArea {
 		productGrid.add(productButtons, 0, 3); // Column 0, Row 3
 
 		productsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			createBatchButton.setDisable(newValue == null); // Disable if no item is
 			defineFormulaButton.setDisable(newValue == null); // Disable if no item is selected
 			deleteProductButton.setDisable(newValue == null); // Disable if no item is selected
 		});
@@ -257,25 +261,80 @@ public class BatchArea {
 		// });
 
 		// Batch Buttons
-		Button createBatchButton = new Button("Create New Batch");
+
 		Button filterBatchButton = new Button("Filter");
 		Button deleteBatchButton = new Button("Delete Batch");
-		Button produceBatchButton = new Button("PRODUCE BATCH");
-		HBox batchButtons = new HBox(25, createBatchButton, filterBatchButton, deleteBatchButton, produceBatchButton,
+		HBox batchButtons1 = new HBox(25, createBatchButton, filterBatchButton, deleteBatchButton,
 				searchBar);
-		batchButtons.setAlignment(Pos.CENTER);
+		batchButtons1.setAlignment(Pos.CENTER);
 
 		createBatchButton.setFocusTraversable(false);
 		filterBatchButton.setFocusTraversable(false);
 		deleteBatchButton.setFocusTraversable(false);
+		createBatchButton.setDisable(true);
+		deleteBatchButton.setDisable(true);
+
+		Button produceBatchButton = new Button("Show Reserved Casks / Bottle Batch");
+		Button generateLabels = new Button("Generate Labels");
+		Button showLabels = new Button("Show Labels");
+
 		produceBatchButton.setFocusTraversable(false);
+		produceBatchButton.setDisable(true);
+		generateLabels.setFocusTraversable(false);
+		generateLabels.setDisable(true);
+		showLabels.setFocusTraversable(false);
+		showLabels.setDisable(true);
+
+		HBox batchButtons2 = new HBox(32, produceBatchButton, generateLabels, showLabels);
+		batchButtons2.setAlignment(Pos.CENTER);
 
 		// Add components to Batch GridPane
 		batchGrid.add(new Label("Batches"), 0, 0); // Column 0, Row 0
 		batchGrid.add(batchesTable, 0, 1); // Column 0, Row 2
-		batchGrid.add(batchButtons, 0, 2); // Column 0, Row 3
+		batchGrid.add(batchButtons1, 0, 2); // Column 0, Row 3
+		batchGrid.add(batchButtons2, 0, 3); // Column 0, Row 4
+
+		assignButtonActions(createBatchButton, filterBatchButton, deleteBatchButton, produceBatchButton,
+				generateLabels, showLabels);
+
+		batchesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			produceBatchButton.setDisable(newValue == null); // Disable if no item is selected
+			deleteBatchButton.setDisable(newValue == null); // Disable if no item is selected
+			produceBatchButton.setDisable(newValue == null); // Disable if no item is selected
+			generateLabels.setDisable(newValue == null); // Disable if no item is selected
+			showLabels.setDisable(newValue == null); // Disable if no item is selected
+		});
+
 		return batchGrid;
 
+	}
+
+	@SuppressWarnings("unused")
+	private static void assignButtonActions(Button createBatchButton, Button filterBatchButton,
+			Button deleteBatchButton, Button produceBatchButton, Button generateLabels,
+			Button showLabels) {
+
+		createBatchButton.setOnAction(e -> {
+			Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();
+			if (selectedProduct == null) {
+				errorWindow.showError("Please select a Product from the list below.");
+				return;
+			}
+			if (selectedProduct.getFormula() == null) {
+				errorWindow.showError("Please define a Formula for the selected Product.");
+				return;
+			}
+			batchCRUD.show(selectedProduct);
+			updateLists();
+		});
+
+		deleteBatchButton.setOnAction(e -> {
+			Batch selectedBatch = batchesTable.getSelectionModel().getSelectedItem();
+			if (selectedBatch != null) {
+				Controllers.BatchArea.deleteBatch(selectedBatch);
+				updateLists();
+			}
+		});
 	}
 
 	@SuppressWarnings("unused")

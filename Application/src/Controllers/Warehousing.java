@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import BatchArea.TasteProfile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +54,7 @@ public abstract class Warehousing {
 	 * @return
 	 */
 	public static Cask createCask(int caskID, double maxQuantity, Unit unit, Supplier supplier) {
-		Cask cask = new Cask(caskID, maxQuantity, unit, supplier);
+		Cask cask = new Cask(caskID, maxQuantity, unit, supplier, null);
 		storage.storeCask(cask);
 		return cask;
 	}
@@ -225,4 +227,5 @@ public abstract class Warehousing {
 	public static List<Warehouse> getAllWarehouses() {
 		return storage.getWarehouses();
 	}
+
 }

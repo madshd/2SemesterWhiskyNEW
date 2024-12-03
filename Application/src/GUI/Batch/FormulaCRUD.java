@@ -102,7 +102,7 @@ public class FormulaCRUD {
 		});
 
 		// TasteProfile Label
-		Label label = new Label("Select Taste Profiles");
+		Label label = new Label("Define Taste Profile %-split");
 		HBox labelBox1 = new HBox(label);
 		labelBox1.setAlignment(Pos.CENTER);
 		mainPane.add(labelBox1, 0, 2);
