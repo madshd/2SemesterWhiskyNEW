@@ -53,8 +53,8 @@ public abstract class Warehousing {
 	 * @param supplier
 	 * @return
 	 */
-	public static Cask createCask(int caskID, double maxQuantity, Unit unit, Supplier supplier) {
-		Cask cask = new Cask(caskID, maxQuantity, unit, supplier, null);
+	public static Cask createCask(int caskID, double maxQuantity, Unit unit, Supplier supplier, String caskType) {
+		Cask cask = new Cask(caskID, maxQuantity, unit, supplier, caskType);
 		storage.storeCask(cask);
 		return cask;
 	}
