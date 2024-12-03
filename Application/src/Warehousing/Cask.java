@@ -6,7 +6,9 @@ import Interfaces.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import BatchArea.TasteProfile;
 
@@ -16,7 +18,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	private final Unit unit;
 	private final Supplier supplier;
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
-	private final List<ObserverQuantityObserver> observers = new ArrayList<>();
+	private final Set<ObserverQuantityObserver> observers = new HashSet<>();
 	private TasteProfile tasteProfile = null;
 	private final ArrayList<LocalDate> emptyDates = new ArrayList<>();
 
@@ -95,6 +97,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 		if (newQuantity <= maxQuantity && newQuantity >= 0) {
 			fillingStack.push(fillDistillate);
+			notifyObservers();
 			return newQuantity;
 		} else {
 			throw new IllegalStateException("Provided quantity does not fit into this cask");
@@ -139,5 +142,15 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 				*****\t Filling details\t *****
 				%s
 				""", supplier.getDescription(), getFillingTextLines());
+	}
+
+	public List<Filling> getFillingStack(){
+		List<Filling> fillings = new ArrayList<>();
+
+		for (Filling f : fillingStack){
+			fillings.add(f);
+		}
+
+		return fillings;
 	}
 }

@@ -67,7 +67,7 @@ public abstract class Production {
 	 * @return
 	 */
 	public static double fillDistillateIntoCask(Distillate distillate, Cask cask, double quantity ,LocalDate date){
-		Filling filling = new FillDistillate(date, quantity);
+		Filling filling = new FillDistillate(date,quantity,cask,distillate,null);
 		distillate.updateQuantity(filling);
 		return cask.updateQuantity(filling);
 	}
