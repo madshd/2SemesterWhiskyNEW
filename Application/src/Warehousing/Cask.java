@@ -146,6 +146,10 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return sb.toString();
 	}
 
+	public Stack<Filling> getFillingStack() {
+		return fillingStack;
+	}
+
 	public String getName() {
 		return Integer.toString(caskID);
 	}
