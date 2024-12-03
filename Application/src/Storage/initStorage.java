@@ -93,19 +93,16 @@ public abstract class initStorage {
 				"IF",
 				"Specialist in blending and balancing bold and delicate whisky flavors.");
 
-		Cask cask_01 = Warehousing.createCask(1, 200, Unit.LITERS, sub_03); // Bourbon cask from Oak Master Barrels
-		Cask cask_02 = Warehousing.createCask(2, 250, Unit.LITERS, sub_03); // American Oak cask from Oak Master Barrels
-		Cask cask_03 = Warehousing.createCask(3, 225, Unit.LITERS, sub_05); // Sherry cask from Sherry Bliss Co.
-		Cask cask_04 = Warehousing.createCask(4, 500, Unit.LITERS, sub_03); // Large European Oak cask from Oak Master
-																			// Barrels
-		Cask cask_05 = Warehousing.createCask(5, 300, Unit.LITERS, sub_05); // Seasoned sherry cask from Sherry Bliss
-																			// Co.
-		Cask cask_06 = Warehousing.createCask(6, 200, Unit.LITERS, sub_03); // Toasted Oak cask from Oak Master Barrels
-		Cask cask_07 = Warehousing.createCask(7, 225, Unit.LITERS, sub_03); // Ex-Port cask from Oak Master Barrels
-		Cask cask_08 = Warehousing.createCask(8, 180, Unit.LITERS, sub_03); // Peated Oak cask from Peat & Smolder
-		Cask cask_09 = Warehousing.createCask(9, 300, Unit.LITERS, sub_05); // Spanish Oak cask from Sherry Bliss Co.
-		Cask cask_10 = Warehousing.createCask(10, 600, Unit.LITERS, sub_03); // Large blending cask from Oak Master
-																				// Barrels
+		Cask cask_01 = Warehousing.createCask(1, 200, Unit.LITERS, sub_03, "Bourbon Cask"); // Bourbon cask from Oak Master Barrels
+		Cask cask_02 = Warehousing.createCask(2, 250, Unit.LITERS, sub_03, "American Oak Cask"); // American Oak cask from Oak Master Barrels
+		Cask cask_03 = Warehousing.createCask(3, 225, Unit.LITERS, sub_05, "Sherry Cask"); // Sherry cask from Sherry Bliss Co.
+		Cask cask_04 = Warehousing.createCask(4, 500, Unit.LITERS, sub_03, "Large European Oak Cask"); // Large European Oak cask from Oak Master Barrels
+		Cask cask_05 = Warehousing.createCask(5, 300, Unit.LITERS, sub_05, "Seasoned Sherry Cask"); // Seasoned sherry cask from Sherry Bliss Co.
+		Cask cask_06 = Warehousing.createCask(6, 200, Unit.LITERS, sub_03, "Toasted Oak Cask"); // Toasted Oak cask from Oak Master Barrels
+		Cask cask_07 = Warehousing.createCask(7, 225, Unit.LITERS, sub_03, "Ex-Port Cask"); // Ex-Port cask from Oak Master Barrels
+		Cask cask_08 = Warehousing.createCask(8, 180, Unit.LITERS, sub_03, "Peated Oak Cask"); // Peated Oak cask from Peat & Smolder
+		Cask cask_09 = Warehousing.createCask(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask"); // Spanish Oak cask from Sherry Bliss Co.
+		Cask cask_10 = Warehousing.createCask(10, 600, Unit.LITERS, sub_03, "Large Blending Cask"); // Large blending cask from Oak Master
 
 		Distillate distillate_01 = Production.createDistillate(
 				"Highland Essence",
