@@ -2,13 +2,12 @@ package Production;
 
 import Enumerations.Unit;
 import Interfaces.*;
+import Interfaces.Stack;
 import Warehousing.StorageRack;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	private final String name;
@@ -19,7 +18,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	private final Unit unit;
 	private String description;
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
-	private final List<ObserverQuantityObserver> observers = new ArrayList<>();
+	private final Set<ObserverQuantityObserver> observers = new HashSet<>();
 	private final List<StoryLine> storyLines = new ArrayList<>();
 	private final List<ProductCutInformation> productCutInformations = new ArrayList<>();
 	private final List<AlcoholPercentage> alcoholPercentages = new ArrayList<>();
@@ -97,6 +96,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 
 		if (newQuantity >= 0) {
 			fillingStack.push(fillDistillate);
+			notifyObservers();
 			return newQuantity;
 		} else {
 			throw new IllegalStateException("Provided quantity does not fit this distillate");

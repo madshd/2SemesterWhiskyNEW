@@ -28,12 +28,15 @@ import static Controllers.Warehousing.*;
 
 public class ProductionArea {
 
-	private Rectangle2D screenBounds;
+	protected Rectangle2D screenBounds;
 	private Stage stage;
-	private GridPane mainPane;
+	protected GridPane mainPane;
 	private Scene scene;
 	private Distillates distillates;
 	private Casks casks;
+	protected FillDistillateIntoCask.DistillateElement fillDistillateElement;
+	protected FillDistillateIntoCask.CasksElement fillCaskElement;
+	protected FillDistillateIntoCask.InputElement inputElement;
 
 	public ProductionArea() {
 		stage = new Stage();
@@ -52,6 +55,9 @@ public class ProductionArea {
 		mainPane = new GridPane();
 		distillates = new Distillates(this);
 		casks = new Casks(this);
+		fillDistillateElement = new FillDistillateIntoCask.DistillateElement(this);
+		fillCaskElement = new FillDistillateIntoCask.CasksElement(this);
+		inputElement = new FillDistillateIntoCask.InputElement(this);
 		initContent(mainPane);
 
 		scene = new Scene(mainPane, screenBounds.getWidth() - 300, screenBounds.getHeight());
@@ -63,6 +69,13 @@ public class ProductionArea {
 		stage.setY(0);
 		stage.setScene(scene);
 	}
+
+	// Shared settings
+	protected static int hgap = 20;
+	protected static int vgap = 20;
+	protected static Insets padding = new Insets(20);
+	protected static boolean gridLines = false;
+	protected static Border border = Common.getBorder(1, 0, 0, 0);
 
 	public void initContent(GridPane gridPane) {
 		Label headerLabel = new Label("Production Area");
@@ -76,13 +89,6 @@ public class ProductionArea {
 		gridPane.add(distillates, 0, 1);
 		gridPane.add(casks, 0, 2);
 	}
-
-	// Shared settings
-	private static int hgap = 20;
-	private static int vgap = 20;
-	private static Insets padding = new Insets(20);
-	private static boolean gridLines = false;
-	private static Border border = Common.getBorder(1, 0, 0, 0);
 
 	private class Distillates extends GridPane {
 		private final ListView<Item> lvwDistillates = new ListView<>();
@@ -153,6 +159,13 @@ public class ProductionArea {
 		}
 
 		private void buttionAction(Button button) {
+			switch ((String) button.getUserData()){
+				case "Fill" -> {
+					mainPane.getChildren().clear();
+					openFillIntoCask();
+
+				}
+			}
 
 		}
 
@@ -189,6 +202,19 @@ public class ProductionArea {
 				txaDistillateDetails.clear();
 			}
 		}
+
+		private void openFillIntoCask() {
+			Label headerLabel = new Label("Fill distillate into cask");
+			GridPane.setHalignment(headerLabel, HPos.CENTER);
+			headerLabel.setId("LabelHeader");
+			headerLabel.setPrefWidth(screenBounds.getWidth() - 300);
+			headerLabel.setAlignment(Pos.CENTER);
+			mainPane.add(headerLabel, 0, 0);
+			mainPane.add(fillDistillateElement,0,1);
+			mainPane.add(fillCaskElement,0,2);
+			mainPane.add(inputElement,0,3);
+		}
+
 	}
 
 	private class Casks extends GridPane {
@@ -216,7 +242,7 @@ public class ProductionArea {
 			// Labels
 			Label lblList = new Label("Avaliable Casks");
 			this.add(lblList, 0, 1);
-			Label lblDetails = new Label("Fillings in selected cask");
+			Label lblDetails = new Label("Cask detials");
 			this.add(lblDetails, 2, 1);
 
 			// Lists
