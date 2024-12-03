@@ -5,12 +5,13 @@ import Warehousing.Cask;
 
 import java.time.LocalDate;
 
-public class FillDistillate implements Filling {
+public class FillDistillate implements Filling, Comparable<FillDistillate>{
     private final LocalDate date;
     private final double quantity;
     private final Cask cask;
     private final Distillate distillate;
     private final FillDistillate prevDistillate;
+    private final int lifeCycle;
 
     /**
      *
@@ -26,6 +27,7 @@ public class FillDistillate implements Filling {
         this.cask = cask;
         this.distillate = distillate;
         this.prevDistillate = prevDistillate;
+        this.lifeCycle = (cask.getFillingStack().isEmpty()) ? cask.getLifeCycle() +1 : cask.getLifeCycle();
     }
 
     public LocalDate getDate() {
@@ -36,8 +38,25 @@ public class FillDistillate implements Filling {
         return quantity;
     }
 
+    public Distillate getDistillate() {
+        return distillate;
+    }
+
+    public FillDistillate getPrevDistillate() {
+        return prevDistillate;
+    }
+
+    public int getLifeCycle() {
+        return lifeCycle;
+    }
+
     @Override
     public String toString() {
-        return String.format("Distillate: %s |%s | Quantity: %,.2f",distillate.getName(), date.toString(),quantity);
+        return String.format("Cask life cycle: %d | Distillate: %s |%s | Quantity: %,.2f",lifeCycle,distillate.getName(), date.toString(),quantity);
+    }
+
+    @Override
+    public int compareTo(FillDistillate o) {
+        return this.date.compareTo(o.getDate());
     }
 }
