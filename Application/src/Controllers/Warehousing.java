@@ -132,6 +132,14 @@ public abstract class Warehousing {
 		return null;
 	}
 
+	/**
+	 * Creates a new cask and adds it to the specified storage rack.
+	 * Storage rack must have an empty shelf for the cask to be added.
+	 * Allocates the item to the first available shelf in the storage rack.
+	 * Notifies observers of the warehouse where the cask is added.
+	 * Returns the created cask if it was successfully added, or null if the cask could not be added.
+	 * Throws an IllegalArgumentException if the cask could not be added to the specified storage rack.
+	 */
 	public static Cask createCaskAndAdd(
 			int caskID,
 			double maxQuantity,
@@ -139,24 +147,26 @@ public abstract class Warehousing {
 			Supplier supplier,
 			String caskType,
 			Warehouse warehouse,
-			StorageRack storageRack,
-			int atIndex) {
+			StorageRack storageRack) {
 
 		Cask cask = createCask(caskID, maxQuantity, Unit.LITERS, supplier, caskType);
 		try {
-			if (storageRack.getWarehouse() != null) {
-				if (storageRack.getList().get(atIndex) == null)
-					storageRack.addItem(atIndex, cask);
-						storageRack.getWarehouse().notifyWarehousingObserversWithDetails(
+			for (int i = 0; i < storageRack.getList().size(); i++) {
+				if (storageRack.getList().get(i) == null) {
+					storageRack.addItem(i, cask);
+					storageRack.getWarehouse().notifyWarehousingObserversWithDetails(
 							"Cask added: " + cask.getName() + " to Rack: " + storageRack.getId() +
-									", Shelf: " + atIndex + " in Warehouse: " + storageRack.getWarehouse().getName());
+									", Shelf: " + i + " in Warehouse: " + storageRack.getWarehouse().getName());
+					return cask;
+				}
 			}
 		} catch (IllegalStateException e) {
 			throw new IllegalArgumentException(
-					"Storage rack is not used in a warehouse, or shelf is already in use: " + e.getMessage());
+					"Failed to add cask to the specified storage rack: " + e.getMessage());
 		}
-		return cask;
+		return null;
 	}
+
 
 	/**
 	 * Moves an item from one warehouse to another, updating the storage racks and
@@ -285,4 +295,38 @@ public abstract class Warehousing {
 		cask.setTasteProfile(tasteProfile);
 	}
 
+	public static void deleteWarehouse(Warehouse selectedWarehouse) {
+		if (selectedWarehouse != null) {
+			if (selectedWarehouse.getRacks().isEmpty()) {
+				storage.deleteWarehouse(selectedWarehouse);
+			} else {
+				throw new IllegalStateException("Warehouse is not empty");
+			}
+		}
+	}
+
+	public static void deleteStorageRack(StorageRack selectedStorageRack) {
+		if (selectedStorageRack != null) {
+			if (selectedStorageRack.getList().isEmpty()) {
+				storage.deleteStorageRack(selectedStorageRack);
+			} else {
+				throw new IllegalStateException("Storage rack is not empty");
+			}
+		}
+	}
+
+	public static List<Ingredient> getAllAvailableIngredients() {
+		List<Ingredient> ingredients = new ArrayList<>();
+		for (Warehouse wh : getAllWarehouses()) {
+			for (StorageRack sr : wh.getRacks().values()) {
+				for (Item item : sr.getList()) {
+					if (item instanceof Ingredient) {
+						if (item.getRemainingQuantity() > 0)
+							ingredients.add((Ingredient) item);
+					}
+				}
+			}
+		}
+		return ingredients;
+	}
 }
