@@ -35,12 +35,35 @@ public class WarehousingArea {
 	private Stage stage;
 	private GridPane mainPane;
 	private Scene scene;
+
 	private static ListView<Warehouse> warehouseList = new ListView<>();
+	private Button btnDeleteWarehouse = new Button("Delete");
+	private Button btnUpdateWarehouse = new Button("Update");
+	private Button btnCreateWarehouse = new Button("Create");
+
 	private static ListView<StorageRack> storageRacksList = new ListView<>();
+	private Button btnDeleteStorageRack = new Button("Delete");
+	private Button btnUpdateStorageRack = new Button("Update");
+	private Button btnCreateStorageRack = new Button("Create");
+
 	private static ListView<Item> inventoryList = new ListView<>();
+	private Button btnDeleteInventory = new Button("Delete");
+	private Button btnUpdateInventory = new Button("Update");
+	private Button btnCreateInventory = new Button("Create");
+
+	private Button btnCreateIngredient = new Button("Create Ingredient");
+	private Button btnCreateCask = new Button("Create Cask");
+
 	private static ListView<String> warehouseMovementsList = new ListView<>();
 
+	private Label headerLabel = new Label("Warehousing Area");
+	private Label warehouseLabel = new Label("Warehouses");
+	private Label storageRacksLabel = new Label("Storage Racks");
+	private Label inventoryLabel = new Label("Inventory");
+	private Label warehouseMovementsLabel = new Label("Warehouse Movements");
+
 	public WarehousingArea() {
+		updateLists();
 		stage = new Stage();
 		stage.setTitle("Warehousing Area");
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -70,75 +93,73 @@ public class WarehousingArea {
 	}
 
 	public void initContent(GridPane gridPane) {
-		updateLists();
 		Label headerLabel = new Label("Warehousing Area");
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
-		gridPane.add(headerLabel, 0, 0);
-
-
-		// Laver lister
-		warehouseList.getItems().addAll(Warehousing.getAllWarehouses());
-
-		warehouseMovementsList.getItems().addAll("Item One", "Item Two", "Item Three");
-		for (Warehouse warehouse : Warehousing.getAllWarehouses()) {
-			if (!warehouse.getWarehousingObservers().isEmpty()) {
-				for (Object observer : warehouse.getWarehousingObservers()) {
-					if (observer instanceof LoggerObserver) {
-						for (String log : ((LoggerObserver) observer).getLogs()) {
-							warehouseMovementsList.getItems().add(log);
-						}
-					}
-				}
-			}
-		}
-
-		// Knappesektioner
-		HBox warehouseButtons = new HBox(10, new Button("Delete"), new Button("Update"), new Button("Create"));
-		HBox storageRackButtons = new HBox(10, new Button("Delete"), new Button("Update"), new Button("Create"));
-		HBox inventoryButtons = new HBox(10, new Button("Delete"), new Button("Update"), new Button("Create"));
-
-		HBox createButtons = new HBox();
-		Button createIngredient = new Button("Create Ingredient");
-		Button createProduct = new Button("Create Cask");
-
+		gridPane.add(headerLabel, 1, 0);
 		// Layoutkonfiguration
 		gridPane.setHgap(10);
 		gridPane.setVgap(10);
 
-		// Venstre sektion (Warehouses)
-		Label warehouseLabel = new Label("Warehouses");
-		VBox warehouseSection = new VBox(10, warehouseList, warehouseButtons);
-		gridPane.add(warehouseSection, 0, 1);
+		// Knappesektioner
 
-		// Midt sektion (Storage Racks)
-		Label storageRacksLabel = new Label("Storage Racks");
-		VBox storageRacksSection = new VBox(10, storageRacksList, storageRackButtons);
-		gridPane.add(storageRacksSection, 1, 1);
+		HBox warehouseCRUDButtons = new HBox();
+		warehouseCRUDButtons.getChildren().addAll(btnDeleteWarehouse, btnUpdateWarehouse, btnCreateWarehouse);
+		warehouseCRUDButtons.setSpacing(10);
 
-		// Højre sektion (Inventory)
-		Label inventoryLabel = new Label("Inventory");
-		VBox inventorySection = new VBox(10, inventoryList, inventoryButtons, createButtons);
-		inventorySection.setAlignment(Pos.CENTER);
-		gridPane.add(inventorySection, 2, 1);
+		HBox storageRackCRUDButtons = new HBox();
+		storageRackCRUDButtons.getChildren().addAll(btnDeleteStorageRack, btnUpdateStorageRack, btnCreateStorageRack);
+		storageRackCRUDButtons.setSpacing(10);
 
-		createButtons.getChildren().addAll(createIngredient, createProduct);
+		HBox inventoryCRUDButtons = new HBox();
+		inventoryCRUDButtons.getChildren().addAll(btnDeleteInventory, btnUpdateInventory, btnCreateInventory);
+		inventoryCRUDButtons.setSpacing(10);
+
+		HBox createButtons = new HBox();
+		createButtons.getChildren().addAll(btnCreateIngredient, btnCreateCask);
 		createButtons.setSpacing(10);
 
 
-		createIngredient.setOnAction(e -> {
-			CreateIngredientDialog createIngredientDialog = new CreateIngredientDialog();
-			Stage dialogStage = new Stage();
-			createIngredientDialog.start(dialogStage);
-			dialogStage.setOnHiding(event -> updateLists());
-		});
+		// Venstre sektion (Warehouses)
+		VBox warehouseSection = new VBox(10, warehouseLabel, warehouseList, warehouseCRUDButtons);
+		warehouseSection.setAlignment(Pos.CENTER);
+		warehouseCRUDButtons.setAlignment(Pos.CENTER);
+		gridPane.add(warehouseSection, 0, 1);
+
+		// Midt sektion (Storage Racks)
+		VBox storageRacksSection = new VBox(10, storageRacksLabel, storageRacksList, storageRackCRUDButtons);
+		storageRacksSection.setAlignment(Pos.CENTER);
+		storageRackCRUDButtons.setAlignment(Pos.CENTER);
+		gridPane.add(storageRacksSection, 1, 1);
+
+		// Højre sektion (Inventory)
+		VBox inventorySection = new VBox(10, inventoryLabel, inventoryList, inventoryCRUDButtons);
+		inventorySection.setAlignment(Pos.CENTER);
+		inventoryCRUDButtons.setAlignment(Pos.CENTER);
+		gridPane.add(inventorySection, 2, 1);
+
+		// Bund sektion (Create)
+		HBox createSection = new HBox(10, createButtons);
+		createSection.setAlignment(Pos.CENTER);
+		createButtons.setAlignment(Pos.CENTER);
+		gridPane.add(createSection, 1, 2);
+		createButtons.setSpacing(10);
+
+		// Button actions
+		btnCreateIngredient.setOnAction(e -> btnCreateIngredientAction());
+		btnCreateCask.setOnAction(e -> btnCreateCaskAction());
+
+		btnDeleteWarehouse.setOnAction(e -> btnDeleteWarehouseAction());
+//		btnUpdateWarehouse.setOnAction(e ->());
+//		btnCreateWarehouse.setOnAction(e ->());
+
+		btnDeleteStorageRack.setOnAction(e -> btnDeleteStorageRackAction());
 
 		// Nederste sektion (Warehouse Movements)
-		Label warehouseMovementsLabel = new Label("Warehouse Movements");
 		gridPane.add(warehouseMovementsList, 0, 4, 3, 1); // Spænd over alle kolonner
 		gridPane.add(warehouseMovementsLabel, 0, 3);
-
 	}
+
 
 	public void close() {
 		if (stage.isShowing()) {
@@ -151,9 +172,51 @@ public class WarehousingArea {
 			});
 		}
 	}
+	private void btnDeleteStorageRackAction() {
+		StorageRack selectedStorageRack = storageRacksList.getSelectionModel().getSelectedItem();
+		if (selectedStorageRack != null) {
+			Warehousing.deleteStorageRack(selectedStorageRack);
+			updateLists();
+		}
+	}
 
-	public static void updateLists() {
+	public void btnDeleteWarehouseAction() {
+		Warehouse selectedWarehouse = warehouseList.getSelectionModel().getSelectedItem();
+		if (selectedWarehouse != null) {
+			Warehousing.deleteWarehouse(selectedWarehouse);
+			updateLists();
+		}
+	}
+
+	public void btnCreateCaskAction() {
+		CreateCaskDialog createCaskDialog = new CreateCaskDialog();
+		Stage dialogStage = new Stage();
+		try {
+			createCaskDialog.start(dialogStage);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		dialogStage.setOnHiding(event -> updateLists());
+	}
+
+	public void btnCreateIngredientAction() {
+		CreateIngredientDialog createIngredientDialog = new CreateIngredientDialog();
+		Stage dialogStage = new Stage();
+		createIngredientDialog.start(dialogStage);
+		dialogStage.setOnHiding(event -> updateLists());
+	}
+
+	private static void updateLists() {
+		// Clear existing items
+		warehouseList.getItems().clear();
+		storageRacksList.getItems().clear();
 		inventoryList.getItems().clear();
+		warehouseMovementsList.getItems().clear();
+
+		// Populate warehouse list
+		warehouseList.getItems().addAll(Warehousing.getAllWarehouses());
+
+		// Add listeners to update storage racks and inventory based on selections
 		warehouseList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				storageRacksList.getItems().clear();
@@ -168,27 +231,18 @@ public class WarehousingArea {
 			}
 		});
 
-		storageRacksList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null) {
-				inventoryList.getItems().clear();
-				inventoryList.getItems().addAll(newValue.getList());
-			}
-		});
-
-		warehouseList.getSelectionModel().selectedItemProperty().addListener(observable -> {
-			warehouseMovementsList.getItems().clear();
-			for (Warehouse warehouse : Warehousing.getAllWarehouses()) {
-				if (!warehouse.getWarehousingObservers().isEmpty()) {
-					for (Object observer : warehouse.getWarehousingObservers()) {
-						if (observer instanceof LoggerObserver) {
-							for (String log : ((LoggerObserver) observer).getLogs()) {
-								warehouseMovementsList.getItems().add(log);
-							}
+		// Populate warehouse movements list
+		for (Warehouse warehouse : Warehousing.getAllWarehouses()) {
+			if (!warehouse.getWarehousingObservers().isEmpty()) {
+				for (Object observer : warehouse.getWarehousingObservers()) {
+					if (observer instanceof LoggerObserver) {
+						for (String log : ((LoggerObserver) observer).getLogs()) {
+							warehouseMovementsList.getItems().add(log);
 						}
 					}
 				}
 			}
-		});
+		}
 	}
 
 	public Stage getStage() {
