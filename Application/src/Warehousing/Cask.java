@@ -7,13 +7,13 @@ import Interfaces.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
+import java.util.*;
 
 import BatchArea.Batch;
 
 import BatchArea.TasteProfile;
+import Interfaces.Stack;
+import Production.Distillate;
 import Production.FillDistillate;
 
 public class Cask implements OberverQuantitySubject, Item, Serializable {
@@ -22,7 +22,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	private final String caskType;
 	private final Unit unit;
 	private final HashMap<Batch, Double> reservedBatchesAmount = new HashMap<>();
-	private final List<ObserverQuantityObserver> observers = new ArrayList<>();
+	private final Set<ObserverQuantityObserver> observers = new HashSet<>();
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
 	private int lifeCycle = 0;
 	private final Supplier supplier;
