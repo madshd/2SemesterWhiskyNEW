@@ -14,7 +14,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -170,7 +169,7 @@ public abstract class FillDistillateIntoCask {
         }
 
         public void updatelist(ProductionArea pa, Distillate distillate) {
-            pa.inputElement.calculateFilling(distillate,(Cask) lvwCasks.getSelectionModel().getSelectedItem());
+            pa.fillInputElement.calculateFilling(distillate,(Cask) lvwCasks.getSelectionModel().getSelectedItem());
             if (distillate != null) {
                 List<Item> casks = new ArrayList<>(getCaskFitToDistillate(distillate));
                 lvwCasks.getItems().setAll(casks);
@@ -183,7 +182,7 @@ public abstract class FillDistillateIntoCask {
 
         private void updateFillingList(ProductionArea pa) {
             Cask selectedCask = (Cask) lvwCasks.getSelectionModel().getSelectedItem();
-            pa.inputElement.calculateFilling(pa.fillDistillateElement.selectedDistillate,selectedCask);
+            pa.fillInputElement.calculateFilling(pa.fillDistillateElement.selectedDistillate,selectedCask);
 
             if (selectedCask != null) {
                 lvwCaskFillings.getItems().setAll(selectedCask.getFillingStack());

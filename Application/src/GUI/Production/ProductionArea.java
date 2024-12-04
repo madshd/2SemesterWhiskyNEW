@@ -36,7 +36,10 @@ public class ProductionArea {
 	private Casks casks;
 	protected FillDistillateIntoCask.DistillateElement fillDistillateElement;
 	protected FillDistillateIntoCask.CasksElement fillCaskElement;
-	protected FillDistillateIntoCask.InputElement inputElement;
+	protected FillDistillateIntoCask.InputElement fillInputElement;
+	protected CreateAndUpdateDistillate.Basics distillateBasics;
+	protected CreateAndUpdateDistillate.Ingredient ditillateIngredient;
+	protected CreateAndUpdateDistillate.ProductionDetails distillateProductionDetails;
 
 	public ProductionArea() {
 		stage = new Stage();
@@ -57,7 +60,10 @@ public class ProductionArea {
 		casks = new Casks(this);
 		fillDistillateElement = new FillDistillateIntoCask.DistillateElement(this);
 		fillCaskElement = new FillDistillateIntoCask.CasksElement(this);
-		inputElement = new FillDistillateIntoCask.InputElement(this);
+		fillInputElement = new FillDistillateIntoCask.InputElement(this);
+		distillateBasics = new CreateAndUpdateDistillate.Basics(this);
+		ditillateIngredient = new CreateAndUpdateDistillate.Ingredient(this);
+		distillateProductionDetails = new CreateAndUpdateDistillate.ProductionDetails(this);
 		initContent(mainPane);
 
 		scene = new Scene(mainPane, screenBounds.getWidth() - 300, screenBounds.getHeight());
@@ -141,7 +147,7 @@ public class ProductionArea {
 			HBox hBox = new HBox(20);
 			int hboxBtnWidth = 250;
 			String[] buttonNames = { "Create or update distillate", "Fill distillate into cask" };
-			String[] abbreviations = { "create", "Fill" };
+			String[] abbreviations = { "Create", "Fill" };
 
 			for (int i = 0; i < buttonNames.length; i++) {
 				Button newBtn = new Button(buttonNames[i]);
@@ -163,7 +169,10 @@ public class ProductionArea {
 				case "Fill" -> {
 					mainPane.getChildren().clear();
 					openFillIntoCask();
-
+				}
+				case "Create" -> {
+					mainPane.getChildren().clear();
+					openCreateUpdateDistillate();
 				}
 			}
 
@@ -212,7 +221,19 @@ public class ProductionArea {
 			mainPane.add(headerLabel, 0, 0);
 			mainPane.add(fillDistillateElement,0,1);
 			mainPane.add(fillCaskElement,0,2);
-			mainPane.add(inputElement,0,3);
+			mainPane.add(fillInputElement,0,3);
+		}
+
+		private void openCreateUpdateDistillate(){
+			Label headerLabel = new Label("Create and update distillate");
+			GridPane.setHalignment(headerLabel, HPos.CENTER);
+			headerLabel.setId("LabelHeader");
+			headerLabel.setPrefWidth(screenBounds.getWidth() - 300);
+			headerLabel.setAlignment(Pos.CENTER);
+			mainPane.add(headerLabel, 0, 0);
+			mainPane.add(distillateBasics,0,1);
+			mainPane.add(ditillateIngredient,0,2);
+			mainPane.add(distillateProductionDetails,0,3);
 		}
 
 	}
