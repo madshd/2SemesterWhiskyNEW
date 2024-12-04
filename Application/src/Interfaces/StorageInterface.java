@@ -1,6 +1,7 @@
 package Interfaces;
 
 import Production.Distillate;
+import Production.Distiller;
 import Warehousing.Cask;
 import Warehousing.Ingredient;
 import Warehousing.StorageRack;
@@ -25,6 +26,12 @@ public interface StorageInterface {
 	public void storeCask(Cask cask);
 
 	public void deleteCask(Cask cask);
+
+	public List<Distiller> getDistillers();
+
+	public void storeDistiller(Distiller distiller);
+
+	public void deleteDistiller(Distiller distiller);
 
 	public List<Warehouse> getWarehouses();
 

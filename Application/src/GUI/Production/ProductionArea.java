@@ -38,7 +38,7 @@ public class ProductionArea {
 	protected FillDistillateIntoCask.CasksElement fillCaskElement;
 	protected FillDistillateIntoCask.InputElement fillInputElement;
 	protected CreateAndUpdateDistillate.Basics distillateBasics;
-	protected CreateAndUpdateDistillate.Ingredient ditillateIngredient;
+	protected CreateAndUpdateDistillate.IngredientDetails ditillateIngredient;
 	protected CreateAndUpdateDistillate.ProductionDetails distillateProductionDetails;
 
 	public ProductionArea() {
@@ -62,7 +62,7 @@ public class ProductionArea {
 		fillCaskElement = new FillDistillateIntoCask.CasksElement(this);
 		fillInputElement = new FillDistillateIntoCask.InputElement(this);
 		distillateBasics = new CreateAndUpdateDistillate.Basics(this);
-		ditillateIngredient = new CreateAndUpdateDistillate.Ingredient(this);
+		ditillateIngredient = new CreateAndUpdateDistillate.IngredientDetails(this);
 		distillateProductionDetails = new CreateAndUpdateDistillate.ProductionDetails(this);
 		initContent(mainPane);
 
@@ -188,6 +188,7 @@ public class ProductionArea {
 		private void updateDistillateDetails() {
 			Distillate selectedDistillate = (Distillate) lvwDistillates.getSelectionModel().getSelectedItem();
 			casks.updatelist(selectedDistillate);
+			distillateBasics.updateBasics(selectedDistillate);
 
 			if (selectedDistillate != null) {
 				String infoText = String.format("""
@@ -225,7 +226,7 @@ public class ProductionArea {
 		}
 
 		private void openCreateUpdateDistillate(){
-			Label headerLabel = new Label("Create and update distillate");
+			Label headerLabel = new Label("Create or update distillate");
 			GridPane.setHalignment(headerLabel, HPos.CENTER);
 			headerLabel.setId("LabelHeader");
 			headerLabel.setPrefWidth(screenBounds.getWidth() - 300);

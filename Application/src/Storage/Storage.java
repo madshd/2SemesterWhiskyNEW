@@ -2,6 +2,7 @@ package Storage;
 
 import Interfaces.StorageInterface;
 import Production.Distillate;
+import Production.Distiller;
 import Warehousing.Cask;
 import Warehousing.Ingredient;
 import Warehousing.StorageRack;
@@ -19,6 +20,7 @@ import BatchArea.Batch;
 public class Storage implements StorageInterface, Serializable {
 	private List<Distillate> distillates = new ArrayList<>();
 	private List<Cask> casks = new ArrayList<>();
+	private List<Distiller> distillers = new ArrayList<>();
 	private List<Warehouse> warehouses = new ArrayList<>();
 	private List<StorageRack> storageRacks = new ArrayList<>();
 	private List<Ingredient> ingredients = new ArrayList<>();
@@ -115,6 +117,21 @@ public class Storage implements StorageInterface, Serializable {
 	@Override
 	public void deleteCask(Cask cask) {
 		casks.remove(cask);
+	}
+
+	@Override
+	public List<Distiller> getDistillers() {
+		return new ArrayList<>(distillers);
+	}
+
+	@Override
+	public void storeDistiller(Distiller distiller) {
+		distillers.add(distiller);
+	}
+
+	@Override
+	public void deleteDistiller(Distiller distiller) {
+		distillers.remove(distiller);
 	}
 
 	@Override

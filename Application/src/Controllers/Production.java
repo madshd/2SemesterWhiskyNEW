@@ -9,6 +9,8 @@ import Production.Distiller;
 import Production.FillDistillate;
 import Storage.Storage;
 import Warehousing.Cask;
+import Warehousing.Ingredient;
+import Warehousing.FillIngredient;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,7 +57,27 @@ public abstract class Production {
 	 */
 	public static Distiller createDistiller(String name, String initials, String story){
 		Distiller distiller = new Distiller(name,initials,story);
+		storage.storeDistiller(distiller);
 		return distiller;
+	}
+
+	/**
+	 * Will increase quantity on distillate and decrease quantity on ingrediant.
+	 * @param distillate
+	 * @param ingredient
+	 * @param quantity
+	 * @param date
+	 */
+	public static void addIngredientToDistillate(Distillate distillate, Ingredient ingredient, double quantity, LocalDate date){
+		Filling fillingIncrease = new FillIngredient(date,quantity,distillate,ingredient,false);
+		Filling fillingDecrease = new FillIngredient(date,quantity,distillate,ingredient,true);
+
+		distillate.addIngredientFilling(fillingIncrease);
+		ingredient.updateQuantity(fillingDecrease);
+	}
+
+	public static List<Distiller> getDistillers(){
+		return storage.getDistillers();
 	}
 
 	/**
