@@ -101,11 +101,24 @@ public abstract class Production {
 	 * Used for bottling and updateing quantity after measuring.
 	 * @param cask
 	 * @param Quantity
+	 * @param date
 	 */
-	public static void caskBottling(Cask cask, double Quantity){
+	public static void caskBottling(Cask cask, double quantity, LocalDate date){
 		//TODO by leander
-		//
-		//Eventuelt benyt spendReservation() i Cask klassen
+		double caskQauntity = cask.getQuantityStatus();
+		int caskLifeCycle = cask.getLifeCycle();
+		double calculationFactor = quantity/caskQauntity;
+
+		if (quantity > caskQauntity) throw new IllegalArgumentException("Bottling quantity is higher than cask quantity");
+
+		List<Filling> fillings = cask.getFillingsStackByLifeCycle(caskLifeCycle);
+
+		for (Filling f : fillings){
+			Distillate distillate = ((FillDistillate) f).getDistillate();
+			double decrease = f.getQuantity() * calculationFactor * -1;
+			Filling newFilling = new FillDistillate(date,decrease,cask,distillate,null);
+			cask.updateQuantity(newFilling);
+		}
 
 	}
 }
