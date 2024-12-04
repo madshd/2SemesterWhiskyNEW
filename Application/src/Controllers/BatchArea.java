@@ -130,6 +130,28 @@ public abstract class BatchArea {
 		return tp;
 	}
 
+	/**
+	 * Generates the total production volume for x amount of bottles for a given
+	 * batch. I.e. how many liters of liquid is needed to producce x amount of
+	 * bottles for given batch.
+	 *
+	 * @param numBottlesToProduce the number of bottles to produce
+	 * @param batch               the batch containing the product and its formula
+	 * @return a HashMap where the key is the TasteProfile and the value is the
+	 *         production volume in milliliters
+	 */
+	public static HashMap<TasteProfile, Double> calculateProductionVolume(int numBottlesToProduce, Batch batch) {
+		int totalProductionVolumeML = numBottlesToProduce *
+				batch.getProduct().getBottleSize() * numBottlesToProduce;
+		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
+		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
+		for (TasteProfile tasteProfile : blueprint.keySet()) {
+			double percentage = blueprint.get(tasteProfile);
+			double volume = totalProductionVolumeML * percentage / 100;
+			productionVolume.put(tasteProfile, volume);
+		}
+		return productionVolume;
+	}
 
 	public static boolean deleteTasteProfile(TasteProfile tp) {
 		for (Formula formula : storage.getFormulae()) {
@@ -154,21 +176,33 @@ public abstract class BatchArea {
 	public static Batch createNewBatch(Product product, int numExpectedBottles) {
 		Batch batch = new Batch(product, numExpectedBottles);
 		storage.storeBatch(batch);
-		reserveQuantityFromCasks(batch);
+		reserveQuantityInCasks(batch);
 		return batch;
 	}
 
-	private static void reserveQuantityFromCasks(Batch batch) {
-		HashMap<TasteProfile, Double> productionVolume = calculateProductionVolume(batch.getNumExpectedBottles(),
-				batch);
-		// TODO:
+	private static void reserveQuantityInCasks(Batch batch) {
+		//TODO:
 		// ---for each tasteprofile---
-		// run through all casks matching
-		ArrayList<Cask> allCasks = Warehousing.getReadyCasks();
-		// -> reserve maximum possible amount from each cask until production volume for
-		// tp is fullfilled (decrement PV as we go):was
-		// -> put this batch under Casks reservedBatches with the reservedAmount
-		// -> put the cask and the reserved volume under batch.reservedCasks
+		//run through all casks matching 
+		//-> reserve maximum possible amount from each cask until production volume for tp is fullfilled (decrement PV as we go)
+		//-> put this batch under Casks reservedBatches with the reservedAmount
+		//-> put the cask and the reserved volume under batch.reservedCasks
+		ArrayList<Cask> allCasks = (ArrayList<Cask>) Warehousing.getReadyCasks();
+		HashMap<TasteProfile, Double> productionVolume = calculateProductionVolume(batch.getNumExpectedBottles(), batch);
+		HashMap<TasteProfile, ArrayList<Cask>> matchingCasks = new HashMap<>();
+
+		for(TasteProfile tp : productionVolume.keySet()) {
+			matchingCasks.put(tp, new ArrayList<>());
+			for(Cask cask : allCasks) {
+				if(cask.getTasteProfile().equals(tp)) {
+					matchingCasks.get(tp).add(cask);
+				}
+			}
+		}
+
+		for (TasteProfile tp : matchingCasks.keySet()) {
+
+		}
 	}
 
 	public static ArrayList<Batch> getAllBatches() {
@@ -177,12 +211,6 @@ public abstract class BatchArea {
 
 	public static void deleteBatch(Batch selectedBatch) {
 		storage.deleteBatch(selectedBatch);
-	}
-
-	public static void produceBatch(Batch batch, int numBottlesToProduce) {
-		// TODO: implement this
-
-		// for each cask use caskBottling() in production controller
 	}
 
 	/**
@@ -221,29 +249,6 @@ public abstract class BatchArea {
 			maxNumBottles = Math.min(maxNumBottles, (int) amountBottlesPossiblePerTP);
 		}
 		return maxNumBottles;
-	}
-
-	/**
-	 * Generates the total production volume for x amount of bottles for a given
-	 * batch. I.e. how many liters of liquid is needed to producce x amount of
-	 * bottles for given batch.
-	 *
-	 * @param numBottlesToProduce the number of bottles to produce
-	 * @param batch               the batch containing the product and its formula
-	 * @return a HashMap where the key is the TasteProfile and the value is the
-	 *         production volume in milliliters
-	 */
-	public static HashMap<TasteProfile, Double> calculateProductionVolume(int numBottlesToProduce, Batch batch) {
-		int totalProductionVolumeML = numBottlesToProduce *
-				batch.getProduct().getBottleSize() * numBottlesToProduce;
-		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
-		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
-		for (TasteProfile tasteProfile : blueprint.keySet()) {
-			double percentage = blueprint.get(tasteProfile);
-			double volume = totalProductionVolumeML * percentage / 100;
-			productionVolume.put(tasteProfile, volume);
-		}
-		return productionVolume;
 	}
 
 	// ===================== LABELS ========================= //
@@ -328,4 +333,5 @@ public abstract class BatchArea {
 	public static boolean isLabelGenerate(Batch batch) {
 		return batch.isLabelGenerated();
 	}
+
 }
