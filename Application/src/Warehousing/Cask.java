@@ -247,6 +247,19 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return quantity;
 	}
 
+	public void makeReservation(Batch batch, double amount) {
+			reservedBatchesAmount.put(batch, amount);
+	}
+
+	public void spendReservation(Batch batch, double amount) {
+		double reservedAmount = reservedBatchesAmount.get(batch);
+		if (reservedAmount - amount == 0) {
+			reservedBatchesAmount.remove(batch);
+		} else {
+			reservedBatchesAmount.put(batch, reservedAmount - amount);
+		}
+	}
+
 	@Override
 	public int compareTo(Item o) {
 		return this.getName().compareTo(o.getName());
@@ -275,9 +288,4 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 		return fillings;
 	}
-	// FAKE METHOD FOR INJECTING FAKE DATA
-	public double getFakeQuantity() {
-		return 1000;
-	}
-
 }
