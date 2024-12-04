@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import BatchArea.TasteProfile;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -227,5 +226,4 @@ public abstract class Warehousing {
 	public static List<Warehouse> getAllWarehouses() {
 		return storage.getWarehouses();
 	}
-
 }
