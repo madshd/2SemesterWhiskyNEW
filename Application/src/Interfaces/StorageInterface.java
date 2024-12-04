@@ -2,11 +2,7 @@ package Interfaces;
 
 import Production.Distillate;
 import Production.Distiller;
-import Warehousing.Cask;
-import Warehousing.Ingredient;
-import Warehousing.StorageRack;
-import Warehousing.Warehouse;
-
+import Warehousing.*;
 import java.util.List;
 
 import BatchArea.Formula;
@@ -74,5 +70,11 @@ public interface StorageInterface {
 	public void deleteBatch(Batch batch);
 
 	public List<Batch> getAllBatches();
+
+	public List<Supplier> getSuppliers();
+
+    void storeSupplier(Supplier supplier);
+
+	void deleteSupplier(Supplier supplier);
 
 }

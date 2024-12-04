@@ -2,11 +2,8 @@ package Storage;
 
 import Interfaces.StorageInterface;
 import Production.Distillate;
+import Warehousing.*;
 import Production.Distiller;
-import Warehousing.Cask;
-import Warehousing.Ingredient;
-import Warehousing.StorageRack;
-import Warehousing.Warehouse;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,6 +25,7 @@ public class Storage implements StorageInterface, Serializable {
 	private List<Formula> formulae = new ArrayList<>();
 	private List<TasteProfile> tasteProfiles = new ArrayList<>();
 	private List<Batch> batches = new ArrayList<>();
+	private List<Supplier> suppliers = new ArrayList<>();
 
 	@Override
 	public List<Product> getAllProducts() {
@@ -179,4 +177,18 @@ public class Storage implements StorageInterface, Serializable {
 		ingredients.remove(ingredient);
 	}
 
+	@Override
+	public List<Supplier> getSuppliers() {
+		return new ArrayList<>(suppliers);
+	}
+
+	@Override
+	public void storeSupplier(Supplier supplier) {
+		suppliers.add(supplier);
+	}
+
+	@Override
+	public void deleteSupplier(Supplier supplier) {
+		suppliers.remove(supplier);
+	}
 }

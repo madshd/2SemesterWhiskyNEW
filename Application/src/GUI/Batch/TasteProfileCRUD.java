@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import GUI.Common.ErrorWindow;
 
+@SuppressWarnings("unused")
 public class TasteProfileCRUD {
 
 	private final ErrorWindow errorWindow = new ErrorWindow();
@@ -36,19 +37,15 @@ public class TasteProfileCRUD {
 		GridPane gridPane = new GridPane();
 		tasteProfileCrudStage.setResizable(false);
 
-		// Set the scene for the modal window
 		Scene formulaManagerScene = new Scene(gridPane);
 		tasteProfileCrudStage.setScene(formulaManagerScene);
-		tasteProfileCrudStage.initModality(javafx.stage.Modality.APPLICATION_MODAL); // Block interaction with main
-																						// window
+		tasteProfileCrudStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
 		formulaManagerScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
-		// Initialize content
 		initContent(gridPane);
 	}
 
 	public void showTPCRUDWindow() {
-		// Show the modal and wait for it to be closed
 		tasteProfileCrudStage.showAndWait();
 	}
 
@@ -70,10 +67,7 @@ public class TasteProfileCRUD {
 		}
 	}
 
-	// Initialize the content of the window
-	@SuppressWarnings("unused")
 	private void initContent(GridPane mainPane) {
-		// Main GridPane setup
 		mainPane.setPadding(new Insets(50));
 		mainPane.setHgap(10);
 		mainPane.setVgap(10);
