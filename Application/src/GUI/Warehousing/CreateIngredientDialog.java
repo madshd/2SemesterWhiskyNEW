@@ -1,7 +1,9 @@
 package GUI.Warehousing;
 
+import Controllers.Warehousing;
 import Enumerations.IngredientType;
 import Enumerations.Unit;
+import Interfaces.Item;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,8 +12,25 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import Warehousing.Supplier;
+import Warehousing.Warehouse;
+import Warehousing.StorageRack;
+
+import java.time.LocalDate;
+import java.util.Map;
 
 public class CreateIngredientDialog extends Application {
+    TextField nameField = new TextField();
+    TextField descriptionField = new TextField();
+    TextField batchNumberField = new TextField();
+    TextField quantityField = new TextField();
+    DatePicker productionDatePicker = new DatePicker();
+    DatePicker expirationDatePicker = new DatePicker();
+    ComboBox<Supplier> supplierComboBox = new ComboBox<>();
+    ComboBox<String> unitTypeComboBox = new ComboBox<>();
+    ComboBox<String> ingredientTypeComboBox = new ComboBox<>();
+    ListView<Warehouse> warehouseListView = new ListView<>();
+    ListView<StorageRack> storageRackListView = new ListView<>();
 
         @Override
         public void start(Stage primaryStage) {
@@ -23,34 +42,32 @@ public class CreateIngredientDialog extends Application {
             grid.setVgap(10);
 
             // Tilføj komponenter til layoutet
-            TextField nameField = new TextField();
             nameField.setPromptText("Name");
             grid.add(nameField, 0, 0);
 
-            TextField descriptionField = new TextField();
+
             descriptionField.setPromptText("Description");
             grid.add(descriptionField, 0, 1);
 
-            TextField batchNumberField = new TextField();
+
             batchNumberField.setPromptText("Batch number");
             grid.add(batchNumberField, 0, 2);
 
-            DatePicker productionDatePicker = new DatePicker();
+
             productionDatePicker.setPromptText("Production date");
             grid.add(productionDatePicker, 0, 3);
 
-            DatePicker expirationDatePicker = new DatePicker();
+
             expirationDatePicker.setPromptText("Expiration date");
             grid.add(expirationDatePicker, 0, 4);
 
-            ComboBox<String> supplierComboBox = new ComboBox<>();
+
             supplierComboBox.setPromptText("Supplier");
-            supplierComboBox.getItems().addAll("Supplier1", "Supplier2");
+            supplierComboBox.getItems().addAll(Warehousing.getSuppliers());
             grid.add(supplierComboBox, 0, 5);
 
-            TextField quantityField = new TextField();
+
             quantityField.setPromptText("Quantity");
-            ComboBox<String> unitTypeComboBox = new ComboBox<>();
             unitTypeComboBox.setPromptText("Unit type");
 
             unitTypeComboBox.getItems().addAll(
@@ -68,7 +85,7 @@ public class CreateIngredientDialog extends Application {
             HBox quantityBox = new HBox(10, quantityField, unitTypeComboBox);
             grid.add(quantityBox, 0, 6);
 
-            ComboBox<String> ingredientTypeComboBox = new ComboBox<>();
+
             ingredientTypeComboBox.setPromptText("Ingredient type");
 
             ingredientTypeComboBox.getItems().addAll(
@@ -82,21 +99,50 @@ public class CreateIngredientDialog extends Application {
             grid.add(ingredientTypeComboBox, 0, 7);
 
             Label warehouseLabel = new Label("Warehouses:");
-            ListView<String> warehouseListView = new ListView<>();
-            warehouseListView.getItems().addAll("Warehouse1", "Warehouse2", "Warehouse3");
+            warehouseListView.getItems().addAll(Warehousing.getAllWarehouses());
+            warehouseListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    storageRackListView.getItems().clear();
+                    for (StorageRack sr : newValue.getRacks().values()) {
+                        for (Item item : sr.getList()) {
+                            if (item == null) {
+                                storageRackListView.getItems().add(sr);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
             warehouseListView.setPrefHeight(100);
             grid.add(warehouseLabel, 2, 0);
             grid.add(warehouseListView, 2, 1);
 
             Label storageRackLabel = new Label("Storage Racks:");
-            ListView<String> storageRackListView = new ListView<>();
-            storageRackListView.getItems().addAll("StorageRack1", "StorageRack2", "StorageRack3");
+
             storageRackListView.setPrefHeight(100);
             grid.add(storageRackLabel, 2, 3);
             grid.add(storageRackListView, 2, 4);
 
             // Knapper
             Button createButton = new Button("Create");
+            createButton.setOnAction(e -> {
+                // Opret ingrediens
+                String name = nameField.getText();
+                String description = descriptionField.getText();
+                int batchNumber = Integer.parseInt(batchNumberField.getText());
+                LocalDate productionDate = productionDatePicker.getValue();
+                LocalDate expirationDate = expirationDatePicker.getValue();
+                Supplier supplier = (Supplier) supplierComboBox.getValue();
+                double quantity = Double.parseDouble(quantityField.getText());
+                Unit unitType = Unit.valueOf(unitTypeComboBox.getValue());
+                IngredientType ingredientType = IngredientType.valueOf(ingredientTypeComboBox.getValue());
+                StorageRack storageRack = storageRackListView.getSelectionModel().getSelectedItem();
+                Warehouse warehouse = warehouseListView.getSelectionModel().getSelectedItem();
+
+                Warehousing.createIngredientAndAdd(name, description, batchNumber, productionDate, expirationDate, quantity, supplier, unitType, ingredientType, warehouse, storageRack);
+                primaryStage.close();
+                WarehousingArea.updateLists();
+            });
             Button cancelButton = new Button("Cancel");
             HBox buttonBox = new HBox(10, cancelButton, createButton);
             buttonBox.setAlignment(Pos.CENTER);

@@ -5,6 +5,8 @@ import GUI.Common.ConfirmationDialog;
 import Interfaces.Item;
 import Storage.Storage;
 import Warehousing.Warehouse;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -22,6 +24,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import Warehousing.StorageRack;
+import Warehousing.LoggerObserver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WarehousingArea {
 
@@ -29,6 +35,10 @@ public class WarehousingArea {
 	private Stage stage;
 	private GridPane mainPane;
 	private Scene scene;
+	private static ListView<Warehouse> warehouseList = new ListView<>();
+	private static ListView<StorageRack> storageRacksList = new ListView<>();
+	private static ListView<Item> inventoryList = new ListView<>();
+	private static ListView<String> warehouseMovementsList = new ListView<>();
 
 	public WarehousingArea() {
 		stage = new Stage();
@@ -44,7 +54,7 @@ public class WarehousingArea {
 		mainPane = new GridPane();
 		mainPane.setAlignment(Pos.CENTER);
 //		Grid lines visibility
-		mainPane.setGridLinesVisible(true);
+		mainPane.setGridLinesVisible(false);
 		initContent(mainPane);
 		scene = new Scene(mainPane, screenBounds.getWidth() - 300, screenBounds.getHeight());
 		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
@@ -60,6 +70,7 @@ public class WarehousingArea {
 	}
 
 	public void initContent(GridPane gridPane) {
+		updateLists();
 		Label headerLabel = new Label("Warehousing Area");
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
@@ -67,35 +78,20 @@ public class WarehousingArea {
 
 
 		// Laver lister
-		ListView<Warehouse> warehouseList = new ListView<>();
 		warehouseList.getItems().addAll(Warehousing.getAllWarehouses());
 
-		ListView<StorageRack> storageRacksList = new ListView<>();
-		warehouseList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null) {
-				storageRacksList.getItems().clear();
-				storageRacksList.getItems().addAll(newValue.getRacks().values());
-			}
-		});
-
-		ListView<Item> inventoryList = new ListView<>();
-		warehouseList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null) {
-				storageRacksList.getItems().clear();
-				storageRacksList.getItems().addAll(newValue.getRacks().values());
-				inventoryList.getItems().clear();
-			}
-		});
-
-		storageRacksList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null) {
-				inventoryList.getItems().clear();
-				inventoryList.getItems().addAll(newValue.getList());
-			}
-		});
-
-		ListView<String> warehouseMovementsList = new ListView<>();
 		warehouseMovementsList.getItems().addAll("Item One", "Item Two", "Item Three");
+		for (Warehouse warehouse : Warehousing.getAllWarehouses()) {
+			if (!warehouse.getWarehousingObservers().isEmpty()) {
+				for (Object observer : warehouse.getWarehousingObservers()) {
+					if (observer instanceof LoggerObserver) {
+						for (String log : ((LoggerObserver) observer).getLogs()) {
+							warehouseMovementsList.getItems().add(log);
+						}
+					}
+				}
+			}
+		}
 
 		// Knappesektioner
 		HBox warehouseButtons = new HBox(10, new Button("Delete"), new Button("Update"), new Button("Create"));
@@ -132,7 +128,9 @@ public class WarehousingArea {
 
 		createIngredient.setOnAction(e -> {
 			CreateIngredientDialog createIngredientDialog = new CreateIngredientDialog();
-			createIngredientDialog.start(new Stage());
+			Stage dialogStage = new Stage();
+			createIngredientDialog.start(dialogStage);
+			dialogStage.setOnHiding(event -> updateLists());
 		});
 
 		// Nederste sektion (Warehouse Movements)
@@ -152,6 +150,45 @@ public class WarehousingArea {
 				}
 			});
 		}
+	}
+
+	public static void updateLists() {
+		inventoryList.getItems().clear();
+		warehouseList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				storageRacksList.getItems().clear();
+				storageRacksList.getItems().addAll(newValue.getRacks().values());
+			}
+		});
+
+		storageRacksList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				inventoryList.getItems().clear();
+				inventoryList.getItems().addAll(newValue.getList());
+			}
+		});
+
+		storageRacksList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				inventoryList.getItems().clear();
+				inventoryList.getItems().addAll(newValue.getList());
+			}
+		});
+
+		warehouseList.getSelectionModel().selectedItemProperty().addListener(observable -> {
+			warehouseMovementsList.getItems().clear();
+			for (Warehouse warehouse : Warehousing.getAllWarehouses()) {
+				if (!warehouse.getWarehousingObservers().isEmpty()) {
+					for (Object observer : warehouse.getWarehousingObservers()) {
+						if (observer instanceof LoggerObserver) {
+							for (String log : ((LoggerObserver) observer).getLogs()) {
+								warehouseMovementsList.getItems().add(log);
+							}
+						}
+					}
+				}
+			}
+		});
 	}
 
 	public Stage getStage() {

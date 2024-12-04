@@ -28,4 +28,9 @@ public class Supplier {
     public String getStory() {
         return story;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
