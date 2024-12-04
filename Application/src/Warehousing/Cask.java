@@ -13,7 +13,6 @@ import BatchArea.Batch;
 
 import BatchArea.TasteProfile;
 import Interfaces.Stack;
-import Production.Distillate;
 import Production.FillDistillate;
 
 public class Cask implements OberverQuantitySubject, Item, Serializable {
@@ -248,18 +247,53 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return quantity;
 	}
 
-	public void makeReservation(Batch batch, double amount) {
-			reservedBatchesAmount.put(batch, amount);
-	}
+/**
+ * Calculates the total reserved amount from all batches.
+ *
+ * @return the total reserved amount.
+ */
+public double getTotalReservedAmount() {
+    double totalReservedAmount = 0;
+    for (double reservedAmount : reservedBatchesAmount.values()) {
+        totalReservedAmount += reservedAmount;
+    }
+    return totalReservedAmount;
+}
 
-	public void spendReservation(Batch batch, double amount) {
-		double reservedAmount = reservedBatchesAmount.get(batch);
-		if (reservedAmount - amount == 0) {
-			reservedBatchesAmount.remove(batch);
-		} else {
-			reservedBatchesAmount.put(batch, reservedAmount - amount);
-		}
-	}
+/**
+ * Calculates the legal quantity by subtracting the total reserved amount from the quantity status.
+ *
+ * @return the legal quantity.
+ */
+public double getLegalQuantity() {
+    return getQuantityStatus() - getTotalReservedAmount();
+}
+
+/**
+ * Makes a reservation for a specified batch with a given amount.
+ *
+ * @param batch the batch to reserve.
+ * @param amount the amount to reserve.
+ */
+public void makeReservation(Batch batch, double amount) {
+    reservedBatchesAmount.put(batch, amount);
+}
+
+/**
+ * Spends a reservation for a specified batch with a given amount.
+ * If the reserved amount becomes zero, the batch is completely removed from the reservations.
+ *
+ * @param batch the batch to spend the reservation from.
+ * @param amount the amount to spend.
+ */
+public void spendReservation(Batch batch, double amount) {
+    double reservedAmount = reservedBatchesAmount.get(batch);
+    if (reservedAmount - amount == 0) {
+        reservedBatchesAmount.remove(batch);
+    } else {
+        reservedBatchesAmount.put(batch, reservedAmount - amount);
+    }
+}
 
 	@Override
 	public int compareTo(Item o) {
@@ -270,6 +304,15 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	public String toString() {
 		return String.format("Life cycle: %-2d\t | ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f",lifeCycle ,caskID, maxQuantity,
 				getRemainingQuantity());
+	}
+
+	public String getListInfoReservation(Batch batch){
+		StringBuilder sb = new StringBuilder();
+		sb.append("CaskID: " + this.caskID + " --- ");
+		sb.append();
+
+
+		return sb.toString();
 	}
 
 	public TasteProfile getTasteProfile() {

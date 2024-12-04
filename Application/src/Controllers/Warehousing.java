@@ -277,6 +277,14 @@ public abstract class Warehousing {
 		return readyCasks;
 	}
 
+	public static double getCaskTotalReservedAmount(Cask cask) {
+		return cask.getTotalReservedAmount();
+	}
+
+	public static double getLegalQuantity(Cask cask) {
+		return cask.getLegalQuantity();
+	}
+
 	public static List<Supplier> getSuppliers() {
 		return new ArrayList<>(storage.getSuppliers());
 	}

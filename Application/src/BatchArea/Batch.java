@@ -48,6 +48,10 @@ public class Batch {
 		this.reservedCasks.remove(cask);
 	}
 
+	public void addReservedCask(Cask cask, double quantity) {
+		this.reservedCasks.put(cask, quantity);
+	}
+
 	public void generateLabel() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(product.getProductName());
@@ -64,7 +68,7 @@ public class Batch {
 
 	public String getListInfo() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Batch ID: ");
+		sb.append("Batch ID: " + batchID);
 		sb.append(" - ");
 		sb.append("Product: ");
 		sb.append(product);

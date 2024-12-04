@@ -104,6 +104,8 @@ public abstract class Production {
 	 */
 	public static void caskBottling(Cask cask, double Quantity){
 		//TODO by leander
+		//
+		//Eventuelt benyt spendReservation() i Cask klassen
 
 	}
 }

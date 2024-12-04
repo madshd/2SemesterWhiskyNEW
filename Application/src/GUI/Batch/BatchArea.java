@@ -39,6 +39,7 @@ public class BatchArea {
 	private static Button createBatchButton = new Button("Create New Batch");
 	private static ProductCRUD productCRUD = new ProductCRUD();
 	private static BatchCRUD batchCRUD = new BatchCRUD();
+	private static ProduceBatchWindow produceBatchWindow = new ProduceBatchWindow();
 
 	public BatchArea() {
 		stage = new Stage();
@@ -297,6 +298,8 @@ public class BatchArea {
 
 		produceBatchButton.setOnAction(e -> {
 			// TODO: Implement functionality
+			
+			produceBatchWindow.show(batchesTable.getSelectionModel().getSelectedItem());
 			// Popup window with list of reserved casks
 			// Button to bottle batch with input field asking how many bottles to make.
 			// Clicking okay will generate a list with what casks to use and how much

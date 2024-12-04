@@ -2,6 +2,10 @@ package Controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import BatchArea.*;
 import Enumerations.TastingNote;
 import Enumerations.Unit;
@@ -130,29 +134,6 @@ public abstract class BatchArea {
 		return tp;
 	}
 
-	/**
-	 * Generates the total production volume for x amount of bottles for a given
-	 * batch. I.e. how many liters of liquid is needed to producce x amount of
-	 * bottles for given batch.
-	 *
-	 * @param numBottlesToProduce the number of bottles to produce
-	 * @param batch               the batch containing the product and its formula
-	 * @return a HashMap where the key is the TasteProfile and the value is the
-	 *         production volume in milliliters
-	 */
-	public static HashMap<TasteProfile, Double> calculateProductionVolume(int numBottlesToProduce, Batch batch) {
-		int totalProductionVolumeML = numBottlesToProduce *
-				batch.getProduct().getBottleSize() * numBottlesToProduce;
-		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
-		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
-		for (TasteProfile tasteProfile : blueprint.keySet()) {
-			double percentage = blueprint.get(tasteProfile);
-			double volume = totalProductionVolumeML * percentage / 100;
-			productionVolume.put(tasteProfile, volume);
-		}
-		return productionVolume;
-	}
-
 	public static boolean deleteTasteProfile(TasteProfile tp) {
 		for (Formula formula : storage.getFormulae()) {
 			if (formula.getBlueprint().containsKey(tp)) {
@@ -180,29 +161,104 @@ public abstract class BatchArea {
 		return batch;
 	}
 
+	/**
+	 * Reserves the required quantity in casks for the given batch based on its
+	 * taste profile and batch size (number of bottles).
+	 *
+	 * @param batch the batch for which the casks are to be reserved
+	 */
 	private static void reserveQuantityInCasks(Batch batch) {
-		//TODO:
-		// ---for each tasteprofile---
-		//run through all casks matching 
-		//-> reserve maximum possible amount from each cask until production volume for tp is fullfilled (decrement PV as we go)
-		//-> put this batch under Casks reservedBatches with the reservedAmount
-		//-> put the cask and the reserved volume under batch.reservedCasks
-		ArrayList<Cask> allCasks = (ArrayList<Cask>) Warehousing.getReadyCasks();
-		HashMap<TasteProfile, Double> productionVolume = calculateProductionVolume(batch.getNumExpectedBottles(), batch);
-		HashMap<TasteProfile, ArrayList<Cask>> matchingCasks = new HashMap<>();
+		Map<TasteProfile, Double> productionVolume = calculateProductionVolume(batch.getNumExpectedBottles(), batch);
+		Map<TasteProfile, List<Cask>> matchingCasks = getMatchingCasks(batch, productionVolume);
+		System.out.println("Production volume: ");
+		System.out.println(productionVolume);
+		System.out.println("Matching casks: ");
+		System.out.println(matchingCasks);
 
-		for(TasteProfile tp : productionVolume.keySet()) {
-			matchingCasks.put(tp, new ArrayList<>());
-			for(Cask cask : allCasks) {
-				if(cask.getTasteProfile().equals(tp)) {
-					matchingCasks.get(tp).add(cask);
+		System.out.println(Warehousing.getReadyCasks());
+
+		for (TasteProfile tp : matchingCasks.keySet()) {
+			double remainingTPVolume = productionVolume.get(tp);
+			Iterator<Cask> iterator = matchingCasks.get(tp).iterator();
+			while (iterator.hasNext() && remainingTPVolume > 0) {
+				Cask cask = iterator.next();
+				double remainingQuantityCask = cask.getLegalQuantity();
+				double reservedAmount = Math.min(remainingTPVolume, remainingQuantityCask);
+				cask.makeReservation(batch, reservedAmount);
+				batch.addReservedCask(cask, reservedAmount);
+				remainingTPVolume -= reservedAmount;
+			}
+		}
+	}
+
+	/**
+	 * Produces a given number of bottles from a given batch.
+	 *
+	 * @param batch               The batch to produce.
+	 * @param numBottlesToProduce The number of bottles to produce.
+	 * @throws IllegalArgumentException if the number of bottles to produce exceeds
+	 *                                  the expected number of bottles.
+	 */
+	public static void produceBatch(Batch batch, int numBottlesToProduce) {
+		if (numBottlesToProduce + batch.getNumProducedBottles() > batch.getNumExpectedBottles()) {
+			throw new IllegalArgumentException("Number of bottles to produce exceeds the expected number of bottles.");
+		}
+
+		Map<TasteProfile, Double> productionVolumeTP = calculateProductionVolume(numBottlesToProduce, batch);
+		Map<TasteProfile, List<Cask>> matchingCasks = getMatchingCasks(batch, productionVolumeTP);
+
+		for (TasteProfile tp : matchingCasks.keySet()) {
+			double remainingTPVolume = productionVolumeTP.get(tp);
+			Iterator<Cask> iterator = matchingCasks.get(tp).iterator();
+
+			while (iterator.hasNext() && remainingTPVolume > 0) {
+				Cask cask = iterator.next();
+				double reservedAmount = batch.getReservedCasks().get(cask);
+				double usedAmount = Math.min(remainingTPVolume, reservedAmount);
+
+				// Perform cask bottling and update the reservation
+				Production.caskBottling(cask, usedAmount);
+				cask.spendReservation(batch, usedAmount);
+				remainingTPVolume -= usedAmount;
+
+				// Remove the cask from reserved if the entire reserved amount is used
+				if (usedAmount == reservedAmount) {
+					batch.removeCaskFromReserved(cask);
 				}
 			}
 		}
 
-		for (TasteProfile tp : matchingCasks.keySet()) {
+		// Increment the number of produced bottles
+		batch.incNumProducedBottles(numBottlesToProduce);
 
+		// Mark production as complete if the expected number of bottles is produced
+		if (batch.getNumProducedBottles() == batch.getNumExpectedBottles()) {
+			batch.markProductionComplete();
 		}
+	}
+
+	/**
+	 * Retrieves a map of matching casks for each taste profile based on the given
+	 * batch and production volume.
+	 *
+	 * @param batch            the batch for which matching casks are to be found
+	 * @param productionVolume a map containing taste profiles and their
+	 *                         corresponding production volumes
+	 * @return a map where each key is a TasteProfile and the value is a list of
+	 *         Casks that match the taste profile
+	 */
+	public static Map<TasteProfile, List<Cask>> getMatchingCasks(Batch batch,
+			Map<TasteProfile, Double> productionVolume) {
+		Map<TasteProfile, List<Cask>> matchingCasks = new HashMap<>();
+		for (TasteProfile tp : productionVolume.keySet()) {
+			matchingCasks.put(tp, new ArrayList<>());
+			for (Cask cask : storage.getCasks()) {
+				if (tp != null && tp.equals(cask.getTasteProfile())) {
+					matchingCasks.get(tp).add(cask);
+				}
+			}
+		}
+		return matchingCasks;
 	}
 
 	public static ArrayList<Batch> getAllBatches() {
@@ -249,6 +305,31 @@ public abstract class BatchArea {
 			maxNumBottles = Math.min(maxNumBottles, (int) amountBottlesPossiblePerTP);
 		}
 		return maxNumBottles;
+	}
+
+	/**
+	 * Generates the total production volume for x amount of bottles for a given
+	 * batch. I.e. how many liters of liquid is needed to producce x amount of
+	 * bottles for given batch.
+	 *
+	 * @param numBottlesToProduce the number of bottles to produce
+	 * @param batch               the batch containing the product and its formula
+	 * @return a HashMap where the key is the TasteProfile and the value is the
+	 *         production volume in milliliters
+	 */
+	public static HashMap<TasteProfile, Double> calculateProductionVolume(int numBottlesToProduce, Batch batch) {
+		double totalProductionVolumeML = numBottlesToProduce *
+				batch.getProduct().getBottleSize() * numBottlesToProduce;
+		double totalProductionVolumeLITER = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS,
+				totalProductionVolumeML);
+		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
+		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
+		for (TasteProfile tasteProfile : blueprint.keySet()) {
+			double percentage = blueprint.get(tasteProfile);
+			double volume = totalProductionVolumeLITER / percentage;
+			productionVolume.put(tasteProfile, volume);
+		}
+		return productionVolume;
 	}
 
 	// ===================== LABELS ========================= //
