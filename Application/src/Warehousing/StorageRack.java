@@ -3,8 +3,10 @@ package Warehousing;
 import Interfaces.Item;
 import Interfaces.WarehousingObserver;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class StorageRack {
     private String id;
@@ -14,7 +16,7 @@ public class StorageRack {
 
     private LinkedList<Item> list = new LinkedList<>();
 
-    private List<WarehousingObserver> warehousingObservers;
+    private Set<WarehousingObserver> warehousingObservers = new HashSet<>();
 
     public StorageRack(String id, int shelves) {
         this.id = id;
@@ -36,7 +38,7 @@ public class StorageRack {
         return id;
     }
 
-    public List<WarehousingObserver> getWarehousingObservers() {
+    public Set<WarehousingObserver> getWarehousingObservers() {
         return warehousingObservers;
     }
 
