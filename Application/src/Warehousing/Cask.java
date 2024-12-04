@@ -248,6 +248,27 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return quantity;
 	}
 
+
+	public List<Filling> getFillingStack(){
+		List<Filling> fillings = new ArrayList<>();
+
+		for (Filling f : fillingStack){
+			fillings.add(f);
+		}
+
+		return fillings;
+	}
+
+	public List<Filling> getFillingsStackByLifeCycle(int lifeCycle){
+		List<Filling> fillings = new ArrayList<>();
+
+		for (Filling f : fillingStack){
+			if(((FillDistillate) f).getLifeCycle() == lifeCycle ){
+				fillings.add(f);
+			}
+		}
+		return fillings;
+
 	public void makeReservation(Batch batch, double amount) {
 			reservedBatchesAmount.put(batch, amount);
 	}
@@ -259,6 +280,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		} else {
 			reservedBatchesAmount.put(batch, reservedAmount - amount);
 		}
+
 	}
 
 	@Override
@@ -280,6 +302,13 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		this.tasteProfile = tasteProfile;
 	}
 
+
+	// FAKE METHOD FOR INJECTING FAKE DATA
+	public double getFakeQuantity() {
+		return 1000;
+	}
+
+
 	public List<Filling> getFillingStack(){
 		List<Filling> fillings = new ArrayList<>();
 
@@ -289,4 +318,5 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 		return fillings;
 	}
+
 }

@@ -265,15 +265,17 @@ public abstract class initStorage {
 		Production.fillDistillateIntoCask(distillate_06,cask_04,150,LocalDate.parse("2024-01-01"));
 
 		// Cask holding more than two distillates and fully used
-		Production.fillDistillateIntoCask(distillate_10,cask_02,50,LocalDate.parse("2024-01-01"));
-		Production.fillDistillateIntoCask(distillate_08,cask_02,100,LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_10,cask_02,50,LocalDate.parse("2024-02-01"));
+		Production.fillDistillateIntoCask(distillate_08,cask_02,100,LocalDate.parse("2024-02-01"));
 
 		// Cask having more than two distillates and having remaining capacity
-		Production.fillDistillateIntoCask(distillate_07,cask_04,50,LocalDate.parse("2024-01-01"));
-		Production.fillDistillateIntoCask(distillate_08,cask_04,25,LocalDate.parse("2024-01-01"));
-		Production.fillDistillateIntoCask(distillate_09,cask_04,15,LocalDate.parse("2024-01-01"));
-		Production.fillDistillateIntoCask(distillate_10,cask_04,75,LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_07,cask_04,50,LocalDate.parse("2024-03-01"));
+		Production.fillDistillateIntoCask(distillate_08,cask_04,25,LocalDate.parse("2024-04-01"));
+		Production.fillDistillateIntoCask(distillate_09,cask_04,15,LocalDate.parse("2024-05-01"));
+		Production.fillDistillateIntoCask(distillate_10,cask_04,75,LocalDate.parse("2024-06-01"));
 
+		// *** Bottling ***
+		Production.caskBottling(cask_04,25,LocalDate.parse("2024-12-01"));
 
 	}
 
