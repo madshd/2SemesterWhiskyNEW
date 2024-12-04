@@ -205,6 +205,24 @@ public abstract class initStorage {
 		addDescriotionToDistillate(distillate_10,
 				"A harmonious distillate with subtle hints of fresh bread, honey, and a lingering smoky finish.");
 
+		// *** Fillings ***
+		// One distallate capacity fully used across casks
+		Production.fillDistillateIntoCask(distillate_06,cask_01,100,LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_06,cask_02,100,LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_06,cask_03,100,LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_06,cask_04,150,LocalDate.parse("2024-01-01"));
+
+		// Cask holding more than two distillates and fully used
+		Production.fillDistillateIntoCask(distillate_10,cask_02,50,LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_08,cask_02,100,LocalDate.parse("2024-01-01"));
+
+		// Cask having more than two distillates and having remaining capacity
+		Production.fillDistillateIntoCask(distillate_07,cask_04,50,LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_08,cask_04,25,LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_09,cask_04,15,LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_10,cask_04,75,LocalDate.parse("2024-01-01"));
+
+
 	}
 
 	public static void loadWarehousing() {
