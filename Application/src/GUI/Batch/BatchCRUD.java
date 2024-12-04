@@ -48,7 +48,7 @@ public class BatchCRUD {
 	}
 
 	public void updateContent(Product product) {
-		maxBottles = Controllers.BatchArea.calcMaxNumBottles(product);
+		maxBottles = Controllers.BatchArea.calculateMaxNumBottles(product);
 		batchID.setText(Batch.getBatchIDglobalCount() + "");
 		numMaxBottles.setText(maxBottles + "");
 		this.product = product;

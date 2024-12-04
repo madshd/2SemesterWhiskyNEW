@@ -20,7 +20,7 @@ public class Batch {
 
 	private boolean productionComplete;
 
-	private final Map<Cask, Integer> reservedCasks = new HashMap<>();
+	private final Map<Cask, Double> reservedCasks = new HashMap<>();
 
 	public Batch(Product product, int numExpectedBottles) {
 		this.batchID = batchIDglobalCount++;
@@ -109,7 +109,7 @@ public class Batch {
 		return completionDate;
 	}
 
-	public Map<Cask, Integer> getReservedCasks() {
+	public Map<Cask, Double> getReservedCasks() {
 		return new HashMap<>(reservedCasks);
 	}
 

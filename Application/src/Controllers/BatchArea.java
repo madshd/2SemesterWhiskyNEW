@@ -2,25 +2,24 @@ package Controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import BatchArea.*;
 import Enumerations.TastingNote;
 import Enumerations.Unit;
 import Interfaces.StorageInterface;
 import Storage.Storage;
-
 import Warehousing.Cask;
-
 import Common.*;
 
 public abstract class BatchArea {
 
 	static StorageInterface storage = new Storage();
-	private static Product mostRecentlyModifiedProduc;
+	private static Product mostRecentlyModifiedProduct;
 
 	public static void setStorage(StorageInterface storage) {
 		BatchArea.storage = storage;
 	}
+
+	// ===================== PRODUCT ========================= //
 
 	/**
 	 * Creates a new product with the specified name.
@@ -33,7 +32,7 @@ public abstract class BatchArea {
 	public static Product createNewProduct(String productName, int bottleSize) {
 		Product product = new Product(productName, bottleSize);
 		storage.storeProduct(product);
-		mostRecentlyModifiedProduc = product;
+		mostRecentlyModifiedProduct = product;
 		return product;
 	}
 
@@ -44,28 +43,26 @@ public abstract class BatchArea {
 	public static Product updateProduct(String productName, int bottleSize, Product product) {
 		product.setProductName(productName);
 		product.setBottleSize(bottleSize);
-		mostRecentlyModifiedProduc = product;
+		mostRecentlyModifiedProduct = product;
 		return product;
 	}
 
 	public static Product getMostRecentlyModifiedProduct() {
-		return mostRecentlyModifiedProduc;
+		return mostRecentlyModifiedProduct;
 	}
 
-	public static void defineFormulaForProduct(Product product, Formula formula) {
-		product.defineFormula(formula);
+	public static void clearMostRecentlyModifiedProduct() {
+		mostRecentlyModifiedProduct = null;
 	}
 
 	public static ArrayList<Product> getAllProducts() {
 		return (ArrayList<Product>) storage.getAllProducts();
 	}
 
-	public static ArrayList<TasteProfile> getAllTasteProfiles() {
-		return (ArrayList<TasteProfile>) storage.getTasteProfiles();
-	}
+	// ===================== FORMULA ========================= //
 
-	public static ArrayList<Formula> getAllFormulae() {
-		return (ArrayList<Formula>) storage.getFormulae();
+	public static void defineFormulaForProduct(Product product, Formula formula) {
+		product.defineFormula(formula);
 	}
 
 	/**
@@ -79,17 +76,27 @@ public abstract class BatchArea {
 	 *                                  100,
 	 *                                  or if the total percentage is not 100
 	 */
-	public static Formula createNewFormula(String formulaName, HashMap<TasteProfile, Integer> blueprint) {
+	public static Formula createNewFormula(String formulaName, HashMap<TasteProfile, Double> blueprint) {
 		Formula formula = new Formula(formulaName, blueprint);
 		storage.storeFormula(formula);
 		return formula;
 	}
 
-	public static Formula updateFormula(String formulaName, HashMap<TasteProfile, Integer> blueprint, Formula formula) {
+	public static Formula updateFormula(String formulaName, HashMap<TasteProfile, Double> blueprint, Formula formula) {
 		formula.setFormulaName(formulaName);
 		formula.setBlueprint(blueprint);
 		return formula;
 	}
+
+	public static void deleteFormula(Formula selectedFormula) {
+		storage.deleteFormula(selectedFormula);
+	}
+
+	public static ArrayList<Formula> getAllFormulae() {
+		return (ArrayList<Formula>) storage.getFormulae();
+	}
+
+	// ===================== TASTE PROFILE =================== //
 
 	/**
 	 * Creates a new TasteProfile with the given profile ID, description, and
@@ -123,6 +130,29 @@ public abstract class BatchArea {
 		return tp;
 	}
 
+	/**
+	 * Generates the total production volume for x amount of bottles for a given
+	 * batch. I.e. how many liters of liquid is needed to producce x amount of
+	 * bottles for given batch.
+	 *
+	 * @param numBottlesToProduce the number of bottles to produce
+	 * @param batch               the batch containing the product and its formula
+	 * @return a HashMap where the key is the TasteProfile and the value is the
+	 *         production volume in milliliters
+	 */
+	public static HashMap<TasteProfile, Double> calculateProductionVolume(int numBottlesToProduce, Batch batch) {
+		int totalProductionVolumeML = numBottlesToProduce *
+				batch.getProduct().getBottleSize() * numBottlesToProduce;
+		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
+		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
+		for (TasteProfile tasteProfile : blueprint.keySet()) {
+			double percentage = blueprint.get(tasteProfile);
+			double volume = totalProductionVolumeML * percentage / 100;
+			productionVolume.put(tasteProfile, volume);
+		}
+		return productionVolume;
+	}
+
 	public static boolean deleteTasteProfile(TasteProfile tp) {
 		for (Formula formula : storage.getFormulae()) {
 			if (formula.getBlueprint().containsKey(tp)) {
@@ -137,50 +167,47 @@ public abstract class BatchArea {
 		tp.setProfileName(profileName);
 	}
 
+	public static ArrayList<TasteProfile> getAllTasteProfiles() {
+		return (ArrayList<TasteProfile>) storage.getTasteProfiles();
+	}
+
+	// ====================== BATCH ========================= //
+
 	public static Batch createNewBatch(Product product, int numExpectedBottles) {
 		Batch batch = new Batch(product, numExpectedBottles);
 		storage.storeBatch(batch);
+		reserveQuantityFromCasks(batch);
 		return batch;
+	}
+
+	private static void reserveQuantityFromCasks(Batch batch) {
+		HashMap<TasteProfile, Double> productionVolume = calculateProductionVolume(batch.getNumExpectedBottles(), batch);
+		//TODO:
+		// ---for each tasteprofile---
+		//run through all casks matching 
+		//-> reserve maximum possible amount from each cask until production volume for tp is fullfilled (decrement PV as we go)
+		//-> put this batch under Casks reservedBatches with the reservedAmount
+		//-> put the cask and the reserved volume under batch.reservedCasks
 	}
 
 	public static ArrayList<Batch> getAllBatches() {
 		return (ArrayList<Batch>) storage.getAllBatches();
 	}
 
-	/**
-	 * Generates the production volume for each taste profile in the batch based
-	 * on
-	 * the amount of bottles to be produced.
-	 *
-	 * @param numBottlesToProduce the number of bottles to produce
-	 * @param batch               the batch containing the product and its formula
-	 * @return a HashMap where the key is the TasteProfile and the value is the
-	 *         production volume in milliliters
-	 */
-	public static HashMap<TasteProfile, Integer> generateProductionVolume(int numBottlesToProduce, Batch batch) {
-		int totalProductionVolumeML = numBottlesToProduce *
-				batch.getProduct().getBottleSize() * numBottlesToProduce;
-		HashMap<TasteProfile, Integer> blueprint = batch.getProduct().getFormula().getBlueprint();
-		HashMap<TasteProfile, Integer> productionVolume = new HashMap<>();
-		for (TasteProfile tasteProfile : blueprint.keySet()) {
-			int percentage = blueprint.get(tasteProfile);
-			int volume = totalProductionVolumeML * percentage / 100;
-			productionVolume.put(tasteProfile, volume);
-		}
-		return productionVolume;
-	}
-
-	public static void deleteFormula(Formula selectedFormula) {
-		storage.deleteFormula(selectedFormula);
-	}
-
 	public static void deleteBatch(Batch selectedBatch) {
 		storage.deleteBatch(selectedBatch);
 	}
 
-	public static void clearMostRecentlyModifiedProduct() {
-		mostRecentlyModifiedProduc = null;
+	/**
+	 * Marks the production as complete for the given batch.
+	 *
+	 * @param batch the batch to mark as complete
+	 */
+	public static void setBatchProductionComplete(Batch batch) {
+		batch.markProductionComplete();
 	}
+
+	// =================== CALCULATIONS ===================== //
 
 	/**
 	 * Calculates the maximum number of bottles that can be produced for a given
@@ -190,13 +217,11 @@ public abstract class BatchArea {
 	 *                calculated
 	 * @return the maximum number of bottles that can be produced
 	 */
-	public static int calcMaxNumBottles(Product product) {
+	public static int calculateMaxNumBottles(Product product) {
 		int maxNumBottles = Integer.MAX_VALUE;
 		double bottleSizeML = product.getBottleSize();
 		double bottleSizeLITERS = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS, bottleSizeML);
-
-		HashMap<TasteProfile, Integer> blueprint = product.getFormula().getBlueprint();
-
+		HashMap<TasteProfile, Double> blueprint = product.getFormula().getBlueprint();
 		for (TasteProfile tp : blueprint.keySet()) {
 			double percentage = blueprint.get(tp) / 100.0;
 			double totalVolumePerTP = 0;
@@ -210,6 +235,40 @@ public abstract class BatchArea {
 		}
 		return maxNumBottles;
 	}
+
+	// ===================== LABELS ========================= //
+	/**
+	 * Generates a label for the given batch if the production is complete.
+	 *
+	 * @param batch the batch to generate a label for
+	 * @return true if the label was generated, false otherwise
+	 */
+	public static boolean generateLabelForBatch(Batch batch) {
+		if (batch.getCompletionDate() == null) {
+			return false;
+		} else {
+			batch.generateLabel();
+			return true;
+		}
+	}
+
+	/**
+	 * Retrieves the label for the given batch.
+	 *
+	 * @param batch the batch to retrieve the label for
+	 * @return the label if it has been generated, otherwise a message indicating
+	 *         the label has not been generated
+	 */
+	public static String getLabelForBatch(Batch batch) {
+		String label = batch.getLabel();
+		if (label != null) {
+			return label;
+		} else {
+			return "Label not generated yet.";
+		}
+	}
+
+	// ================= "IS"-VALIDATIONS =================== //
 
 	/**
 	 * Checks if a given product is used in any batch.
@@ -226,40 +285,38 @@ public abstract class BatchArea {
 		return false;
 	}
 
+	/**
+	 * Checks if the production has started for the given batch.
+	 *
+	 * @param b the batch to check
+	 * @return true if production has started, false otherwise
+	 */
 	public static boolean isProductionStarted(Batch b) {
 		if (b.getNumProducedBottles() > 0) {
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
+	/**
+	 * Checks if the production is complete for the given batch.
+	 *
+	 * @param b the batch to check
+	 * @return true if production is complete, false otherwise
+	 */
 	public static boolean isProductionComplete(Batch b) {
 		return b.isProductionComplete();
 	}
 
-	public static boolean generateLabelForBatch(Batch batch) {
-		if (batch.getCompletionDate() == null) {
-			return false;
-		} else {
-			batch.generateLabel();
-			return true;
-		}
-	}
-
+	/**
+	 * Checks if a label has been generated for the given batch.
+	 *
+	 * @param batch the batch to check
+	 * @return true if a label has been generated, false otherwise
+	 */
 	public static boolean isLabelGenerate(Batch batch) {
 		return batch.isLabelGenerated();
 	}
 
-	public static String getLabelForBatch(Batch batch) {
-		String label = batch.getLabel();
-		if (label != null) {
-			return label;
-		} else {
-			return "Label not generated yet.";
-		}
-	}
-
-	public static void setBatchProductionComplete(Batch batch) {
-		batch.markProductionComplete();
-	}
 }

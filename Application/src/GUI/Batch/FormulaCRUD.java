@@ -30,7 +30,7 @@ public class FormulaCRUD {
 	private Button createButton = new Button("Create");
 	private Label header = new Label("Create New Formula");
 	private ListView<TasteProfile> tasteProfiles = new ListView<>();
-	private HashMap<TasteProfile, Integer> blueprint = new HashMap<>();
+	private HashMap<TasteProfile, Double> blueprint = new HashMap<>();
 
 	public FormulaCRUD() {
 		formulaCrudStage.setTitle("Formula Manager");
@@ -136,7 +136,7 @@ public class FormulaCRUD {
 				percentageField.setFocusTraversable(true);
 
 				// Initialize with the value from the blueprint map
-				percentageField.setText(blueprint.getOrDefault(item, 0).toString());
+				percentageField.setText(blueprint.getOrDefault(item, (double) 0).toString());
 
 				// Add a listener to handle percentage input changes
 				percentageField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -165,7 +165,7 @@ public class FormulaCRUD {
 					}
 					// Valid input
 					percentageField.setStyle("-fx-border-color: #d4a373;");
-					blueprint.put(item, percentage);
+					blueprint.put(item, (double) percentage);
 					updateTotalPercentage();
 				} catch (NumberFormatException e) {
 					// Invalid input (non-numeric)
@@ -175,7 +175,7 @@ public class FormulaCRUD {
 
 			private void resetPercentageToZero(TasteProfile item, TextField percentageField) {
 				percentageField.setText("0");
-				blueprint.put(item, 0);
+				blueprint.put(item, (double) 0);
 				updateTotalPercentage();
 			}
 		});
@@ -219,11 +219,12 @@ public class FormulaCRUD {
 			errorWindow.showError("Name cannot be empty");
 			return;
 		}
-		if (totalPercentageInput.getText().isEmpty() || Integer.parseInt(totalPercentageInput.getText()) != 100) {
+		if (totalPercentageInput.getText().isEmpty() || Double.parseDouble(totalPercentageInput.getText()) != 100) {
 			errorWindow.showError("Total percentage must be 100");
 			return;
 		}
-		// Create or update the formula with selected TasteProfiles and their percentages
+		// Create or update the formula with selected TasteProfiles and their
+		// percentages
 		if (updating) {
 			Controllers.BatchArea.updateFormula(name, blueprint, formula);
 		} else {
@@ -235,7 +236,10 @@ public class FormulaCRUD {
 
 	// Calculate the total percentage
 	private void updateTotalPercentage() {
-		int total = blueprint.values().stream().mapToInt(Integer::intValue).sum();
+		double total = 0;
+		for (Double value : blueprint.values()) {
+			total += value;
+		}
 		totalPercentageInput.setText(String.valueOf(total));
 		if (total != 100) {
 			totalPercentageInput.setStyle("-fx-border-color: red;");
@@ -247,7 +251,7 @@ public class FormulaCRUD {
 	// Clear all percentage inputs in the ListView tasteProfiles
 	private void clearPercentageInputs() {
 		for (TasteProfile tp : tasteProfiles.getItems()) {
-			blueprint.put(tp, 0);
+			blueprint.put(tp, (double) 0);
 		}
 		tasteProfiles.refresh();
 		updateTotalPercentage();

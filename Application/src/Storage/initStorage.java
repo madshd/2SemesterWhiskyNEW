@@ -55,18 +55,18 @@ public abstract class initStorage {
 
 	// =================== FORMULAE =================
 
-	static HashMap<TasteProfile, Integer> blueprintTEST = new HashMap<>();
+	static HashMap<TasteProfile, Double> blueprintTEST = new HashMap<>();
 
-	static HashMap<TasteProfile, Integer> blueprint1 = new HashMap<>();
+	static HashMap<TasteProfile, Double> blueprint1 = new HashMap<>();
 	Formula formula1 = BatchArea.createNewFormula("Formula 1", blueprint1);
 
-	static HashMap<TasteProfile, Integer> blueprint2 = new HashMap<>();
+	static HashMap<TasteProfile, Double> blueprint2 = new HashMap<>();
 	Formula formula2 = BatchArea.createNewFormula("Formula 2", blueprint2);
 
-	static HashMap<TasteProfile, Integer> blueprint3 = new HashMap<>();
+	static HashMap<TasteProfile, Double> blueprint3 = new HashMap<>();
 	Formula formula3 = BatchArea.createNewFormula("Formula 3", blueprint3);
 
-	static HashMap<TasteProfile, Integer> blueprint4 = new HashMap<>();
+	static HashMap<TasteProfile, Double> blueprint4 = new HashMap<>();
 	Formula formula4 = BatchArea.createNewFormula("Formula 4", blueprint4);
 
 	// =================== PRODUCTS =================
@@ -283,11 +283,10 @@ public abstract class initStorage {
 
 	}
 
-	@SuppressWarnings("unused")
 	public static void loadBatchArea() {
 
 		notesTEST.add(TastingNote.SMOKEY);
-		blueprintTEST.put(tasteProfileTEST, 100);
+		blueprintTEST.put(tasteProfileTEST, 100.0);
 
 		notes1.add(TastingNote.SMOKEY);
 		notes1.add(TastingNote.APPLE);
@@ -300,15 +299,15 @@ public abstract class initStorage {
 		notes4.add(TastingNote.OAK);
 		notes4.add(TastingNote.BLACK_PEPPER);
 		notes4.add(TastingNote.HONEY);
-		blueprint1.put(tasteProfile1, 50);
-		blueprint1.put(tasteProfile2, 25);
-		blueprint1.put(tasteProfile3, 25);
-		blueprint2.put(tasteProfile1, 50);
-		blueprint2.put(tasteProfile4, 50);
-		blueprint3.put(tasteProfile4, 100);
-		blueprint4.put(tasteProfile1, 25);
-		blueprint4.put(tasteProfile3, 50);
-		blueprint4.put(tasteProfile4, 25);
+		blueprint1.put(tasteProfile1, 50.0);
+		blueprint1.put(tasteProfile2, 25.0);
+		blueprint1.put(tasteProfile3, 25.0);
+		blueprint2.put(tasteProfile1, 50.0);
+		blueprint2.put(tasteProfile4, 50.0);
+		blueprint3.put(tasteProfile4, 10.0);
+		blueprint4.put(tasteProfile1, 25.0);
+		blueprint4.put(tasteProfile3, 50.0);
+		blueprint4.put(tasteProfile4, 25.0);
 
 	}
 

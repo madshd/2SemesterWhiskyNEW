@@ -7,9 +7,9 @@ import java.util.Map;
 public class Formula implements Serializable {
 
 	private String formulaName;
-	private HashMap<TasteProfile, Integer> blueprint = new HashMap<>();
+	private HashMap<TasteProfile, Double> blueprint = new HashMap<>();
 
-	public Formula(String formulaName, Map<TasteProfile, Integer> blueprint) {
+	public Formula(String formulaName, Map<TasteProfile, Double> blueprint) {
 		this.formulaName = formulaName;
 		this.blueprint = new HashMap<>(blueprint);
 	}
@@ -20,7 +20,7 @@ public class Formula implements Serializable {
 		return formulaName;
 	}
 
-	public HashMap<TasteProfile, Integer> getBlueprint() {
+	public HashMap<TasteProfile, Double> getBlueprint() {
 		return new HashMap<>(blueprint);
 	}
 
@@ -45,7 +45,7 @@ public class Formula implements Serializable {
 		this.formulaName = formulaName;
 	}
 
-	public void setBlueprint(HashMap<TasteProfile, Integer> blueprint) {
+	public void setBlueprint(HashMap<TasteProfile, Double> blueprint) {
 		this.blueprint = blueprint;
 	}
 }
