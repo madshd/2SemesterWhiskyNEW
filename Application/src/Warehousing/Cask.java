@@ -26,6 +26,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
 	private int lifeCycle = 0;
 	private final Supplier supplier;
+	// Nullable
 	private TasteProfile tasteProfile = null;
 
 	// Nullable
@@ -247,6 +248,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return quantity;
 	}
 
+
 	public List<Filling> getFillingStack(){
 		List<Filling> fillings = new ArrayList<>();
 
@@ -266,6 +268,19 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 			}
 		}
 		return fillings;
+
+	public void makeReservation(Batch batch, double amount) {
+			reservedBatchesAmount.put(batch, amount);
+	}
+
+	public void spendReservation(Batch batch, double amount) {
+		double reservedAmount = reservedBatchesAmount.get(batch);
+		if (reservedAmount - amount == 0) {
+			reservedBatchesAmount.remove(batch);
+		} else {
+			reservedBatchesAmount.put(batch, reservedAmount - amount);
+		}
+
 	}
 
 	@Override
@@ -287,9 +302,21 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		this.tasteProfile = tasteProfile;
 	}
 
+
 	// FAKE METHOD FOR INJECTING FAKE DATA
 	public double getFakeQuantity() {
 		return 1000;
+	}
+
+
+	public List<Filling> getFillingStack(){
+		List<Filling> fillings = new ArrayList<>();
+
+		for (Filling f : fillingStack){
+			fillings.add(f);
+		}
+
+		return fillings;
 	}
 
 }

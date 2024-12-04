@@ -1,4 +1,3 @@
-
 package GUI.Batch;
 
 import BatchArea.Product;
@@ -13,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import GUI.Common.ErrorWindow;
 
+@SuppressWarnings("unused")
 public class ProductCRUD {
 
 	private final ErrorWindow errorWindow = new ErrorWindow();
@@ -25,25 +25,20 @@ public class ProductCRUD {
 	private Label header = new Label("Create New Product");
 
 	public ProductCRUD() {
-		productCrudStage.setTitle("Formula Manager");
+		productCrudStage.setTitle("Create Product");
 
 		GridPane gridPane = new GridPane();
 		productCrudStage.setResizable(false);
 
-		// Set the scene for the modal window
 		Scene productCrudScene = new Scene(gridPane);
 		productCrudStage.setScene(productCrudScene);
-		productCrudStage.initModality(javafx.stage.Modality.APPLICATION_MODAL); // Block interaction with main
-																				// window
+		productCrudStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
 		productCrudScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
-		// Initialize content
 		initContent(gridPane);
 	}
 
 	public void show() {
-		// Show the modal and wait for it to be closed
-
 		productCrudStage.showAndWait();
 	}
 
@@ -57,14 +52,12 @@ public class ProductCRUD {
 	public void setFields(Product product) {
 		createButton.setText("Update");
 		header.setText("Update Existing Product");
+		productCrudStage.setTitle("Update Product");
 		updating = true;
 		nameInput.setText(product.getProductName());
 	}
 
-	// Initialize the content of the window
-	@SuppressWarnings("unused")
 	private void initContent(GridPane mainPane) {
-		// Main GridPane setup
 		mainPane.setPadding(new Insets(50));
 		mainPane.setHgap(10);
 		mainPane.setVgap(10);
@@ -112,10 +105,11 @@ public class ProductCRUD {
 		cancelButton.setOnAction(event -> {
 			clearFields();
 			productCrudStage.close();
+			Controllers.BatchArea.clearMostRecentlyModifiedProduct();
 		});
 	}
 
-	// Create a new Taste Profile
+	// Create a new Product
 	private void create(String name, int bottleSize) {
 		if (name == null || name.isEmpty()) {
 			errorWindow.showError("Name cannot be empty");
@@ -137,6 +131,7 @@ public class ProductCRUD {
 		updating = false;
 		createButton.setText("Create");
 		header.setText("Create New Taste Profile");
+		productCrudStage.setTitle("Create Product");
 		nameInput.clear();
 		bottleSizeInput.clear();
 	}

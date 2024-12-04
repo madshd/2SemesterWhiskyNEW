@@ -6,13 +6,15 @@ import Production.TestProduction;
 
 public class App {
 	public static void main(String[] args) {
-		initStorage.loadBatchArea();
 		StorageInterface storage = new Storage();
 		Controllers.Production.setStorage(storage);
 		Controllers.Warehousing.setStorage(storage);
 		Controllers.Common.setStorage(storage);
+		Controllers.BatchArea.setStorage(storage);
 		initStorage.loadProduction();
 		initStorage.loadWarehousing();
+
+		initStorage.loadBatchArea();
 		// TestProduction.firstTest();
 
 		System.out.println("LAUNCHING LABELTALES");
