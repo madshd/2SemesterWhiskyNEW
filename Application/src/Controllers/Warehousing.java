@@ -11,6 +11,7 @@ import Warehousing.Warehouse;
 import Warehousing.StorageRack;
 import Warehousing.Ingredient;
 import BatchArea.TasteProfile;
+import Production.FillDistillate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -247,10 +248,10 @@ public abstract class Warehousing {
 	}
 
 	/**
-	 * Retrieves a list of casks that are ready based on their fill date.
+	 * Retrieves a list of casks that are ready for use.
 	 * A cask is considered ready if it has been filled for at least 3 years.
 	 *
-	 * @return a list of casks that are ready
+	 * @return a list of ready casks
 	 */
 
 	public static List<Cask> getReadyCasks() {
@@ -262,7 +263,7 @@ public abstract class Warehousing {
 					for (Item item : sr.getList()) {
 						if (item instanceof Cask) {
 							Cask cask = (Cask) item;
-							LocalDate lastFillDate = cask.getFillingStack().getFirst().getDate();
+							LocalDate lastFillDate = ((FillDistillate) cask.getFillingStack().getFirst()).getDate();
 							if (lastFillDate.plusYears(3).isBefore(currentDate)) {
 								readyCasks.add(cask);
 							}
