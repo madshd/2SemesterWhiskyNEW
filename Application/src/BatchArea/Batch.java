@@ -1,4 +1,3 @@
-
 package BatchArea;
 
 import java.time.LocalDate;
@@ -76,8 +75,14 @@ public class Batch {
 		sb.append("Creation Date: ");
 		sb.append(creationDate);
 		sb.append(" - ");
+		if (!productionComplete) {
 		sb.append("Expected Bottles: ");
 		sb.append(numExpectedBottles);
+		} else {
+			sb.append("PRODUCTION COMPLETE - ");
+			sb.append("Produced Bottles: ");
+			sb.append(numProducedBottles);
+		}
 		return sb.toString();
 	}
 
@@ -125,4 +130,8 @@ public class Batch {
 	public String getLabel() {
 		return label;
 	}
+
+    public int getNumRemainingBottles() {
+		return numExpectedBottles - numProducedBottles;
+    }
 }

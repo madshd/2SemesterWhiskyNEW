@@ -70,7 +70,7 @@ public class BatchCRUD {
 		batchID.setFocusTraversable(false);
 		batchID.setEditable(false);
 		batchID.setMouseTransparent(true);
-		batchID.setMaxWidth(30);
+		batchID.setMaxWidth(100);
 		batchID.setText(String.valueOf(Batch.getBatchIDglobalCount()));
 		batchID.setDisable(true);
 
@@ -110,10 +110,10 @@ public class BatchCRUD {
 	}
 
 	// Create a new Batch
-	private void create(String bottleSize) {
-		int bottleSizeInt = bottleSize.isEmpty() ? 0 : Integer.parseInt(bottleSize);
-		if (bottleSizeInt <= 0) {
-			errorWindow.showError("Please enter a valid Bottle Size.");
+	private void create(String numBottles) {
+		int numBottlesParsed = numBottles.isEmpty() ? 0 : Integer.parseInt(numBottles);
+		if (numBottlesParsed <= 0) {
+			errorWindow.showError("Please input a valid number > 0.");
 			return;
 		}
 		if (numExpectedBottles.getText().isEmpty()) {
@@ -122,12 +122,11 @@ public class BatchCRUD {
 		}
 		// check if the number of bottles to produce is a valid integer
 		try {
-			int numBottles = Integer.parseInt(numExpectedBottles.getText());
-			if (numBottles <= 0) {
+			if (numBottlesParsed <= 0) {
 				errorWindow.showError("Please input a valid number of bottles to produce.");
 				return;
 			}
-			if (numBottles > Integer.parseInt(numMaxBottles.getText())) {
+			if (numBottlesParsed > Integer.parseInt(numMaxBottles.getText())) {
 				errorWindow.showError(
 						"Number of bottles to produce exceeds the maximum number of bottles possible to produce given the current warehouse status.");
 				return;
@@ -136,7 +135,7 @@ public class BatchCRUD {
 			errorWindow.showError("Please input a valid number of bottles to produce.");
 			return;
 		}
-		batch = Controllers.BatchArea.createNewBatch(product, bottleSizeInt);
+		batch = Controllers.BatchArea.createNewBatch(product, numBottlesParsed);
 		clearFields();
 		batchCrudStage.close();
 	}

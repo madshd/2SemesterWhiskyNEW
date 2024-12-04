@@ -40,6 +40,7 @@ public class BatchArea {
 	private static ProductCRUD productCRUD = new ProductCRUD();
 	private static BatchCRUD batchCRUD = new BatchCRUD();
 	private static ProduceBatchWindow produceBatchWindow = new ProduceBatchWindow();
+	private static ShowLabel showLabel = new ShowLabel();
 
 	public BatchArea() {
 		stage = new Stage();
@@ -93,7 +94,7 @@ public class BatchArea {
 
 		// Define row constraints
 		RowConstraints row1 = new RowConstraints();
-		row1.setPercentHeight(5); // Heading
+		row1.setPercentHeight(5); // Heading 
 		RowConstraints row2 = new RowConstraints();
 		row2.setPercentHeight(45); // Batches
 		RowConstraints row3 = new RowConstraints();
@@ -228,8 +229,8 @@ public class BatchArea {
 		deleteBatchButton.setDisable(true);
 
 		Button produceBatchButton = new Button("Show Reserved Casks / Bottle Batch");
-		Button generateLabels = new Button("Generate Labels");
-		Button showLabels = new Button("Show Labels");
+		Button generateLabels = new Button("Generate Label");
+		Button showLabels = new Button("Show Label");
 
 		produceBatchButton.setFocusTraversable(false);
 		produceBatchButton.setDisable(true);
@@ -297,26 +298,23 @@ public class BatchArea {
 		});
 
 		produceBatchButton.setOnAction(e -> {
-			// TODO: Implement functionality
-			
 			produceBatchWindow.show(batchesTable.getSelectionModel().getSelectedItem());
-			// Popup window with list of reserved casks
-			// Button to bottle batch with input field asking how many bottles to make.
-			// Clicking okay will generate a list with what casks to use and how much
-			// quantity to take from each.
+			updateLists();
 		});
 
 		generateLabels.setOnAction(e -> {
 			Batch selectedBatch = batchesTable.getSelectionModel().getSelectedItem();
 			if (selectedBatch != null) {
 				Controllers.BatchArea.generateLabelForBatch(selectedBatch);
+				generateLabels.setDisable(true);
+				showLabel.show(selectedBatch);
 			}
 		});
 
 		showLabels.setOnAction(e -> {
 			Batch selectedBatch = batchesTable.getSelectionModel().getSelectedItem();
 			if (selectedBatch != null) {
-				Controllers.BatchArea.getLabelForBatch(selectedBatch);
+				showLabel.show(selectedBatch);
 			}
 		});
 	}

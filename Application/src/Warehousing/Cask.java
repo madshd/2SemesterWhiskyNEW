@@ -314,20 +314,8 @@ public void spendReservation(Batch batch, double amount) {
 			}
 		}
 		return fillings;
-
-	public void makeReservation(Batch batch, double amount) {
-			reservedBatchesAmount.put(batch, amount);
 	}
 
-	public void spendReservation(Batch batch, double amount) {
-		double reservedAmount = reservedBatchesAmount.get(batch);
-		if (reservedAmount - amount == 0) {
-			reservedBatchesAmount.remove(batch);
-		} else {
-			reservedBatchesAmount.put(batch, reservedAmount - amount);
-		}
-
-	}
 
 	@Override
 	public int compareTo(Item o) {
@@ -340,13 +328,8 @@ public void spendReservation(Batch batch, double amount) {
 				getRemainingQuantity());
 	}
 
-	public String getListInfoReservation(Batch batch){
-		StringBuilder sb = new StringBuilder();
-		sb.append("CaskID: " + this.caskID + " --- ");
-		sb.append();
-
-
-		return sb.toString();
+	public double getReservedAmountPerBatch(Batch batch){
+		return reservedBatchesAmount.get(batch);
 	}
 
 	public TasteProfile getTasteProfile() {
@@ -357,21 +340,8 @@ public void spendReservation(Batch batch, double amount) {
 		this.tasteProfile = tasteProfile;
 	}
 
-
-	// FAKE METHOD FOR INJECTING FAKE DATA
-	public double getFakeQuantity() {
-		return 1000;
-	}
-
-
-	public List<Filling> getFillingStack(){
-		List<Filling> fillings = new ArrayList<>();
-
-		for (Filling f : fillingStack){
-			fillings.add(f);
-		}
-
-		return fillings;
+	public String getCaskID() {
+		return Integer.toString(caskID);
 	}
 
 }

@@ -1,5 +1,6 @@
 package Controllers;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -170,12 +171,6 @@ public abstract class BatchArea {
 	private static void reserveQuantityInCasks(Batch batch) {
 		Map<TasteProfile, Double> productionVolume = calculateProductionVolume(batch.getNumExpectedBottles(), batch);
 		Map<TasteProfile, List<Cask>> matchingCasks = getMatchingCasks(batch, productionVolume);
-		System.out.println("Production volume: ");
-		System.out.println(productionVolume);
-		System.out.println("Matching casks: ");
-		System.out.println(matchingCasks);
-
-		System.out.println(Warehousing.getReadyCasks());
 
 		for (TasteProfile tp : matchingCasks.keySet()) {
 			double remainingTPVolume = productionVolume.get(tp);
@@ -196,32 +191,41 @@ public abstract class BatchArea {
 	 *
 	 * @param batch               The batch to produce.
 	 * @param numBottlesToProduce The number of bottles to produce.
+	 * @return A map of casks used and the amount taken from each.
 	 * @throws IllegalArgumentException if the number of bottles to produce exceeds
 	 *                                  the expected number of bottles.
 	 */
-	public static void produceBatch(Batch batch, int numBottlesToProduce) {
+	public static Map<Cask, Double> produceBatch(Batch batch, int numBottlesToProduce) {
+		// Check if production exceeds expectations
 		if (numBottlesToProduce + batch.getNumProducedBottles() > batch.getNumExpectedBottles()) {
 			throw new IllegalArgumentException("Number of bottles to produce exceeds the expected number of bottles.");
 		}
 
+		Map<Cask, Double> casksToUse = new HashMap<>();
+
+		// Calculate production volume
 		Map<TasteProfile, Double> productionVolumeTP = calculateProductionVolume(numBottlesToProduce, batch);
+
+		// Get matching casks
 		Map<TasteProfile, List<Cask>> matchingCasks = getMatchingCasks(batch, productionVolumeTP);
 
+		// Iterate over each taste profile
 		for (TasteProfile tp : matchingCasks.keySet()) {
 			double remainingTPVolume = productionVolumeTP.get(tp);
-			Iterator<Cask> iterator = matchingCasks.get(tp).iterator();
 
+			Iterator<Cask> iterator = matchingCasks.get(tp).iterator();
 			while (iterator.hasNext() && remainingTPVolume > 0) {
 				Cask cask = iterator.next();
-				double reservedAmount = batch.getReservedCasks().get(cask);
+				double reservedAmount = batch.getReservedCasks().getOrDefault(cask, 0.0);
 				double usedAmount = Math.min(remainingTPVolume, reservedAmount);
 
-				// Perform cask bottling and update the reservation
-				Production.caskBottling(cask, usedAmount);
+				// Perform bottling and reservation update
+				Production.caskBottling(cask, usedAmount, LocalDate.now());
 				cask.spendReservation(batch, usedAmount);
+				casksToUse.put(cask, usedAmount);
 				remainingTPVolume -= usedAmount;
 
-				// Remove the cask from reserved if the entire reserved amount is used
+				// Remove cask if fully used
 				if (usedAmount == reservedAmount) {
 					batch.removeCaskFromReserved(cask);
 				}
@@ -231,10 +235,12 @@ public abstract class BatchArea {
 		// Increment the number of produced bottles
 		batch.incNumProducedBottles(numBottlesToProduce);
 
-		// Mark production as complete if the expected number of bottles is produced
+		// Mark production complete if the batch is fully produced
 		if (batch.getNumProducedBottles() == batch.getNumExpectedBottles()) {
 			batch.markProductionComplete();
 		}
+
+		return casksToUse;
 	}
 
 	/**
@@ -318,15 +324,14 @@ public abstract class BatchArea {
 	 *         production volume in milliliters
 	 */
 	public static HashMap<TasteProfile, Double> calculateProductionVolume(int numBottlesToProduce, Batch batch) {
-		double totalProductionVolumeML = numBottlesToProduce *
-				batch.getProduct().getBottleSize() * numBottlesToProduce;
+		double totalProductionVolumeML = batch.getProduct().getBottleSize() * numBottlesToProduce;
 		double totalProductionVolumeLITER = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS,
 				totalProductionVolumeML);
 		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
 		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
 		for (TasteProfile tasteProfile : blueprint.keySet()) {
 			double percentage = blueprint.get(tasteProfile);
-			double volume = totalProductionVolumeLITER / percentage;
+			double volume = totalProductionVolumeLITER / percentage * 100;
 			productionVolume.put(tasteProfile, volume);
 		}
 		return productionVolume;
