@@ -5,22 +5,18 @@ import Enumerations.Unit;
 import Interfaces.Item;
 import Interfaces.StorageInterface;
 import Production.Distillate;
-import Storage.Storage;
 import Warehousing.Cask;
 import Warehousing.Supplier;
 import Warehousing.Warehouse;
 import Warehousing.StorageRack;
-import Interfaces.Item;
 import Warehousing.Ingredient;
+import BatchArea.TasteProfile;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import BatchArea.TasteProfile;
 import java.util.ArrayList;
-import java.util.List;
 
 /*
 Methods that is mainly used within the Warehousing area
@@ -41,7 +37,9 @@ public abstract class Warehousing {
 	 * @return
 	 */
 	public static Supplier createSupplier(String name, String address, String description, String story) {
-		return new Supplier(name, address, description, story);
+		Supplier supplier = new Supplier(name, address, description, story);
+		storage.storeSupplier(supplier);
+		return supplier;
 	}
 
 	/**
@@ -56,6 +54,16 @@ public abstract class Warehousing {
 		Cask cask = new Cask(caskID, maxQuantity, unit, supplier, caskType);
 		storage.storeCask(cask);
 		return cask;
+	}
+
+	public static Ingredient createIngredient(String name, String description, int batchNo, LocalDate productionDate,
+			LocalDate expirationDate, double quantity, Supplier supplier, Unit unit, IngredientType ingredientType) {
+
+		Ingredient ingredient = new Ingredient(name, description, batchNo, productionDate, expirationDate, quantity,
+				supplier, unit, ingredientType);
+
+		storage.storeIngredient(ingredient);
+		return ingredient;
 	}
 
 	/**
@@ -90,52 +98,63 @@ public abstract class Warehousing {
 		return storageRack;
 	}
 
-	/**
-	 * This method retrieves a map of available storage racks within warehouses.
-	 * The map's keys are Warehouse objects, and the values are StorageRack objects.
-	 * The method iterates through all warehouses and their storage racks, checking
-	 * if any of the storage racks contain null items.
-	 * If a storage rack contains null items, it indicates that the storage rack has
-	 * available space.
-	 * 
-	 * @return a map containing warehouses and their respective storage racks that
-	 *         have available space.
-	 */
+	public static Ingredient createIngredientAndAdd(
+			String name,
+			String description,
+			int batchNo,
+			LocalDate productionDate,
+			LocalDate expirationDate,
+			double quantity,
+			Supplier supplier,
+			Unit unit,
+			IngredientType ingredientType,
+			Warehouse warehouse,
+			StorageRack storageRack) {
 
-	public static Map<Warehouse, StorageRack> getFreeStorage() {
-		Map<Warehouse, StorageRack> freeStorage = new HashMap<>();
-		for (Warehouse warehouse : storage.getWarehouses()) {
-			for (StorageRack storageRack : warehouse.getRacks().values()) {
-				// Check if the storage rack contains any null items, indicating free space
-				if (storageRack.getList().contains(null)) {
-					freeStorage.put(warehouse, storageRack);
-				}
-			}
-		}
-		return freeStorage;
-	}
-
-	public static Ingredient createIngredientAndAdd(String name, String description, int batchNo,
-			LocalDate productionDate, LocalDate expirationDate,
-			double quantity, Supplier supplier, Unit unit, IngredientType ingredientType,
-			Warehouse warehouse, StorageRack storageRack, int atIndex) {
-
-		Ingredient ingredient = new Ingredient(name, description, batchNo, productionDate, expirationDate, quantity,
+		Ingredient ingredient = createIngredient(name, description, batchNo, productionDate, expirationDate, quantity,
 				supplier, unit, ingredientType);
 
 		try {
-			storageRack.addItem(atIndex, ingredient);
-			if (storageRack.getWarehouse() != null) {
-				storageRack.getWarehouse().notifyWarehousingObserversWithDetails(
-						"Ingredient added: " + ingredient.getName() + " to Rack: " + storageRack.getId() +
-								", Shelf: " + atIndex + " in Warehouse: " + storageRack.getWarehouse().getName());
+			for (int i = 0; i < storageRack.getList().size(); i++) {
+				if (storageRack.getList().get(i) == null) {
+					storageRack.addItem(i, ingredient);
+					storageRack.getWarehouse().notifyWarehousingObserversWithDetails(
+							"Ingredient added: " + ingredient.getName() + " to Rack: " + storageRack.getId() +
+									", Shelf: " + i + " in Warehouse: " + storageRack.getWarehouse().getName());
+					return ingredient;
+				}
 			}
 		} catch (IllegalStateException e) {
 			throw new IllegalArgumentException(
 					"Failed to add ingredient to the specified storage rack: " + e.getMessage());
 		}
+		return null;
+	}
 
-		return ingredient;
+	public static Cask createCaskAndAdd(
+			int caskID,
+			double maxQuantity,
+			Unit unit,
+			Supplier supplier,
+			String caskType,
+			Warehouse warehouse,
+			StorageRack storageRack,
+			int atIndex) {
+
+		Cask cask = createCask(caskID, maxQuantity, Unit.LITERS, supplier, caskType);
+		try {
+			if (storageRack.getWarehouse() != null) {
+				if (storageRack.getList().get(atIndex) == null)
+					storageRack.addItem(atIndex, cask);
+						storageRack.getWarehouse().notifyWarehousingObserversWithDetails(
+							"Cask added: " + cask.getName() + " to Rack: " + storageRack.getId() +
+									", Shelf: " + atIndex + " in Warehouse: " + storageRack.getWarehouse().getName());
+			}
+		} catch (IllegalStateException e) {
+			throw new IllegalArgumentException(
+					"Storage rack is not used in a warehouse, or shelf is already in use: " + e.getMessage());
+		}
+		return cask;
 	}
 
 	/**
@@ -226,4 +245,43 @@ public abstract class Warehousing {
 	public static List<Warehouse> getAllWarehouses() {
 		return storage.getWarehouses();
 	}
+
+	/**
+	 * Retrieves a list of casks that are ready based on their fill date.
+	 * A cask is considered ready if it has been filled for at least 3 years.
+	 *
+	 * @return a list of casks that are ready
+	 */
+
+	public static List<Cask> getReadyCasks() {
+		List<Cask> readyCasks = new ArrayList<>();
+		LocalDate currentDate = LocalDate.now();
+		try {
+			for (Warehouse wh : getAllWarehouses()) {
+				for (StorageRack sr : wh.getRacks().values()) {
+					for (Item item : sr.getList()) {
+						if (item instanceof Cask) {
+							Cask cask = (Cask) item;
+							LocalDate lastFillDate = cask.getFillingStack().getFirst().getDate();
+							if (lastFillDate.plusYears(3).isBefore(currentDate)) {
+								readyCasks.add(cask);
+							}
+						}
+					}
+				}
+			}
+		} catch (RuntimeException e) {
+			System.out.println("No ready casks found");
+		}
+		return readyCasks;
+	}
+
+	public static List<Supplier> getSuppliers() {
+		return new ArrayList<>(storage.getSuppliers());
+	}
+
+	public static void setTasteProfile(Cask cask, TasteProfile tasteProfile) {
+		cask.setTasteProfile(tasteProfile);
+	}
+
 }

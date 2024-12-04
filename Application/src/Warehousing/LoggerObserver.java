@@ -12,11 +12,10 @@ public class LoggerObserver implements WarehousingObserver {
     public void update(Warehouse warehouse, String changeDetails) {
         String logEntry = "Log: [" + warehouse.getName() + "] - " + changeDetails;
         logs.add(logEntry);
-        System.out.println(logEntry);
     }
 
     public List<String> getLogs() {
-        return new ArrayList<>(logs); // Return a copy to preserve encapsulation
+        return new ArrayList<>(logs);
     }
 
     public void clearLogs() {
