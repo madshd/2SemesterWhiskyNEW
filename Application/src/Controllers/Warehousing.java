@@ -10,14 +10,12 @@ import Warehousing.Supplier;
 import Warehousing.Warehouse;
 import Warehousing.StorageRack;
 import Warehousing.Ingredient;
+import BatchArea.TasteProfile;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /*
 Methods that is mainly used within the Warehousing area
@@ -280,4 +278,9 @@ public abstract class Warehousing {
 	public static List<Supplier> getSuppliers() {
 		return new ArrayList<>(storage.getSuppliers());
 	}
+
+	public static void setTasteProfile(Cask cask, TasteProfile tasteProfile) {
+		cask.setTasteProfile(tasteProfile);
+	}
+
 }

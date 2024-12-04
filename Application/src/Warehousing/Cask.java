@@ -26,6 +26,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
 	private int lifeCycle = 0;
 	private final Supplier supplier;
+	// Nullable
 	private TasteProfile tasteProfile = null;
 
 	// Nullable
