@@ -110,6 +110,62 @@ public abstract class initStorage {
 				"Supplier of seasoned sherry casks.",
 				"Known for their rich sherry heritage, Sherry Bliss Co. provides barrels seasoned with fine Spanish sherry for finishing whisky.");
 
+		Supplier sub_06 = Warehousing.createSupplier(
+				"Golden Fields Agriculture",
+				"123 Highland Drive, Inverness, Scotland",
+				"Supplier of premium barley for whisky production.",
+				"Golden Fields Agriculture has been the trusted supplier of barley to distilleries across Scotland since 1985. Their focus is on delivering high-enzyme barley varieties grown in Scotland’s fertile Highlands."
+		);
+
+		Supplier sub_07 = Warehousing.createSupplier(
+				"Loch Ness Water Co.",
+				"45 Spring Road, Loch Ness, Scotland",
+				"Provider of pure natural spring water for whisky distillation.",
+				"Loch Ness Water Co. sources its water from pristine natural springs in the heart of the Scottish Highlands. Their water is known for its purity and consistency, which enhances whisky fermentation and distillation."
+		);
+
+		Supplier sub_08 = Warehousing.createSupplier(
+				"Brewer's Choice Yeast Ltd.",
+				"78 Brewery Lane, Edinburgh, Scotland",
+				"Supplier of high-quality brewer's yeast for efficient fermentation.",
+				"Brewer's Choice Yeast Ltd. specializes in cultivating yeast strains tailored for whisky production, ensuring rich flavor complexity and consistent alcohol yields."
+		);
+
+		Supplier sub_09 = Warehousing.createSupplier(
+				"Islay Peat Moss",
+				"99 Peatland Road, Islay, Scotland",
+				"Provider of premium peat for smoking barley and infusing whisky with smoky flavors.",
+				"Islay Peat Moss has been sourcing peat from the island’s famous mosslands for over a century, helping distilleries create their signature smoky whisky profiles."
+		);
+
+		Supplier sub_10 = Warehousing.createSupplier(
+				"Highland Sweets Co.",
+				"50 Sugar Street, Glasgow, Scotland",
+				"Refined sugar supplier for boosting fermentation efficiency.",
+				"Highland Sweets Co. provides top-quality sugar for the whisky industry's fermentation process, ensuring higher alcohol yields and consistent results. The company is family-owned and deeply rooted in tradition."
+		);
+
+		Supplier sub_11 = Warehousing.createSupplier(
+				"Sall Barley Fields",
+				"Sall Bygvej 12, 8410 Rønde, Denmark",
+				"Local Danish supplier of high-quality barley for whisky production.",
+				"Sall Barley Fields is owned by the founders of Sall Whisky and specializes in cultivating premium barley varieties such as Evergreen, Stairway, and Irna. The fields provide not only for Sall Whisky's own production but are also trusted suppliers for some of the most renowned whisky brands globally. With a focus on sustainability and quality, Sall Barley Fields ensures every harvest meets the highest standards."
+		);
+
+		Supplier sub_12 = Warehousing.createSupplier(
+				"Malt & More Grain Co.",
+				"12 Field Street, Dundee, Scotland",
+				"Specialist in malted grains for distilleries nationwide.",
+				"Malt & More Grain Co. has been crafting malted grains like Golden Promise and Optic, ensuring consistent high-quality grain with malting characteristics tailored to whisky-making."
+		);
+
+		Supplier sub_13 = Warehousing.createSupplier(
+				"Burns & Co. Caramel",
+				"25 Sweet Lane, Edinburgh, Scotland",
+				"Trusted supplier of E150a caramel for whisky coloring.",
+				"Burns & Co. Caramel has served the whisky industry for decades with premium caramel coloring, providing master blenders with an option to create aesthetically striking and consistent batches."
+		);
+
 		Distiller distiller_01 = Production.createDistiller(
 				"Ewan MacGregor",
 				"EMG",
@@ -256,6 +312,129 @@ public abstract class initStorage {
 				"Peaty and robust, this distillate reflects the rugged character of coastal winds and marine influence.");
 		addDescriotionToDistillate(distillate_10,
 				"A harmonious distillate with subtle hints of fresh bread, honey, and a lingering smoky finish.");
+
+		// *** Ingredients ***
+
+		Ingredient barleyEvergreen = Warehousing.createIngredient(
+				"Barley - Evergreen",
+				"Locally sourced barley from the Evergreen field. Known for its high enzyme activity and natural sweetness.",
+				2001,
+				LocalDate.parse("2024-03-01"),
+				LocalDate.parse("2025-03-01"),
+				500.0,
+				sub_06, // Golden Fields Agriculture
+				Unit.KILOGRAM,
+				IngredientType.GRAIN
+		);
+
+		Ingredient barleyStairway = Warehousing.createIngredient(
+				"Barley - Stairway",
+				"A premium barley grown in the Stairway field. Offers a smooth and balanced flavor profile to the distillate.",
+				2002,
+				LocalDate.parse("2024-03-05"),
+				LocalDate.parse("2025-03-05"),
+				450.0,
+				sub_11, // Pure Scotch Locals
+				Unit.KILOGRAM,
+				IngredientType.GRAIN
+		);
+
+		Ingredient barleyIrna = Warehousing.createIngredient(
+				"Barley - Irna",
+				"High-quality barley from the Irna field, prized for its robust malting characteristics.",
+				2003,
+				LocalDate.parse("2024-02-15"),
+				LocalDate.parse("2025-02-15"),
+				400.0,
+				sub_11, // Pure Scotch Locals
+				Unit.KILOGRAM,
+				IngredientType.GRAIN
+		);
+
+		Ingredient barleyGoldenPromise = Warehousing.createIngredient(
+				"Barley - Golden Promise",
+				"A classic barley variety often used in whisky production for its creamy and malty flavor.",
+				2004,
+				LocalDate.parse("2024-01-20"),
+				LocalDate.parse("2025-01-20"),
+				600.0,
+				sub_12, // Malt & More Grain Co.
+				Unit.KILOGRAM,
+				IngredientType.GRAIN
+		);
+
+		Ingredient barleyOptic = Warehousing.createIngredient(
+				"Barley - Optic",
+				"A versatile barley variety that delivers clean and consistent results during malting.",
+				2005,
+				LocalDate.parse("2024-02-10"),
+				LocalDate.parse("2025-02-10"),
+				400.0,
+				sub_12, // Malt & More Grain Co.
+				Unit.KILOGRAM,
+				IngredientType.GRAIN
+		);
+
+		Ingredient waterSpring = Warehousing.createIngredient(
+				"Pure Spring Water",
+				"Sourced from pristine local springs, this water ensures clean and smooth fermentation.",
+				3001,
+				LocalDate.parse("2024-01-10"),
+				LocalDate.parse("2025-01-10"),
+				1500.0,
+				sub_07, // Loch Ness Water Co.
+				Unit.LITERS,
+				IngredientType.WATER
+		);
+
+		Ingredient yeastBrewers = Warehousing.createIngredient(
+				"Brewer's Yeast",
+				"A specialized yeast strain used for efficient fermentation, producing complex fruity esters.",
+				3002,
+				LocalDate.parse("2024-02-05"),
+				LocalDate.parse("2024-06-05"),
+				50.0,
+				sub_08, // Brewer's Choice Yeast Ltd.
+				Unit.KILOGRAM,
+				IngredientType.YEAST
+		);
+
+		Ingredient peatMoss = Warehousing.createIngredient(
+				"Islay Peat Moss",
+				"Used to smoke barley, imparting a bold and smoky character typical of Islay whiskies.",
+				3003,
+				LocalDate.parse("2024-02-20"),
+				LocalDate.parse("2025-02-20"),
+				200.0,
+				sub_09, // Islay Peat Moss
+				Unit.KILOGRAM,
+				IngredientType.ADDITIVE
+		);
+
+		Ingredient sugarFermentation = Warehousing.createIngredient(
+				"Fermentation Sugar",
+				"Refined sugar used to assist fermentation, boosting alcohol yield in the distillate.",
+				3004,
+				LocalDate.parse("2024-01-15"),
+				LocalDate.parse("2024-12-15"),
+				100.0,
+				sub_10, // Highland Sweets Co.
+				Unit.KILOGRAM,
+				IngredientType.ADDITIVE
+		);
+
+		Ingredient caramelColor = Warehousing.createIngredient(
+				"Caramel Coloring",
+				"E150a coloring used for achieving a consistent appearance in blended whiskies.",
+				3005,
+				LocalDate.parse("2024-01-01"),
+				LocalDate.parse("2025-01-01"),
+				25.0,
+				sub_13, // Burns & Co. Caramel
+				Unit.LITERS,
+				IngredientType.ADDITIVE
+		);
+
 
 		// *** Fillings ***
 		// One distallate capacity fully used across casks

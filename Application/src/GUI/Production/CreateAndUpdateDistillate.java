@@ -99,7 +99,7 @@ public abstract class CreateAndUpdateDistillate {
             if (distillate != null){
                 txfName.setText(distillate.getName());
                 cmbDistiller.setValue(distillate.getDistiller());
-                txfQuantity.setText(Double.toString(distillate.getQuantityStatus()));
+                txfQuantity.setText(Double.toString(distillate.getRemainingQuantity()));
                 dpStartDate.setValue(distillate.getStartDate());
                 dpEndDate.setValue(distillate.getEndDate());
                 txaDescription.setText(distillate.getDescription());
