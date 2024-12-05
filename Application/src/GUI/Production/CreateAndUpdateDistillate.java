@@ -4,11 +4,13 @@ import Controllers.Production;
 import Controllers.Warehousing;
 import GUI.Common.Common;
 import Interfaces.Filling;
+import Interfaces.Item;
 import Production.Distiller;
 import Production.AlcoholPercentage;
 import Production.StoryLine;
 import Production.ProductCutInformation;
 import Warehousing.Ingredient;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -121,9 +123,10 @@ public abstract class CreateAndUpdateDistillate {
         private final DatePicker dpfillDate = new DatePicker();
         private final ComboBox<Ingredient> cmbIngredients = new ComboBox<>();
         private final TextField txfQuantity = new TextField();
-        private final ListView<Filling> lvwIngrediantFillings = new ListView<>();
+        private final ListView<Item> lvwIngrediants = new ListView<>();
         private final TextArea txaIngrediantDetails = new TextArea();
         private final TextArea txaNewIngrediantDetail = new TextArea();
+        private Distillate distillate;
 
         public IngredientDetails(ProductionArea pa){
             // Generel settings
@@ -158,22 +161,24 @@ public abstract class CreateAndUpdateDistillate {
             cmbIngredients.setPromptText("Ingredients");
             cmbIngredients.setPrefWidth(areaWidth * 0.15);
             cmbIngredients.setOnAction(actionEvent -> {
-
                 txaNewIngrediantDetail.setText(
                         Common.insertLfIntoSting(cmbIngredients.getSelectionModel().getSelectedItem().getDescription(),23));
                     });
 
-
             txfQuantity.setPromptText("Quantity");
 
             // Lists
-            lvwIngrediantFillings.setEditable(false);
-            lvwIngrediantFillings.setPrefHeight(areaHeight * 0.1);
-            this.add(lvwIngrediantFillings,2,1);
+            lvwIngrediants.setEditable(false);
+            lvwIngrediants.setPrefHeight(areaHeight * 0.1);
+            ChangeListener<Item> lvwIngrediantListener = (ov, o, n) -> {
+                updateIngrediantDetails();
+            };
+            lvwIngrediants.getSelectionModel().selectedItemProperty().addListener(lvwIngrediantListener);
+            this.add(lvwIngrediants,2,1);
 
             // Text area
             txaIngrediantDetails.setPromptText("Details on selected allready added ingredient");
-            txaNewIngrediantDetail.setEditable(false);
+            txaIngrediantDetails.setEditable(false);
             this.add(txaIngrediantDetails,3,1);
 
             txaNewIngrediantDetail.setPromptText("Detaills on selected new ingredient.");
@@ -207,6 +212,20 @@ public abstract class CreateAndUpdateDistillate {
 
         public void updateIngredients(Distillate distillate){
             cmbIngredients.getItems().setAll(Warehousing.getAllAvailableIngredients());
+            this.distillate = distillate;
+
+            if (distillate != null){
+                lvwIngrediants.getItems().setAll(distillate.getIngredientsInDistillate());
+                Common.useSpecifiedListView(lvwIngrediants);
+            }
+        }
+
+        private void updateIngrediantDetails(){
+            Item item = lvwIngrediants.getSelectionModel().getSelectedItem();
+
+            if (item != null && distillate != null){
+                txaIngrediantDetails.setText(distillate.getInfoOnIngredientUsed(((Ingredient) item)));
+            }
         }
 
         private void btnAction(Button button){

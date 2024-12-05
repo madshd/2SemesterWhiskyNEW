@@ -7,6 +7,9 @@ import Interfaces.StorageInterface;
 import Production.Distillate;
 import Production.Distiller;
 import Production.FillDistillate;
+import Production.StoryLine;
+import Production.ProductCutInformation;
+import Production.AlcoholPercentage;
 import Storage.Storage;
 import Warehousing.Cask;
 import Warehousing.Ingredient;
@@ -46,6 +49,11 @@ public abstract class Production {
 
 	public static void addDescriotionToDistillate(Distillate distillate, String description){
 		distillate.setDescription(description);
+	}
+
+	public static void addStoryToDestillate(Distillate distillate, String story, LocalDate date){
+		StoryLine storyLine = new StoryLine(date,story);
+		distillate.addStoryLine(storyLine);
 	}
 
 	/**
