@@ -25,6 +25,7 @@ import BatchArea.TasteProfile;
 import BatchArea.Product;
 
 import static Controllers.Production.addDescriotionToDistillate;
+import static Controllers.Production.addIngredientToDistillate;
 
 public abstract class initStorage {
 
@@ -335,7 +336,7 @@ public abstract class initStorage {
 				2001,
 				LocalDate.parse("2024-03-01"),
 				LocalDate.parse("2025-03-01"),
-				500.0,
+				5000.0,
 				sub_06, // Golden Fields Agriculture
 				Unit.KILOGRAM,
 				IngredientType.GRAIN,
@@ -349,7 +350,7 @@ public abstract class initStorage {
 				2002,
 				LocalDate.parse("2024-03-05"),
 				LocalDate.parse("2025-03-05"),
-				450.0,
+				4450.0,
 				sub_11, // Pure Scotch Locals
 				Unit.KILOGRAM,
 				IngredientType.GRAIN,
@@ -363,7 +364,7 @@ public abstract class initStorage {
 				2003,
 				LocalDate.parse("2024-02-15"),
 				LocalDate.parse("2025-02-15"),
-				400.0,
+				3400.0,
 				sub_11, // Pure Scotch Locals
 				Unit.KILOGRAM,
 				IngredientType.GRAIN,
@@ -405,7 +406,7 @@ public abstract class initStorage {
 				3001,
 				LocalDate.parse("2024-01-10"),
 				LocalDate.parse("2025-01-10"),
-				1500.0,
+				55000.0,
 				sub_07, // Loch Ness Water Co.
 				Unit.LITERS,
 				IngredientType.WATER,
@@ -419,7 +420,7 @@ public abstract class initStorage {
 				3002,
 				LocalDate.parse("2024-02-05"),
 				LocalDate.parse("2024-06-05"),
-				50.0,
+				500.0,
 				sub_08, // Brewer's Choice Yeast Ltd.
 				Unit.KILOGRAM,
 				IngredientType.YEAST,
@@ -433,7 +434,7 @@ public abstract class initStorage {
 				3003,
 				LocalDate.parse("2024-02-20"),
 				LocalDate.parse("2025-02-20"),
-				200.0,
+				600.0,
 				sub_09, // Islay Peat Moss
 				Unit.KILOGRAM,
 				IngredientType.ADDITIVE,
@@ -447,7 +448,7 @@ public abstract class initStorage {
 				3004,
 				LocalDate.parse("2024-01-15"),
 				LocalDate.parse("2024-12-15"),
-				100.0,
+				500.0,
 				sub_10, // Highland Sweets Co.
 				Unit.KILOGRAM,
 				IngredientType.ADDITIVE,
@@ -469,6 +470,81 @@ public abstract class initStorage {
 				rack1
 		);
 
+		// Add ingredients to distillates
+// Tilføj ingredienser til Highland Essence
+		System.out.println(waterSpring.getQuantityStatus());
+		System.out.println(waterSpring.getRemainingQuantity());
+
+		addIngredientToDistillate(distillate_01, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_01, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_01, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_01, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_01, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
+
+		System.out.println(waterSpring.getQuantityStatus());
+		System.out.println(waterSpring.getRemainingQuantity());
+// Tilføj ingredienser til Islay Smoke
+		addIngredientToDistillate(distillate_02, barleyGoldenPromise, 600.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_02, waterSpring, 2625.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_02, yeastBrewers, 7.5, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_02, sugarFermentation, 15.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_02, peatMoss, 22.5, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Classic Malt
+		addIngredientToDistillate(distillate_03, barleyEvergreen, 800.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_03, waterSpring, 3500.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_03, yeastBrewers, 10.0, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_03, sugarFermentation, 20.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_03, peatMoss, 30.0, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Peat Fire
+		addIngredientToDistillate(distillate_04, barleyEvergreen, 400.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_04, waterSpring, 1750.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_04, yeastBrewers, 5.0, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_04, sugarFermentation, 10.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_04, peatMoss, 15.0, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Sherry Kiss
+		addIngredientToDistillate(distillate_05, barleyEvergreen, 700.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_05, waterSpring, 3062.5, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_05, yeastBrewers, 8.75, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_05, sugarFermentation, 17.5, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_05, peatMoss, 26.25, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Bourbon Blend
+		addIngredientToDistillate(distillate_06, barleyEvergreen, 900.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_06, waterSpring, 3937.5, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_06, yeastBrewers, 11.25, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_06, sugarFermentation, 22.5, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_06, peatMoss, 33.75, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Loch Nectar
+		addIngredientToDistillate(distillate_07, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_07, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_07, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_07, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_07, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Speyside Gold
+		addIngredientToDistillate(distillate_08, barleyStairway, 800.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_08, waterSpring, 3500.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_08, yeastBrewers, 10.0, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_08, sugarFermentation, 20.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_08, peatMoss, 30.0, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Oak Reserve
+		addIngredientToDistillate(distillate_09, barleyIrna, 750.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_09, waterSpring, 3281.25, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_09, yeastBrewers, 9.375, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_09, sugarFermentation, 18.75, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_09, peatMoss, 28.125, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Golden Highland
+		addIngredientToDistillate(distillate_10, barleyIrna, 500.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_10, waterSpring, 2187.5, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_10, yeastBrewers, 6.25, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_10, sugarFermentation, 12.5, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_10, peatMoss, 18.75, LocalDate.parse("2024-01-20"));
 
 		// *** Fillings ***
 		// One distallate capacity fully used across casks

@@ -1,6 +1,7 @@
 package GUI.Production;
 
 import Controllers.Production;
+import Controllers.Warehousing;
 import GUI.Common.Common;
 import Interfaces.Filling;
 import Production.Distiller;
@@ -156,6 +157,12 @@ public abstract class CreateAndUpdateDistillate {
 
             cmbIngredients.setPromptText("Ingredients");
             cmbIngredients.setPrefWidth(areaWidth * 0.15);
+            cmbIngredients.setOnAction(actionEvent -> {
+
+                txaNewIngrediantDetail.setText(
+                        Common.insertLfIntoSting(cmbIngredients.getSelectionModel().getSelectedItem().getDescription(),23));
+                    });
+
 
             txfQuantity.setPromptText("Quantity");
 
@@ -166,8 +173,11 @@ public abstract class CreateAndUpdateDistillate {
 
             // Text area
             txaIngrediantDetails.setPromptText("Details on selected allready added ingredient");
+            txaNewIngrediantDetail.setEditable(false);
             this.add(txaIngrediantDetails,3,1);
+
             txaNewIngrediantDetail.setPromptText("Detaills on selected new ingredient.");
+            txaNewIngrediantDetail.setEditable(false);
             this.add(txaNewIngrediantDetail,1,1);
 
             VBox vBox = new VBox(20);
@@ -196,7 +206,7 @@ public abstract class CreateAndUpdateDistillate {
         }
 
         public void updateIngredients(Distillate distillate){
-//            cmbIngredients.getItems().setAll(Warehousing.)
+            cmbIngredients.getItems().setAll(Warehousing.getAllAvailableIngredients());
         }
 
         private void btnAction(Button button){
@@ -284,7 +294,7 @@ public abstract class CreateAndUpdateDistillate {
                 hBox.getChildren().add(newBtn);
                 newBtn.setUserData(abbreivations[i]);
                 newBtn.setPrefWidth(hboxBtnWidth);
-                newBtn.setOnAction(actionEvent -> btnAction(newBtn));
+                newBtn.setOnAction(actionEvent -> btnAction(pa, newBtn));
             }
 
             hBox.setAlignment(Pos.CENTER);
@@ -300,7 +310,7 @@ public abstract class CreateAndUpdateDistillate {
                 hBoxButtom.getChildren().add(newBtn);
                 newBtn.setUserData(abbreivationsButtom[i]);
                 newBtn.setPrefWidth(hboxButtomBtnWidth);
-                newBtn.setOnAction(actionEvent -> btnAction(newBtn));
+                newBtn.setOnAction(actionEvent -> btnAction(pa,newBtn));
             }
 
             hBoxButtom.setAlignment(Pos.BOTTOM_RIGHT);
@@ -310,8 +320,15 @@ public abstract class CreateAndUpdateDistillate {
 
         }
 
-        private void btnAction(Button button){
+        private void btnAction(ProductionArea pa, Button button){
+            switch ((String) button.getUserData()){
+                case "cancel" -> close(pa);
+            }
+        }
 
+        private void close(ProductionArea pa){
+            pa.mainPane.getChildren().clear();
+            pa.initContent(pa.mainPane);
         }
     }
 }
