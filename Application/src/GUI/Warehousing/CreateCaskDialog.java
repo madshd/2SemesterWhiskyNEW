@@ -2,6 +2,7 @@ package GUI.Warehousing;
 
 import Controllers.Warehousing;
 import Enumerations.Unit;
+import GUI.Common.ErrorWindow;
 import Interfaces.Item;
 import Warehousing.Supplier;
 import Warehousing.Warehouse;
@@ -34,6 +35,7 @@ public class CreateCaskDialog extends Application {
     private ListView<StorageRack> lvwStorageRacks = new ListView<>();
     private Button btnCreate = new Button("Create");
     private Button btnCancel = new Button("Cancel");
+    private ErrorWindow errorWindow = new ErrorWindow();
     private Stage stage;
 
     @Override
@@ -46,7 +48,6 @@ public class CreateCaskDialog extends Application {
         grid.setPadding(new Insets(20, 20, 20, 20));
         grid.setHgap(10);
         grid.setVgap(10);
-        updateLists();
 
         // Brug HBox til at gruppere label og TextField
         VBox inputFields = new VBox(5); // Mindre spacing mellem Label og TextField
@@ -61,6 +62,7 @@ public class CreateCaskDialog extends Application {
         buttons.setAlignment(Pos.CENTER);
 
         btnCreate.setOnAction(e -> btnCreateAction());
+        btnCancel.setOnAction(e -> stage.close());
 
         // Opret en scene og tilføj layoutet
         Scene scene = new Scene(grid, 600, 400);
@@ -73,15 +75,27 @@ public class CreateCaskDialog extends Application {
     }
 
     private void btnCreateAction() {
-        Warehousing.createCaskAndAdd(
-                Integer.parseInt(txfCaskId.getText()),
-                Double.parseDouble(txfMaxQuantity.getText()),
-                Unit.LITERS,
-                cbxSupplier.getValue(),
-                txfCaskType.getText(),
-                lvwWarehouses.getSelectionModel().getSelectedItem(),
-                lvwStorageRacks.getSelectionModel().getSelectedItem());
-        stage.close();
+        if (isFormValid() == true) {
+            Warehousing.createCaskAndAdd(
+                    Integer.parseInt(txfCaskId.getText()),
+                    Double.parseDouble(txfMaxQuantity.getText()),
+                    Unit.LITERS,
+                    cbxSupplier.getValue(),
+                    txfCaskType.getText(),
+                    lvwWarehouses.getSelectionModel().getSelectedItem(),
+                    lvwStorageRacks.getSelectionModel().getSelectedItem());
+            stage.close();
+        }
+        errorWindow.showError("Please fill out all fields correctly.");
+    }
+
+    private boolean isFormValid() {
+        return !txfCaskId.getText().isEmpty() &&
+                !txfMaxQuantity.getText().isEmpty() &&
+                !txfCaskType.getText().isEmpty() &&
+                cbxSupplier.getValue() != null &&
+                lvwWarehouses.getSelectionModel().getSelectedItem() != null &&
+                lvwStorageRacks.getSelectionModel().getSelectedItem() != null;
     }
 
     private void updateLists() {

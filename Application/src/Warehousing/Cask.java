@@ -1,6 +1,7 @@
 package Warehousing;
 
 import Common.CommonMethods;
+import Common.Stack;
 import Enumerations.Unit;
 import Interfaces.*;
 
@@ -10,9 +11,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import BatchArea.Batch;
-
 import BatchArea.TasteProfile;
-import Interfaces.Stack;
 import Production.Distillate;
 import Production.FillDistillate;
 
@@ -49,12 +48,12 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	 * @return
 	 */
 	public int getMaturityMonths() {
-		List<Filling> fillings =  getFillingStack();
+		List<Filling> fillings = getFillingStack();
 
 		if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings availble");
 
 		fillings.forEach(filling -> {
-			if (((FillDistillate) filling).getLifeCycle() != lifeCycle){
+			if (((FillDistillate) filling).getLifeCycle() != lifeCycle) {
 				fillings.remove(filling);
 			}
 		});
@@ -62,7 +61,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		fillings.sort((f1, f2) ->
 				((FillDistillate) f1).getDistillate().getEndDate().compareTo(((FillDistillate) f2).getDistillate().getEndDate()));
 
-		LocalDate lastEndDate = ((FillDistillate) fillings.getLast()).getDistillate().getEndDate();
+		LocalDate lastEndDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
 		return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
 	}
 
@@ -141,57 +140,51 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	/**
-	 * Get a start or end  filling date based on provided life cycle
+	 * Get a start or end filling date based on provided life cycle
 	 * @param lifeCycle
 	 * @param startDate
 	 * @return
 	 */
-	public LocalDate getDateForLifeCycle(int lifeCycle, boolean startDate) throws IllegalArgumentException{
-		if (lifeCycle < 1 || lifeCycle > this.lifeCycle){
+	public LocalDate getDateForLifeCycle(int lifeCycle, boolean startDate) throws IllegalArgumentException {
+		if (lifeCycle < 1 || lifeCycle > this.lifeCycle) {
 			throw new IllegalArgumentException("Provided life cycle is not valid");
 		}
 
-		List<Filling> fillings =  getFillingStack();
+		List<Filling> fillings = getFillingStack();
 
 		if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings availble");
 
-		fillings.forEach(filling -> {
-			if (((FillDistillate) filling).getLifeCycle() != lifeCycle){
-				fillings.remove(filling);
-			}
-		});
+		fillings.removeIf(filling -> ((FillDistillate) filling).getLifeCycle() != lifeCycle);
 
-		fillings.sort((f1, f2) ->
-				f1.getDate().compareTo(f2.getDate()));
+		fillings.sort(Comparator.comparing(Filling::getDate));
 
-		if (startDate){
-			return ((FillDistillate) fillings.getFirst()).getDistillate().getEndDate();
-		}else {
-			return ((FillDistillate) fillings.getLast()).getDistillate().getEndDate();
+		if (startDate) {
+			return ((FillDistillate) fillings.get(0)).getDistillate().getEndDate();
+		} else {
+			return ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
 		}
 	}
 
 	/**
-	 * Will return lifecucle based on filling dates.
+	 * Will return lifecycle based on filling dates.
 	 * @param date
 	 * @return
 	 */
-	public int getLifeCycleByDate(LocalDate date){
-		List<Filling> fillings =  getFillingStack();
+	public int getLifeCycleByDate(LocalDate date) {
+		List<Filling> fillings = getFillingStack();
 		if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings availble");
 
-		fillings.sort((f1, f2) ->
-				f1.getDate().compareTo(f2.getDate()));
+		fillings.sort(Comparator.comparing(Filling::getDate));
 
-		LocalDate firstDate = ((FillDistillate) fillings.getFirst()).getDistillate().getEndDate();
-		LocalDate lastDate = ((FillDistillate) fillings.getLast()).getDistillate().getEndDate();
+		LocalDate firstDate = ((FillDistillate) fillings.get(0)).getDistillate().getEndDate();
+		LocalDate lastDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
 
-		if (date.isBefore(firstDate)){
+		if (date.isBefore(firstDate)) {
 			throw new IllegalArgumentException("Provided date is before the first filling in this cask");
 		}
 
-		if (date.isAfter(lastDate)){
-			if (getQuantityStatus() != 0){
+		if (date.isAfter(lastDate)) {
+			if (getQuantityStatus() != 0) {
 				return lifeCycle;
 			}
 		}
@@ -199,10 +192,10 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		Filling foundFilling = null;
 
 		for (int i = 1; i < fillings.size(); i++) {
-			LocalDate beforeDate = fillings.get(i-1).getDate();
+			LocalDate beforeDate = fillings.get(i - 1).getDate();
 			LocalDate thisDate = fillings.get(i).getDate();
 
-			if (CommonMethods.isDateBetween(date,beforeDate,thisDate)){
+			if (CommonMethods.isDateBetween(date, beforeDate, thisDate)) {
 				foundFilling = fillings.get(i);
 			}
 		}
@@ -221,7 +214,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		double newQuantity = fillDistillate.getQuantity() + getQuantityStatus();
 
 		// Ensure that a new cask will an empty date that fits the first filling.
-		if(fillingStack.isEmpty()){
+		if (fillingStack.isEmpty()) {
 			lifeCycle++;
 		}
 
@@ -229,7 +222,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 			fillingStack.push(fillDistillate);
 			notifyObservers();
 			// This will start a new life cycle in the cask
-			if (newQuantity == 0){
+			if (newQuantity == 0) {
 				lifeCycle++;
 			}
 			return newQuantity;
@@ -248,29 +241,29 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return quantity;
 	}
 
-
-	public List<Filling> getFillingStack(){
+	public List<Filling> getFillingStack() {
 		List<Filling> fillings = new ArrayList<>();
 
-		for (Filling f : fillingStack){
+		for (Filling f : fillingStack) {
 			fillings.add(f);
 		}
 
 		return fillings;
 	}
 
-	public List<Filling> getFillingsStackByLifeCycle(int lifeCycle){
+	public List<Filling> getFillingsStackByLifeCycle(int lifeCycle) {
 		List<Filling> fillings = new ArrayList<>();
 
-		for (Filling f : fillingStack){
-			if(((FillDistillate) f).getLifeCycle() == lifeCycle ){
+		for (Filling f : fillingStack) {
+			if (((FillDistillate) f).getLifeCycle() == lifeCycle) {
 				fillings.add(f);
 			}
 		}
 		return fillings;
+	}
 
 	public void makeReservation(Batch batch, double amount) {
-			reservedBatchesAmount.put(batch, amount);
+		reservedBatchesAmount.put(batch, amount);
 	}
 
 	public void spendReservation(Batch batch, double amount) {
@@ -280,7 +273,6 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		} else {
 			reservedBatchesAmount.put(batch, reservedAmount - amount);
 		}
-
 	}
 
 	@Override
@@ -290,8 +282,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("Life cycle: %-2d\t | ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f",lifeCycle ,caskID, maxQuantity,
-				getRemainingQuantity());
+		return String.format("Life cycle: %-2d\t | ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f", lifeCycle, caskID, maxQuantity, getRemainingQuantity());
 	}
 
 	public TasteProfile getTasteProfile() {
@@ -302,21 +293,20 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		this.tasteProfile = tasteProfile;
 	}
 
-
 	// FAKE METHOD FOR INJECTING FAKE DATA
 	public double getFakeQuantity() {
 		return 1000;
 	}
 
-
-	public List<Filling> getFillingStack(){
-		List<Filling> fillings = new ArrayList<>();
-
-		for (Filling f : fillingStack){
-			fillings.add(f);
-		}
-
-		return fillings;
+	public int getCaskID() {
+		return caskID;
 	}
 
+	public double getMaxQuantity() {
+		return maxQuantity;
+	}
+
+	public Supplier getSupplier() {
+		return supplier;
+	}
 }
