@@ -472,17 +472,12 @@ public abstract class initStorage {
 
 		// Add ingredients to distillates
 // Tilføj ingredienser til Highland Essence
-		System.out.println(waterSpring.getQuantityStatus());
-		System.out.println(waterSpring.getRemainingQuantity());
-
 		addIngredientToDistillate(distillate_01, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_01, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_01, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_01, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_01, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
 
-		System.out.println(waterSpring.getQuantityStatus());
-		System.out.println(waterSpring.getRemainingQuantity());
 // Tilføj ingredienser til Islay Smoke
 		addIngredientToDistillate(distillate_02, barleyGoldenPromise, 600.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_02, waterSpring, 2625.0, LocalDate.parse("2024-02-15"));
