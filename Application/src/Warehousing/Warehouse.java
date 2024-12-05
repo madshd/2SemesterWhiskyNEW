@@ -42,14 +42,19 @@ public class Warehouse implements WarehousingSubject {
     public void addStorageRack(String id, StorageRack storageRack) {
         racks.put(id, storageRack);
         storageRack.setWarehouse(this); // Bind rack to warehouse
-        notifyWarehousingObserversWithDetails("StorageRack added: " + id);
+        if (!warehousingObservers.isEmpty()) {
+            notifyWarehousingObserversWithDetails("StorageRack removed: " + storageRack.getId());
+        }
     }
 
 
-    public void removeStorageRack(String id) {
-        StorageRack removedRack = racks.remove(id);
-        if (removedRack != null) {
-            notifyWarehousingObserversWithDetails("StorageRack removed: " + id);
+    public void removeStorageRack(StorageRack storageRack) {
+        if (storageRack != null && racks.containsValue(storageRack)) {
+            racks.values().remove(storageRack);
+            storageRack.setWarehouse(null);
+            if (!warehousingObservers.isEmpty()) {
+                notifyWarehousingObserversWithDetails("StorageRack removed: " + storageRack.getId());
+            }
         }
     }
 
@@ -87,8 +92,10 @@ public class Warehouse implements WarehousingSubject {
 
     @Override
     public void notifyWarehousingObservers() {
-        for (WarehousingObserver observer : warehousingObservers) {
-            observer.update(this, "General update in warehouse: " + this.name);
+        if (!warehousingObservers.isEmpty()) {
+            for (WarehousingObserver observer : warehousingObservers) {
+                observer.update(this, "General update in warehouse: " + this.name);
+            }
         }
     }
 }

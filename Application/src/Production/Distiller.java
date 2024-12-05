@@ -1,6 +1,8 @@
 package Production;
 
-public class Distiller {
+import java.io.Serializable;
+
+public class Distiller implements Serializable {
     private final String name;
     private final String initials;
     private String story;

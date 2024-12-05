@@ -10,12 +10,14 @@ public class FillIngredient implements Filling {
     private final double quantity;
     private final Distillate distillate;
     private final Ingredient ingredient;
+    private final boolean decrease; // If true then quantity is negative.
 
-    public FillIngredient(LocalDate date, double quantity, Distillate distillate, Ingredient ingredient) {
+    public FillIngredient(LocalDate date, double quantity, Distillate distillate, Ingredient ingredient, boolean decrease) {
         this.date = date;
         this.quantity = quantity;
         this.distillate = distillate;
         this.ingredient = ingredient;
+        this.decrease = decrease;
     }
 
     @Override
@@ -34,5 +36,9 @@ public class FillIngredient implements Filling {
 
     public Ingredient getIngredient() {
         return ingredient;
+    }
+
+    public boolean isDecrease() {
+        return decrease;
     }
 }
