@@ -1,5 +1,6 @@
 package Warehousing;
 
+import Controllers.Warehousing;
 import Interfaces.Item;
 import Interfaces.WarehousingObserver;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 public class StorageRack {
     private String id;
     private int shelves;
-//    Nullable
+    //    Nullable
     private Warehouse warehouse;
 
     private LinkedList<Item> list = new LinkedList<>();
@@ -38,12 +39,16 @@ public class StorageRack {
         return id;
     }
 
+    public int getShelves() {
+        return shelves;
+    }
+
     public Set<WarehousingObserver> getWarehousingObservers() {
         return warehousingObservers;
     }
 
     public LinkedList<Item> getList() {
-        return list;
+        return new LinkedList<>(list);
     }
 
     public void addItem(int shelfNo, Item item) {
@@ -69,7 +74,6 @@ public class StorageRack {
         if (list.get(atIndex) == item && list.get(toIndex) == null) {
             list.set(toIndex, item);
             list.set(atIndex, null);
-//            System.out.println("Item moved from " + atIndex + " to " + toIndex);
             notifyWarehousingObservers(item + " moved from shelf " + atIndex + " to shelf " + toIndex);
         } else {
             throw new IllegalStateException("No more space on the storage rack");
@@ -86,6 +90,15 @@ public class StorageRack {
                 observer.update(warehouse,  id + ": " + details);
             }
         }
+    }
+
+    public int getFreeShelf() {
+        for (int i = 0; i < shelves; i++) {
+            if (list.get(i) == null) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override

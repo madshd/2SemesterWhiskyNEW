@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import BatchArea.TasteProfile;
+import javafx.scene.control.Alert;
+
 import java.util.ArrayList;
 
 /*
@@ -187,7 +189,16 @@ public abstract class Warehousing {
 	 */
 
 	public static void moveItemBetweenWarehouses(Item item, Warehouse fromWarehouse, StorageRack fromStorageRack,
-			int fromIndex, Warehouse toWarehouse, StorageRack toStorageRack, int toIndex) {
+												 int fromIndex, Warehouse toWarehouse, StorageRack toStorageRack, int toIndex) {
+		if (item == null || fromWarehouse == null || fromStorageRack == null || toWarehouse == null || toStorageRack == null) {
+			throw new IllegalArgumentException("None of the parameters can be null.");
+		}
+		if (fromIndex < 0 || fromIndex >= fromStorageRack.getList().size()) {
+			throw new IndexOutOfBoundsException("fromIndex is out of bounds.");
+		}
+		if (toIndex < 0 || toIndex >= toStorageRack.getList().size()) {
+			throw new IndexOutOfBoundsException("toIndex is out of bounds.");
+		}
 
 		if (fromStorageRack.getItemLocation(item) != fromIndex) {
 			throw new IllegalArgumentException("Item not found at the specified index in the source storage rack.");
@@ -237,20 +248,23 @@ public abstract class Warehousing {
 		}
 
 		fromStorageRack.removeItem(item, fromIndex);
-		if (fromStorageRack.getWarehouse() != null) {
-			fromStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
-					"Item removed from Rack: " + fromStorageRack.getId() +
-							", Shelf: " + fromIndex +
-							" in Warehouse: " + fromStorageRack.getWarehouse().getName());
-		}
+//		if (fromStorageRack.getWarehouse() != null) {
+//			fromStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
+//					"Item removed from Rack: " + fromStorageRack.getId() +
+//							", Shelf: " + fromIndex +
+//							" in Warehouse: " + fromStorageRack.getWarehouse().getName());
+//		}
 
 		toStorageRack.addItem(toIndex, item);
-		if (toStorageRack.getWarehouse() != null) {
-			toStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
-					"Item added to Rack: " + toStorageRack.getId() +
-							", Shelf: " + toIndex +
-							" in Warehouse: " + toStorageRack.getWarehouse().getName());
-		}
+//		if (toStorageRack.getWarehouse() != null) {
+//			toStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
+//					"Item added to Rack: " + toStorageRack.getId() +
+//							", Shelf: " + toIndex +
+//							" in Warehouse: " + toStorageRack.getWarehouse().getName());
+//		}
+
+		System.out.println("Item moved from " + fromStorageRack.getId() + " shelf " + fromIndex + " to "
+				+ toStorageRack.getId() + " shelf " + toIndex);
 	}
 
 	public static List<Warehouse> getAllWarehouses() {
@@ -291,10 +305,6 @@ public abstract class Warehousing {
 		return new ArrayList<>(storage.getSuppliers());
 	}
 
-	public static void setTasteProfile(Cask cask, TasteProfile tasteProfile) {
-		cask.setTasteProfile(tasteProfile);
-	}
-
 	public static void deleteWarehouse(Warehouse selectedWarehouse) {
 		if (selectedWarehouse != null) {
 			if (selectedWarehouse.getRacks().isEmpty()) {
@@ -305,15 +315,35 @@ public abstract class Warehousing {
 		}
 	}
 
-	public static void deleteStorageRack(StorageRack selectedStorageRack) {
+	/**
+	 * Retrieves a list of all available ingredients.
+	 * An ingredient is considered available if its remaining quantity is greater than zero.
+	 *
+	 * @return a list of available ingredients
+	 */
+
+	public static void deleteStorageRack(Warehouse selectedWarehouse, StorageRack selectedStorageRack) {
 		if (selectedStorageRack != null) {
-			if (selectedStorageRack.getList().isEmpty()) {
+			boolean isEmpty = true;
+			for (Item item : selectedStorageRack.getList()) {
+				if (item != null) {
+					isEmpty = false;
+					break;
+				}
+			}
+			if (isEmpty) {
+				selectedWarehouse.removeStorageRack(selectedStorageRack);
 				storage.deleteStorageRack(selectedStorageRack);
-			} else {
-				throw new IllegalStateException("Storage rack is not empty");
 			}
 		}
 	}
+
+	/**
+	 * Retrieves a list of all available ingredients.
+	 * An ingredient is considered available if its remaining quantity is greater than zero.
+	 *
+	 * @return a list of available ingredients
+	 */
 
 	public static List<Ingredient> getAllAvailableIngredients() {
 		List<Ingredient> ingredients = new ArrayList<>();
@@ -329,4 +359,29 @@ public abstract class Warehousing {
 		}
 		return ingredients;
 	}
+
+	/**
+	 * Updates the taste profile of a cask and moves it to a different storage rack if necessary.
+	 *
+	 * @param cask The cask to be updated.
+	 * @param value The new taste profile to be set for the cask.
+	 * @param selectedWarehouse The warehouse where the cask is currently stored.
+	 * @param selectedStorageRack The storage rack where the cask should be moved.
+	 */
+
+	public static void updateCask(Cask cask, TasteProfile value, Warehouse selectedWarehouse, StorageRack selectedStorageRack) {
+		cask.setTasteProfile(value);
+		if (selectedWarehouse != cask.getStorageRack().getWarehouse()) {
+			if (selectedWarehouse != null && selectedStorageRack != null) {
+				int fromIndex = cask.getStorageRack().getItemLocation(cask);
+				int toIndex = selectedStorageRack.getFreeShelf();
+				moveItemBetweenWarehouses(cask, cask.getStorageRack().getWarehouse(), cask.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+			}
+				if (selectedWarehouse == cask.getStorageRack().getWarehouse() && selectedStorageRack != cask.getStorageRack()) {
+					int fromIndex = cask.getStorageRack().getItemLocation(cask);
+					int toIndex = selectedStorageRack.getFreeShelf();
+					moveItemBetweenStorageRacks(cask, cask.getStorageRack(), fromIndex, selectedStorageRack, toIndex);
+				}
+			}
+		}
 }
