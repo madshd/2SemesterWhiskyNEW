@@ -122,6 +122,7 @@ public abstract class CreateAndUpdateDistillate {
         private final TextField txfQuantity = new TextField();
         private final ListView<Filling> lvwIngrediantFillings = new ListView<>();
         private final TextArea txaIngrediantDetails = new TextArea();
+        private final TextArea txaNewIngrediantDetail = new TextArea();
 
         public IngredientDetails(ProductionArea pa){
             // Generel settings
@@ -164,8 +165,10 @@ public abstract class CreateAndUpdateDistillate {
             this.add(lvwIngrediantFillings,2,1);
 
             // Text area
-            txaIngrediantDetails.setPromptText("Details on selected ingredient");
+            txaIngrediantDetails.setPromptText("Details on selected allready added ingredient");
             this.add(txaIngrediantDetails,3,1);
+            txaNewIngrediantDetail.setPromptText("Detaills on selected new ingredient.");
+            this.add(txaNewIngrediantDetail,1,1);
 
             VBox vBox = new VBox(20);
             double vBoxWidth = areaWidth * 0.15;

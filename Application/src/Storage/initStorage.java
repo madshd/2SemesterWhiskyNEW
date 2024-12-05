@@ -80,6 +80,20 @@ public abstract class initStorage {
 	// =================== CASKS =================
 
 	public static void loadProduction() {
+		Warehouse warehouse = Warehousing.createWarehouse("Sherlock Whisky", "Baker Street 221 B");
+
+		LoggerObserver logger = new LoggerObserver();
+
+		// Register the observer
+		warehouse.registerWarehousingObserver(logger);
+
+		StorageRack rack1 = Warehousing.createStorageRack("221 B", 100);
+
+		warehouse.addStorageRack("221 B", rack1);
+
+		Warehousing.createCaskAndAdd(1, 100, Unit.LITERS, new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story"), "Sherry", warehouse, rack1);
+
+
 		Supplier sub_01 = Warehousing.createSupplier(
 				"Highland Barley Co.",
 				"123 Grain Street, Inverness, Scotland",
@@ -201,16 +215,16 @@ public abstract class initStorage {
 				"IF",
 				"Specialist in blending and balancing bold and delicate whisky flavors.");
 
-		Cask cask_01 = Warehousing.createCask(1, 200, Unit.LITERS, sub_03, "Bourbon Cask"); // Bourbon cask from Oak Master Barrels
-		Cask cask_02 = Warehousing.createCask(2, 250, Unit.LITERS, sub_03, "American Oak Cask"); // American Oak cask from Oak Master Barrels
-		Cask cask_03 = Warehousing.createCask(3, 225, Unit.LITERS, sub_05, "Sherry Cask"); // Sherry cask from Sherry Bliss Co.
-		Cask cask_04 = Warehousing.createCask(4, 500, Unit.LITERS, sub_03, "Large European Oak Cask"); // Large European Oak cask from Oak Master Barrels
-		Cask cask_05 = Warehousing.createCask(5, 300, Unit.LITERS, sub_05, "Seasoned Sherry Cask"); // Seasoned sherry cask from Sherry Bliss Co.
-		Cask cask_06 = Warehousing.createCask(6, 200, Unit.LITERS, sub_03, "Toasted Oak Cask"); // Toasted Oak cask from Oak Master Barrels
-		Cask cask_07 = Warehousing.createCask(7, 225, Unit.LITERS, sub_03, "Ex-Port Cask"); // Ex-Port cask from Oak Master Barrels
-		Cask cask_08 = Warehousing.createCask(8, 180, Unit.LITERS, sub_03, "Peated Oak Cask"); // Peated Oak cask from Peat & Smolder
-		Cask cask_09 = Warehousing.createCask(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask"); // Spanish Oak cask from Sherry Bliss Co.
-		Cask cask_10 = Warehousing.createCask(10, 600, Unit.LITERS, sub_03, "Large Blending Cask"); // Large blending cask from Oak Master
+		Cask cask_01 = Warehousing.createCaskAndAdd(1, 200, Unit.LITERS, sub_03, "Bourbon Cask", warehouse, rack1); // Bourbon cask from Oak Master Barrels
+		Cask cask_02 = Warehousing.createCaskAndAdd(2, 250, Unit.LITERS, sub_03, "American Oak Cask", warehouse, rack1); // American Oak cask from Oak Master Barrels
+		Cask cask_03 = Warehousing.createCaskAndAdd(3, 225, Unit.LITERS, sub_05, "Sherry Cask", warehouse, rack1); // Sherry cask from Sherry Bliss Co.
+		Cask cask_04 = Warehousing.createCaskAndAdd(4, 500, Unit.LITERS, sub_03, "Large European Oak Cask", warehouse, rack1); // Large European Oak cask from Oak Master Barrels
+		Cask cask_05 = Warehousing.createCaskAndAdd(5, 300, Unit.LITERS, sub_05, "Seasoned Sherry Cask", warehouse, rack1); // Seasoned sherry cask from Sherry Bliss Co.
+		Cask cask_06 = Warehousing.createCaskAndAdd(6, 200, Unit.LITERS, sub_03, "Toasted Oak Cask", warehouse, rack1); // Toasted Oak cask from Oak Master Barrels
+		Cask cask_07 = Warehousing.createCaskAndAdd(7, 225, Unit.LITERS, sub_03, "Ex-Port Cask", warehouse, rack1); // Ex-Port cask from Oak Master Barrels
+		Cask cask_08 = Warehousing.createCaskAndAdd(8, 180, Unit.LITERS, sub_03, "Peated Oak Cask", warehouse, rack1); // Peated Oak cask from Peat & Smolder
+		Cask cask_09 = Warehousing.createCaskAndAdd(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask", warehouse, rack1); // Spanish Oak cask from Sherry Bliss Co.
+		Cask cask_10 = Warehousing.createCaskAndAdd(10, 600, Unit.LITERS, sub_03, "Large Blending Cask", warehouse, rack1); // Large blending cask from Oak Master
 
 		Distillate distillate_01 = Production.createDistillate(
 				"Highland Essence",
@@ -315,7 +329,7 @@ public abstract class initStorage {
 
 		// *** Ingredients ***
 
-		Ingredient barleyEvergreen = Warehousing.createIngredient(
+		Ingredient barleyEvergreen = Warehousing.createIngredientAndAdd(
 				"Barley - Evergreen",
 				"Locally sourced barley from the Evergreen field. Known for its high enzyme activity and natural sweetness.",
 				2001,
@@ -324,10 +338,12 @@ public abstract class initStorage {
 				500.0,
 				sub_06, // Golden Fields Agriculture
 				Unit.KILOGRAM,
-				IngredientType.GRAIN
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
 		);
 
-		Ingredient barleyStairway = Warehousing.createIngredient(
+		Ingredient barleyStairway = Warehousing.createIngredientAndAdd(
 				"Barley - Stairway",
 				"A premium barley grown in the Stairway field. Offers a smooth and balanced flavor profile to the distillate.",
 				2002,
@@ -336,10 +352,12 @@ public abstract class initStorage {
 				450.0,
 				sub_11, // Pure Scotch Locals
 				Unit.KILOGRAM,
-				IngredientType.GRAIN
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
 		);
 
-		Ingredient barleyIrna = Warehousing.createIngredient(
+		Ingredient barleyIrna = Warehousing.createIngredientAndAdd(
 				"Barley - Irna",
 				"High-quality barley from the Irna field, prized for its robust malting characteristics.",
 				2003,
@@ -348,10 +366,12 @@ public abstract class initStorage {
 				400.0,
 				sub_11, // Pure Scotch Locals
 				Unit.KILOGRAM,
-				IngredientType.GRAIN
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
 		);
 
-		Ingredient barleyGoldenPromise = Warehousing.createIngredient(
+		Ingredient barleyGoldenPromise = Warehousing.createIngredientAndAdd(
 				"Barley - Golden Promise",
 				"A classic barley variety often used in whisky production for its creamy and malty flavor.",
 				2004,
@@ -360,10 +380,12 @@ public abstract class initStorage {
 				600.0,
 				sub_12, // Malt & More Grain Co.
 				Unit.KILOGRAM,
-				IngredientType.GRAIN
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
 		);
 
-		Ingredient barleyOptic = Warehousing.createIngredient(
+		Ingredient barleyOptic = Warehousing.createIngredientAndAdd(
 				"Barley - Optic",
 				"A versatile barley variety that delivers clean and consistent results during malting.",
 				2005,
@@ -372,10 +394,12 @@ public abstract class initStorage {
 				400.0,
 				sub_12, // Malt & More Grain Co.
 				Unit.KILOGRAM,
-				IngredientType.GRAIN
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
 		);
 
-		Ingredient waterSpring = Warehousing.createIngredient(
+		Ingredient waterSpring = Warehousing.createIngredientAndAdd(
 				"Pure Spring Water",
 				"Sourced from pristine local springs, this water ensures clean and smooth fermentation.",
 				3001,
@@ -384,10 +408,12 @@ public abstract class initStorage {
 				1500.0,
 				sub_07, // Loch Ness Water Co.
 				Unit.LITERS,
-				IngredientType.WATER
+				IngredientType.WATER,
+				warehouse,
+				rack1
 		);
 
-		Ingredient yeastBrewers = Warehousing.createIngredient(
+		Ingredient yeastBrewers = Warehousing.createIngredientAndAdd(
 				"Brewer's Yeast",
 				"A specialized yeast strain used for efficient fermentation, producing complex fruity esters.",
 				3002,
@@ -396,10 +422,12 @@ public abstract class initStorage {
 				50.0,
 				sub_08, // Brewer's Choice Yeast Ltd.
 				Unit.KILOGRAM,
-				IngredientType.YEAST
+				IngredientType.YEAST,
+				warehouse,
+				rack1
 		);
 
-		Ingredient peatMoss = Warehousing.createIngredient(
+		Ingredient peatMoss = Warehousing.createIngredientAndAdd(
 				"Islay Peat Moss",
 				"Used to smoke barley, imparting a bold and smoky character typical of Islay whiskies.",
 				3003,
@@ -408,10 +436,12 @@ public abstract class initStorage {
 				200.0,
 				sub_09, // Islay Peat Moss
 				Unit.KILOGRAM,
-				IngredientType.ADDITIVE
+				IngredientType.ADDITIVE,
+				warehouse,
+				rack1
 		);
 
-		Ingredient sugarFermentation = Warehousing.createIngredient(
+		Ingredient sugarFermentation = Warehousing.createIngredientAndAdd(
 				"Fermentation Sugar",
 				"Refined sugar used to assist fermentation, boosting alcohol yield in the distillate.",
 				3004,
@@ -420,10 +450,12 @@ public abstract class initStorage {
 				100.0,
 				sub_10, // Highland Sweets Co.
 				Unit.KILOGRAM,
-				IngredientType.ADDITIVE
+				IngredientType.ADDITIVE,
+				warehouse,
+				rack1
 		);
 
-		Ingredient caramelColor = Warehousing.createIngredient(
+		Ingredient caramelColor = Warehousing.createIngredientAndAdd(
 				"Caramel Coloring",
 				"E150a coloring used for achieving a consistent appearance in blended whiskies.",
 				3005,
@@ -432,7 +464,9 @@ public abstract class initStorage {
 				25.0,
 				sub_13, // Burns & Co. Caramel
 				Unit.LITERS,
-				IngredientType.ADDITIVE
+				IngredientType.ADDITIVE,
+				warehouse,
+				rack1
 		);
 
 

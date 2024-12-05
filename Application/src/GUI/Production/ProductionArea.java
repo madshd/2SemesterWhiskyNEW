@@ -189,6 +189,7 @@ public class ProductionArea {
 			Distillate selectedDistillate = (Distillate) lvwDistillates.getSelectionModel().getSelectedItem();
 			casks.updatelist(selectedDistillate);
 			distillateBasics.updateBasics(selectedDistillate);
+//			ditillateIngredient
 
 			if (selectedDistillate != null) {
 				String infoText = String.format("""
