@@ -26,6 +26,9 @@ import BatchArea.Product;
 
 import static Controllers.Production.addDescriotionToDistillate;
 import static Controllers.Production.addIngredientToDistillate;
+import static Controllers.Production.addAlcoholPercentage;
+import static Controllers.Production.addProductionCutInformation;
+import static Controllers.Production.addStoryToDistillate;
 
 public abstract class initStorage {
 
@@ -471,76 +474,268 @@ public abstract class initStorage {
 		);
 
 		// Add ingredients to distillates
-// Tilføj ingredienser til Highland Essence
+		// Tilføj ingredienser til Highland Essence
 		addIngredientToDistillate(distillate_01, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_01, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_01, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_01, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_01, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
 
-// Tilføj ingredienser til Islay Smoke
+		// Tilføj ingredienser til Islay Smoke
 		addIngredientToDistillate(distillate_02, barleyGoldenPromise, 600.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_02, waterSpring, 2625.0, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_02, yeastBrewers, 7.5, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_02, sugarFermentation, 15.0, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_02, peatMoss, 22.5, LocalDate.parse("2024-01-20"));
 
-// Tilføj ingredienser til Classic Malt
+		// Tilføj ingredienser til Classic Malt
 		addIngredientToDistillate(distillate_03, barleyEvergreen, 800.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_03, waterSpring, 3500.0, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_03, yeastBrewers, 10.0, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_03, sugarFermentation, 20.0, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_03, peatMoss, 30.0, LocalDate.parse("2024-01-20"));
 
-// Tilføj ingredienser til Peat Fire
+		// Tilføj ingredienser til Peat Fire
 		addIngredientToDistillate(distillate_04, barleyEvergreen, 400.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_04, waterSpring, 1750.0, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_04, yeastBrewers, 5.0, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_04, sugarFermentation, 10.0, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_04, peatMoss, 15.0, LocalDate.parse("2024-01-20"));
 
-// Tilføj ingredienser til Sherry Kiss
+		// Tilføj ingredienser til Sherry Kiss
 		addIngredientToDistillate(distillate_05, barleyEvergreen, 700.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_05, waterSpring, 3062.5, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_05, yeastBrewers, 8.75, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_05, sugarFermentation, 17.5, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_05, peatMoss, 26.25, LocalDate.parse("2024-01-20"));
 
-// Tilføj ingredienser til Bourbon Blend
+		// Tilføj ingredienser til Bourbon Blend
 		addIngredientToDistillate(distillate_06, barleyEvergreen, 900.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_06, waterSpring, 3937.5, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_06, yeastBrewers, 11.25, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_06, sugarFermentation, 22.5, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_06, peatMoss, 33.75, LocalDate.parse("2024-01-20"));
 
-// Tilføj ingredienser til Loch Nectar
+		// Tilføj ingredienser til Loch Nectar
 		addIngredientToDistillate(distillate_07, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_07, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_07, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_07, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_07, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
 
-// Tilføj ingredienser til Speyside Gold
+		// Tilføj ingredienser til Speyside Gold
 		addIngredientToDistillate(distillate_08, barleyStairway, 800.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_08, waterSpring, 3500.0, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_08, yeastBrewers, 10.0, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_08, sugarFermentation, 20.0, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_08, peatMoss, 30.0, LocalDate.parse("2024-01-20"));
 
-// Tilføj ingredienser til Oak Reserve
+		// Tilføj ingredienser til Oak Reserve
 		addIngredientToDistillate(distillate_09, barleyIrna, 750.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_09, waterSpring, 3281.25, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_09, yeastBrewers, 9.375, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_09, sugarFermentation, 18.75, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_09, peatMoss, 28.125, LocalDate.parse("2024-01-20"));
 
-// Tilføj ingredienser til Golden Highland
+		// Tilføj ingredienser til Golden Highland
 		addIngredientToDistillate(distillate_10, barleyIrna, 500.0, LocalDate.parse("2024-03-01"));
 		addIngredientToDistillate(distillate_10, waterSpring, 2187.5, LocalDate.parse("2024-02-15"));
 		addIngredientToDistillate(distillate_10, yeastBrewers, 6.25, LocalDate.parse("2024-02-01"));
 		addIngredientToDistillate(distillate_10, sugarFermentation, 12.5, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_10, peatMoss, 18.75, LocalDate.parse("2024-01-20"));
 
+		// Measuring alcohol percentage
+		// Målinger for Highland Essence
+		addAlcoholPercentage(distillate_01, 75.0, LocalDate.parse("2024-11-27")); // Start af produktionen
+		addAlcoholPercentage(distillate_01, 72.5, LocalDate.parse("2024-11-30")); // Midlertidig måling
+		addAlcoholPercentage(distillate_01, 70.0, LocalDate.parse("2024-12-10")); // Færdiggørelse
+
+		// Målinger for Islay Smoke
+		addAlcoholPercentage(distillate_02, 76.0, LocalDate.parse("2024-10-15")); // Start af produktionen
+		addAlcoholPercentage(distillate_02, 74.0, LocalDate.parse("2024-10-20")); // Midt under processen
+		addAlcoholPercentage(distillate_02, 71.5, LocalDate.parse("2024-11-01")); // Færdiggørelse
+
+		// Målinger for Classic Malt
+		addAlcoholPercentage(distillate_03, 72.0, LocalDate.parse("2024-09-01")); // Start af produktionen
+		addAlcoholPercentage(distillate_03, 70.5, LocalDate.parse("2024-09-15")); // Midterste del
+		addAlcoholPercentage(distillate_03, 68.0, LocalDate.parse("2024-09-30")); // Slutproces
+
+		// Målinger for Peat Fire
+		addAlcoholPercentage(distillate_04, 74.0, LocalDate.parse("2024-08-20")); // Start af produktionen
+		addAlcoholPercentage(distillate_04, 71.5, LocalDate.parse("2024-08-30")); // Midt under processen
+		addAlcoholPercentage(distillate_04, 70.0, LocalDate.parse("2024-09-10")); // Færdiggørelse
+
+		// Målinger for Sherry Kiss
+		addAlcoholPercentage(distillate_05, 73.5, LocalDate.parse("2024-07-10")); // Start af produktionen
+		addAlcoholPercentage(distillate_05, 71.0, LocalDate.parse("2024-07-20")); // Midt under processen
+		addAlcoholPercentage(distillate_05, 69.0, LocalDate.parse("2024-08-05")); // Færdiggørelse
+
+		// Målinger for Bourbon Blend
+		addAlcoholPercentage(distillate_06, 75.5, LocalDate.parse("2024-06-15")); // Start af produktionen
+		addAlcoholPercentage(distillate_06, 73.0, LocalDate.parse("2024-06-25")); // Midt under processen
+		addAlcoholPercentage(distillate_06, 70.5, LocalDate.parse("2024-07-05")); // Færdiggørelse
+
+		// Målinger for Loch Nectar
+		addAlcoholPercentage(distillate_07, 76.5, LocalDate.parse("2024-05-01")); // Start af produktionen
+		addAlcoholPercentage(distillate_07, 74.0, LocalDate.parse("2024-05-15")); // Midt under processen
+		addAlcoholPercentage(distillate_07, 72.0, LocalDate.parse("2024-05-30")); // Færdiggørelse
+
+		// Målinger for Speyside Gold
+		addAlcoholPercentage(distillate_08, 73.0, LocalDate.parse("2024-04-15")); // Start af produktionen
+		addAlcoholPercentage(distillate_08, 71.0, LocalDate.parse("2024-04-25")); // Midt under processen
+		addAlcoholPercentage(distillate_08, 69.5, LocalDate.parse("2024-05-10")); // Færdiggørelse
+
+		// Målinger for Oak Reserve
+		addAlcoholPercentage(distillate_09, 74.5, LocalDate.parse("2024-03-10")); // Start af produktionen
+		addAlcoholPercentage(distillate_09, 72.0, LocalDate.parse("2024-03-20")); // Midt under processen
+		addAlcoholPercentage(distillate_09, 70.0, LocalDate.parse("2024-03-30")); // Færdiggørelse
+
+		// Målinger for Golden Highland
+		addAlcoholPercentage(distillate_10, 75.0, LocalDate.parse("2024-02-20")); // Start af produktionen
+		addAlcoholPercentage(distillate_10, 73.5, LocalDate.parse("2024-03-01")); // Midt under processen
+		addAlcoholPercentage(distillate_10, 70.5, LocalDate.parse("2024-03-15")); // Færdiggørelse
+
+		// Production cut information
+		// Production cut information for Highland Essence
+		addProductionCutInformation(
+				distillate_01,
+				"Cut started with heads removal at 72% ABV. Hearts were retained between 70% and 65% ABV for optimal balance. Tails were discarded below 65% ABV.",
+				LocalDate.parse("2024-11-28")
+		);
+
+		// Production cut information for Islay Smoke
+		addProductionCutInformation(
+				distillate_02,
+				"Heads removed at 73% ABV to avoid harshness. Smoky hearts selected between 70% and 62% ABV. Significant phenolic compounds detected in tails and discarded.",
+				LocalDate.parse("2024-10-20")
+		);
+
+		// Production cut information for Classic Malt
+		addProductionCutInformation(
+				distillate_03,
+				"Clean heads removal at 71% ABV. Hearts retained between 70% and 65% ABV for a smooth malt backbone. Subtle tails flavors avoided due to sweetness focus.",
+				LocalDate.parse("2024-09-05")
+		);
+
+		// Production cut information for Peat Fire
+		addProductionCutInformation(
+				distillate_04,
+				"Aggressive heads cut at 73% ABV to maintain peat integrity. Hearts maintained at 68% ABV with a rich smoky character. Tails below 60% were removed.",
+				LocalDate.parse("2024-08-25")
+		);
+
+		// Production cut information for Sherry Kiss
+		addProductionCutInformation(
+				distillate_05,
+				"Heads removed at 72% ABV. Rich, fruity hearts retained between 70% and 63% ABV. Light sweet tails (<60%) were excluded for balance.",
+				LocalDate.parse("2024-07-15")
+		);
+
+		// Production cut information for Bourbon Blend
+		addProductionCutInformation(
+				distillate_06,
+				"Heads were sharply cut at 74% ABV. Hearts retained between 72% and 65%. Mild tails were discarded under 62% ABV to match bourbon profile.",
+				LocalDate.parse("2024-06-20")
+		);
+
+		// Production cut information for Loch Nectar
+		addProductionCutInformation(
+				distillate_07,
+				"Heads excised at 73% ABV. Clean, floral hearts retained between 71% and 64% ABV for maximum balance. Tails excluded for cleaner flavor.",
+				LocalDate.parse("2024-05-10")
+		);
+
+		// Production cut information for Speyside Gold
+		addProductionCutInformation(
+				distillate_08,
+				"Heads removed at 72%. Delicate hearts preserved between 70% and 63% ABV. Tails at <60% ABV omitted for a softer profile.",
+				LocalDate.parse("2024-04-20")
+		);
+
+		// Production cut information for Oak Reserve
+		addProductionCutInformation(
+				distillate_09,
+				"Light heads removed at 71% ABV. Full-bodied hearts between 70% and 64% ABV. Subtle tails at ~60% discarded to achieve exceptional balance.",
+				LocalDate.parse("2024-03-15")
+		);
+
+		// Production cut information for Golden Highland
+		addProductionCutInformation(
+				distillate_10,
+				"Clean heads excluded at 72% ABV. Hearts retained between 70% and 65% ABV. Tails removed at <58% ABV to preserve creamy malt notes.",
+				LocalDate.parse("2024-02-25")
+		);
+
+		// Story lines
+		// Storyline for Highland Essence
+		addStoryToDistillate(
+				distillate_01,
+				"Highland Essence stems from a vision to create a quintessential Highland whisky. This whisky balances subtle sweetness and fresh malty flavors, representing the vibrant fields of golden barley from the heart of Scotland.",
+				LocalDate.parse("2024-11-27")
+		);
+
+		// Storyline for Islay Smoke
+		addStoryToDistillate(
+				distillate_02,
+				"Islay Smoke is inspired by the rugged coasts and powerful winds of Islay. Crafted with smoky, peaty notes and a touch of maritime brine, this whisky was developed to embody the spirit of Islay’s wilderness.",
+				LocalDate.parse("2024-10-15")
+		);
+
+		// Storyline for Classic Malt
+		addStoryToDistillate(
+				distillate_03,
+				"Classic Malt aims to redefine simplicity by focusing on the purity of malt. Designed to be a versatile whisky, it was crafted with the idea of bringing smooth malty tones together with a creamy, balanced finish.",
+				LocalDate.parse("2024-09-01")
+		);
+
+		// Storyline for Peat Fire
+		addStoryToDistillate(
+				distillate_04,
+				"Peat Fire was developed to highlight a bold, smoky character for connoisseurs who seek intensity. Inspired by roaring fires on a cold winter's evening, this whisky delivers smokiness with a warm, lingering finish.",
+				LocalDate.parse("2024-08-20")
+		);
+
+		// Storyline for Sherry Kiss
+		addStoryToDistillate(
+				distillate_05,
+				"Sherry Kiss is a love letter to the art of aging whisky in sherry casks. With notes of dried fruits and rich sweetness, this whisky was envisioned to create a romantic interplay between malt and oak traditions.",
+				LocalDate.parse("2024-07-10")
+		);
+
+		// Storyline for Bourbon Blend
+		addStoryToDistillate(
+				distillate_06,
+				"Bourbon Blend pays homage to the whiskey traditions of America. Combining the creamy richness of bourbon influence, this whisky seeks to capture the warm, sweet oak notes loved by bourbon enthusiasts while retaining a uniquely Scottish character.",
+				LocalDate.parse("2024-06-15")
+		);
+
+		// Storyline for Loch Nectar
+		addStoryToDistillate(
+				distillate_07,
+				"Loch Nectar draws its inspiration from the pristine waters of Scotland's lochs. This whisky was crafted with the intent of showcasing floral and delicate malty tones, creating a whisky as pure as the landscape it hails from.",
+				LocalDate.parse("2024-05-01")
+		);
+
+		// Storyline for Speyside Gold
+		addStoryToDistillate(
+				distillate_08,
+				"Speyside Gold reflects the elegance and richness of the whiskies from Speyside. With soft, fruity notes and a gentle finish, this whisky was created to celebrate the region's rich whisky heritage.",
+				LocalDate.parse("2024-04-15")
+		);
+
+		// Storyline for Oak Reserve
+		addStoryToDistillate(
+				distillate_09,
+				"Oak Reserve was developed with the idea of capturing the perfect harmony of wood and whisky. With deep, oaky undertones and a long, warm finish, it honors the craftsmanship of seasoned oak cask maturation.",
+				LocalDate.parse("2024-03-10")
+		);
+
+		// Storyline for Golden Highland
+		addStoryToDistillate(
+				distillate_10,
+				"Golden Highland is a tribute to the golden fields of barley that serve as the foundation of Scottish whisky. With creamy malt flavors and a touch of sweetness, it embodies the beauty of the Highlands.",
+				LocalDate.parse("2024-02-20")
+		);
 		// *** Fillings ***
 		// One distallate capacity fully used across casks
 		Production.fillDistillateIntoCask(distillate_06,cask_01,100,LocalDate.parse("2024-01-01"));

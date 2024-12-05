@@ -59,7 +59,11 @@ public abstract class Common {
 				if (c[i] == 32) {
 					sb.append("\n");
 					sb.append(c[i]);
-				} else {
+				} else if (c[i] == 45 || c[i] == 32) {
+                    // Do nothing
+                    sb.append(c[i]);
+//                    sb.append("\n");
+                } else {
 					sb.append('-');
 					sb.append("\n");
 					sb.append(c[i]);
