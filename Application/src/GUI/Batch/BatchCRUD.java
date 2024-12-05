@@ -51,6 +51,7 @@ public class BatchCRUD {
 
 	public void updateContent(Product product) {
 		calculateMaxBottles(product);
+		onlyReadyCheckBox.setSelected(true);
 		batchID.setText(Batch.getBatchIDglobalCount() + "");
 		this.product = product;
 	}
@@ -154,7 +155,6 @@ public class BatchCRUD {
 
 	// Clear all fields
 	private void clearFields() {
-		onlyReadyCheckBox.setSelected(true);
 		product = null;
 		numExpectedBottles.clear();
 	}

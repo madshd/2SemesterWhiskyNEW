@@ -60,13 +60,14 @@ public class ProduceBatchWindow {
 		ObservableList<Cask> caskList = FXCollections.observableArrayList(batch.getReservedCasks().keySet());
 		reservedCasks.setItems(caskList);
 		readyBottles.setText(Integer.toString(calcReadyBottles()));
+		System.out.println(batch.getReservedCasks());
 	}
 
-	public int calcReadyBottles(){
+	public int calcReadyBottles() {
 		int readyBottles = 0;
 		for (Cask cask : batch.getReservedCasks().keySet()) {
-			if (cask.getMaturityMonths() > 36) {
-			readyBottles += batch.getReservedCasks().get(cask);
+			if (cask.getMaturityMonths() >= 36) {
+				readyBottles += batch.getReservedCasks().get(cask);
 			}
 		}
 		return readyBottles;
@@ -101,44 +102,51 @@ public class ProduceBatchWindow {
 		expectedBottles.setFocusTraversable(false);
 		expectedBottles.setEditable(false);
 		expectedBottles.setDisable(true);
-		HBox expectedBox = new HBox(new Label("Total Batch Size: "), expectedBottles);
-		expectedBox.setAlignment(Pos.CENTER);
-		expectedBox.setSpacing(65);
-		mainPane.add(expectedBox, 0, 2);
 		expectedBottles.setMaxWidth(100);
+		Label expectedLabel = new Label("Expected Bottles: ");
 
 		// Remaining Bottles
 		remainingBottles.setFocusTraversable(false);
 		remainingBottles.setEditable(false);
 		remainingBottles.setDisable(true);
-		HBox remainingBox = new HBox(new Label("Remaining Bottles: "), remainingBottles);
-		remainingBox.setAlignment(Pos.CENTER);
-		remainingBox.setSpacing(90);
-		mainPane.add(remainingBox, 0, 3);
 		remainingBottles.setMaxWidth(100);
+		Label remainingLabel = new Label("Remaining Bottles: ");
 
 		// Bottles That can be produced now according to whats ready
 		readyBottles.setFocusTraversable(false);
 		readyBottles.setEditable(false);
 		readyBottles.setDisable(true);
-		HBox readyBox = new HBox(new Label("Ready to produce now: "), readyBottles);
-		readyBox.setAlignment(Pos.CENTER);
-		readyBox.setSpacing(90);
-		mainPane.add(readyBox, 0, 4);
 		readyBottles.setMaxWidth(100);
+		Label readyLabel = new Label("Ready to produce now: ");
 
 		// Bottle Number Input
 		bottleNumInput.setFocusTraversable(false);
-		HBox bottleSizeBox = new HBox(new Label("Number of Bottles to Produce: "), bottleNumInput);
-		bottleSizeBox.setAlignment(Pos.CENTER);
-		bottleSizeBox.setSpacing(25);
-		mainPane.add(bottleSizeBox, 0, 5);
 		bottleNumInput.setMaxWidth(100);
+		Label bottleNumLabel = new Label("Number of Bottles to Produce: ");
+
+		// Add all to the grid
+		GridPane inputGrid = new GridPane();
+		inputGrid.add(expectedLabel, 0, 0);
+		inputGrid.add(expectedBottles, 1, 0);
+		inputGrid.add(remainingLabel, 0, 1);
+		inputGrid.add(remainingBottles, 1, 1);
+		inputGrid.add(readyLabel, 0, 2);
+		inputGrid.add(readyBottles, 1, 2);
+		inputGrid.add(bottleNumLabel, 0, 3);
+		inputGrid.add(bottleNumInput, 1, 3);
+		inputGrid.setHgap(10);
+		inputGrid.setVgap(10);
+		inputGrid.setAlignment(Pos.CENTER);
+		inputGrid.setPadding(new Insets(10));
+		inputGrid.setMaxWidth(400);
+
+		mainPane.add(inputGrid, 0, 2);
+		GridPane.setHalignment(inputGrid, javafx.geometry.HPos.CENTER);
 
 		// Buttons
 		Button cancelButton = new Button("Cancel");
 		HBox buttonBox = new HBox(produceButton, cancelButton);
-		mainPane.add(buttonBox, 0, 6, 1, 1);
+		mainPane.add(buttonBox, 0, 3, 1, 1);
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.setSpacing(25);
 
@@ -158,7 +166,7 @@ public class ProduceBatchWindow {
 	private void configureTableView() {
 		// Cask ID Column
 		TableColumn<Cask, String> caskIDColumn = new TableColumn<>("Cask ID");
-		caskIDColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCaskID()));
+		caskIDColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCaskIDString()));
 		caskIDColumn.setMinWidth(100);
 
 		// Taste Profile Column
@@ -187,9 +195,11 @@ public class ProduceBatchWindow {
 
 	private void produce(int bottleNum) {
 		// Close the produceBatchStage first
+		System.out.println("Closing produceBatchStage...");
 		produceBatchStage.close();
 
 		// Show the loading window
+		System.out.println("Showing loading window...");
 		loadingWindow.show("Generating Production Receipt...");
 
 		// Use a Task to run the delay in the background thread
@@ -197,6 +207,7 @@ public class ProduceBatchWindow {
 			@Override
 			protected Void call() throws Exception {
 				// Simulate a long-running operation (5 seconds)
+				System.out.println("Simulating long-running operation...");
 				Thread.sleep(1000);
 				return null;
 			}
@@ -204,26 +215,32 @@ public class ProduceBatchWindow {
 			@Override
 			protected void succeeded() {
 				// Close the loading window and show the production receipt
+				System.out.println("Task succeeded. Closing loading window...");
 				loadingWindow.close();
 
 				// Produce batch and get the used casks
-				Map<Cask, Double> usedCasks = Controllers.BatchArea.produceBatch(batch, bottleNum,
-						batch.isOnlyReadyCasks());
+				System.out.println("Producing batch...");
+				Map<Cask, Double> usedCasks = Controllers.BatchArea.produceBatch(batch, bottleNum);
+				System.out.println("Batch produced. Used casks: " + usedCasks);
 
 				// Clear fields and show the production receipt window
+				System.out.println("Clearing fields...");
 				clearFields();
+				System.out.println("Showing production receipt...");
 				productionReceipt.show(usedCasks);
 			}
 
 			@Override
 			protected void failed() {
 				// Handle failure (optional)
+				System.err.println("Task failed. Closing loading window...");
 				loadingWindow.close();
 				System.err.println("Error occurred while generating the production receipt.");
 			}
 		};
 
 		// Run the task in a background thread
+		System.out.println("Starting background task...");
 		new Thread(task).start();
 	}
 

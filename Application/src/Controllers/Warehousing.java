@@ -271,33 +271,20 @@ public abstract class Warehousing {
 		return storage.getWarehouses();
 	}
 
-	/**
-	 * Retrieves a list of casks that are ready for use.
-	 * A cask is considered ready if it has been filled for at least 3 years.
-	 *
-	 * @return a list of ready casks
-	 */
-
 	public static List<Cask> getReadyCasks() {
 		List<Cask> readyCasks = new ArrayList<>();
-		LocalDate currentDate = LocalDate.now();
-		try {
 			for (Warehouse wh : getAllWarehouses()) {
 				for (StorageRack sr : wh.getRacks().values()) {
 					for (Item item : sr.getList()) {
 						if (item instanceof Cask) {
 							Cask cask = (Cask) item;
-							LocalDate lastFillDate = ((FillDistillate) cask.getFillingStack().getFirst()).getDate();
-							if (lastFillDate.plusYears(3).isBefore(currentDate)) {
+							if (cask.getMaturityMonths() >= 36) {
 								readyCasks.add(cask);
 							}
 						}
 					}
 				}
 			}
-		} catch (RuntimeException e) {
-			System.out.println("No ready casks found");
-		}
 		return readyCasks;
 	}
 

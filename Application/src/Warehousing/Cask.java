@@ -42,28 +42,24 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return unit;
 	}
 
-	/**
-	 * Will return count of month from the latest end date to LocalDate.now from a distillate in curent lifecycle.
-	 *
-	 * @return
-	 */
-	public int getMaturityMonths() {
-		List<Filling> fillings = getFillingStack();
+public int getMaturityMonths() {
+    List<Filling> fillings = getFillingStack();
 
-		if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings availble");
+    try {
+        if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings available");
 
-		fillings.forEach(filling -> {
-			if (((FillDistillate) filling).getLifeCycle() != lifeCycle) {
-				fillings.remove(filling);
-			}
-		});
+        fillings.removeIf(filling -> ((FillDistillate) filling).getLifeCycle() != lifeCycle);
 
-		fillings.sort((f1, f2) ->
-				((FillDistillate) f1).getDistillate().getEndDate().compareTo(((FillDistillate) f2).getDistillate().getEndDate()));
+        fillings.sort((f1, f2) ->
+                ((FillDistillate) f1).getDistillate().getEndDate().compareTo(((FillDistillate) f2).getDistillate().getEndDate()));
 
-		LocalDate lastEndDate = ((FillDistillate) fillings.getLast()).getDistillate().getEndDate();
-		return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
-	}
+        LocalDate lastEndDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
+        return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
+    } catch (Exception e) {
+        System.err.println("Error calculating maturity months: " + e.getMessage());
+        return 0;
+    }
+}
 
 	public String getCaskType() {
 		return caskType;
@@ -277,7 +273,9 @@ public double getLegalQuantity() {
  * @param amount the amount to reserve.
  */
 public void makeReservation(Batch batch, double amount) {
+		System.out.println("Reservation in batch" + batch);
     reservedBatchesAmount.put(batch, amount);
+		System.out.println(reservedBatchesAmount);
 }
 
 /**
@@ -288,6 +286,9 @@ public void makeReservation(Batch batch, double amount) {
  * @param amount the amount to spend.
  */
 public void spendReservation(Batch batch, double amount) {
+
+		System.out.println(reservedBatchesAmount);
+			
     double reservedAmount = reservedBatchesAmount.get(batch);
     if (reservedAmount - amount == 0) {
         reservedBatchesAmount.remove(batch);
@@ -342,6 +343,11 @@ public void spendReservation(Batch batch, double amount) {
 
 	public int getCaskID() {
 		return caskID;
+	}
+
+	
+	public String getCaskIDString() {
+		return String.valueOf(caskID);
 	}
 
 	public double getMaxQuantity() {

@@ -1,7 +1,10 @@
 package GUI.Batch;
 
 import GUI.Common.ConfirmationDialog;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -33,9 +36,11 @@ import BatchArea.Formula;
 import GUI.Common.*;
 
 import java.time.LocalDate;
+import java.util.Observable;
 
 import BatchArea.Batch;
 import BatchArea.Product;
+import Controllers.Warehousing;
 
 @SuppressWarnings("unused")
 public class BatchArea {
@@ -81,6 +86,7 @@ public class BatchArea {
 	public void show() {
 		updateLists();
 		stage.show();
+
 	}
 
 	public static void initContent(GridPane gridPane) {
@@ -158,6 +164,7 @@ public class BatchArea {
 		productTable.setEditable(false);
 		productTable.setFocusTraversable(false);
 		productTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		productTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
 		TableColumn<Product, String> nameColumn = new TableColumn<>("Name");
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
@@ -177,7 +184,8 @@ public class BatchArea {
 		TableColumn<Product, Formula> formulaColumn = new TableColumn<>("Formula");
 		formulaColumn.setCellValueFactory(new PropertyValueFactory<>("formula"));
 		formulaColumn.setMinWidth(250);
-		formulaColumn.setMaxWidth(250);
+		formulaColumn.setMaxWidth(Double.MAX_VALUE);
+		formulaColumn.setResizable(true);
 
 		productTable.getColumns().addAll(nameColumn, idColumn, bottleSizeColumn, formulaColumn);
 
@@ -186,9 +194,7 @@ public class BatchArea {
 
 		productTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
-				// Here, newValue is the selected Product
 				selectedProduct = newValue;
-				System.out.println("Selected Product: " + selectedProduct);
 			} else {
 				selectedProduct = null;
 			}
@@ -204,7 +210,6 @@ public class BatchArea {
 						if (empty || item == null) {
 							setText(null);
 						} else {
-							// Append " mL" to the bottle size value
 							setText(item + " mL");
 						}
 					}
@@ -219,13 +224,12 @@ public class BatchArea {
 					@Override
 					protected void updateItem(Formula item, boolean empty) {
 						super.updateItem(item, empty);
-
 						if (empty) {
-							setText(null); // Clear text if the row is empty
+							setText(null);
 						} else if (item == null) {
-							setText("No formula defined"); // Set text when formula is null
+							setText("No formula defined");
 						} else {
-							setText(item.toString()); // Use Formula's toString if it's not null
+							setText(item.toString());
 						}
 					}
 				};
@@ -281,7 +285,6 @@ public class BatchArea {
 			defineFormulaButton.setDisable(newValue == null); // Disable if no item is selected
 			deleteProductButton.setDisable(newValue == null); // Disable if no item is selected
 		});
-
 		return productGrid;
 	}
 
@@ -307,7 +310,9 @@ public class BatchArea {
 		batchTable.setEditable(false);
 		batchTable.setFocusTraversable(false);
 		batchTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		batchTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
+		// Define columns (IDColumn, productColumn, etc.)
 		TableColumn<Batch, Integer> IDColumn = new TableColumn<>("ID");
 		IDColumn.setCellValueFactory(new PropertyValueFactory<>("batchID"));
 		IDColumn.setMinWidth(100);
@@ -336,11 +341,14 @@ public class BatchArea {
 		TableColumn<Batch, LocalDate> endDateColumn = new TableColumn<>("Completion Date");
 		endDateColumn.setCellValueFactory(new PropertyValueFactory<>("completionDate"));
 		endDateColumn.setMinWidth(150);
-		endDateColumn.setMaxWidth(150);
+		endDateColumn.setMaxWidth(Double.MAX_VALUE); // Allow it to take up any remaining space
+		endDateColumn.setResizable(true); // Make the column resizable
 
-		batchTable.getColumns().addAll(IDColumn, productColumn, batchSizeColumn, producedNumColumn,
-				dateColumn, endDateColumn);
+		// Add columns to the table
+		batchTable.getColumns().addAll(IDColumn, productColumn, batchSizeColumn, producedNumColumn, dateColumn,
+				endDateColumn);
 
+		// Set data for the table
 		ObservableList<Product> products = FXCollections.observableArrayList(Controllers.BatchArea.getAllProducts());
 		productTable.setItems(products);
 

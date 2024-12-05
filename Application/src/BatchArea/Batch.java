@@ -20,14 +20,12 @@ public class Batch {
 	private boolean productionComplete;
 
 	private final Map<Cask, Double> reservedCasks = new HashMap<>();
-	private boolean onlyReadyCasks = true;
 
-	public Batch(Product product, int numExpectedBottles, boolean onlyReady) {
+	public Batch(Product product, int numExpectedBottles) {
 		this.batchID = batchIDglobalCount++;
 		this.product = product;
 		this.creationDate = LocalDate.now();
 		this.numExpectedBottles = numExpectedBottles;
-		this.onlyReadyCasks = onlyReady;
 	}
 
 	/**
@@ -51,6 +49,7 @@ public class Batch {
 
 	public void addReservedCask(Cask cask, double quantity) {
 		this.reservedCasks.put(cask, quantity);
+		System.out.println(reservedCasks);
 	}
 
 	public void generateLabel() {
@@ -132,11 +131,7 @@ public class Batch {
 		return label;
 	}
 
-	public int getNumRemainingBottles() {
-		return numExpectedBottles - numProducedBottles;
+	public int getNumRemainingBottles() { return numExpectedBottles - numProducedBottles;
 	}
 
-	public boolean isOnlyReadyCasks() {
-		return onlyReadyCasks;
-	}
 }

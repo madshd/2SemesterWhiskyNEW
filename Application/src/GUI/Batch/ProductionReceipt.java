@@ -114,7 +114,7 @@ public class ProductionReceipt {
 
 		// Cask ID Column
 		TableColumn<Map.Entry<Cask, Double>, String> caskIDColumn = new TableColumn<>("Cask ID");
-		caskIDColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getKey().getCaskID()));
+		caskIDColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getKey().getCaskIDString()));
 
 		// Quantity To Use Column
 		TableColumn<Map.Entry<Cask, Double>, String> quantityToUseColumn = new TableColumn<>("Quantity To Use");

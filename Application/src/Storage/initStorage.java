@@ -35,6 +35,11 @@ public abstract class initStorage {
 	public static TasteProfile tasteProfile4;
 
 	public static Cask cask_01;
+	public static Cask cask_02;
+	public static Cask cask_03;
+	public static Cask cask_04;
+	public static Cask cask_05;
+	public static Cask cask_06;
 
 	public static void loadProduction() {
 		Warehouse warehouse = Warehousing.createWarehouse("Sherlock Whisky", "Baker Street 221 B");
@@ -47,9 +52,6 @@ public abstract class initStorage {
 		StorageRack rack1 = Warehousing.createStorageRack("221 B", 100);
 
 		warehouse.addStorageRack("221 B", rack1);
-
-		Warehousing.createCaskAndAdd(1, 100, Unit.LITERS, new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story"), "Sherry", warehouse, rack1);
-
 
 		Supplier sub_01 = Warehousing.createSupplier(
 				"Highland Barley Co.",
@@ -172,12 +174,12 @@ public abstract class initStorage {
 				"IF",
 				"Specialist in blending and balancing bold and delicate whisky flavors.");
 
-		Cask cask_01 = Warehousing.createCaskAndAdd(1, 200, Unit.LITERS, sub_03, "Bourbon Cask", warehouse, rack1); // Bourbon cask from Oak Master Barrels
-		Cask cask_02 = Warehousing.createCaskAndAdd(2, 250, Unit.LITERS, sub_03, "American Oak Cask", warehouse, rack1); // American Oak cask from Oak Master Barrels
-		Cask cask_03 = Warehousing.createCaskAndAdd(3, 225, Unit.LITERS, sub_05, "Sherry Cask", warehouse, rack1); // Sherry cask from Sherry Bliss Co.
-		Cask cask_04 = Warehousing.createCaskAndAdd(4, 500, Unit.LITERS, sub_03, "Large European Oak Cask", warehouse, rack1); // Large European Oak cask from Oak Master Barrels
-		Cask cask_05 = Warehousing.createCaskAndAdd(5, 300, Unit.LITERS, sub_05, "Seasoned Sherry Cask", warehouse, rack1); // Seasoned sherry cask from Sherry Bliss Co.
-		Cask cask_06 = Warehousing.createCaskAndAdd(6, 200, Unit.LITERS, sub_03, "Toasted Oak Cask", warehouse, rack1); // Toasted Oak cask from Oak Master Barrels
+		cask_01 = Warehousing.createCaskAndAdd(1, 200, Unit.LITERS, sub_03, "Bourbon Cask", warehouse, rack1); // Bourbon cask from Oak Master Barrels
+		cask_02 = Warehousing.createCaskAndAdd(2, 250, Unit.LITERS, sub_03, "American Oak Cask", warehouse, rack1); // American Oak cask from Oak Master Barrels
+		cask_03 = Warehousing.createCaskAndAdd(3, 225, Unit.LITERS, sub_05, "Sherry Cask", warehouse, rack1); // Sherry cask from Sherry Bliss Co.
+		cask_04 = Warehousing.createCaskAndAdd(4, 500, Unit.LITERS, sub_03, "Large European Oak Cask", warehouse, rack1); // Large European Oak cask from Oak Master Barrels
+		cask_05 = Warehousing.createCaskAndAdd(5, 300, Unit.LITERS, sub_05, "Seasoned Sherry Cask", warehouse, rack1); // Seasoned sherry cask from Sherry Bliss Co.
+		cask_06 = Warehousing.createCaskAndAdd(6, 200, Unit.LITERS, sub_03, "Toasted Oak Cask", warehouse, rack1); // Toasted Oak cask from Oak Master Barrels
 		Cask cask_07 = Warehousing.createCaskAndAdd(7, 225, Unit.LITERS, sub_03, "Ex-Port Cask", warehouse, rack1); // Ex-Port cask from Oak Master Barrels
 		Cask cask_08 = Warehousing.createCaskAndAdd(8, 180, Unit.LITERS, sub_03, "Peated Oak Cask", warehouse, rack1); // Peated Oak cask from Peat & Smolder
 		Cask cask_09 = Warehousing.createCaskAndAdd(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask", warehouse, rack1); // Spanish Oak cask from Sherry Bliss Co.
@@ -262,6 +264,22 @@ public abstract class initStorage {
 				250,
 				distiller_03,
 				Unit.LITERS);
+
+		Distillate distillate_11 = Production.createDistillate(
+			"Speyside Sunset",
+			LocalDate.parse("2020-01-01"),
+			LocalDate.parse("2020-02-01"),
+			300,
+			distiller_04,
+			Unit.LITERS);
+
+		Distillate distillate_12 = Production.createDistillate(
+			"Peaty Promise",
+			LocalDate.parse("2019-12-10"),
+			LocalDate.parse("2020-01-05"),
+			400,
+			distiller_05,
+			Unit.LITERS);
 
 		addDescriotionToDistillate(distillate_01,
 				"A rich and complex distillate characterized by honeyed sweetness and notes of dried fruits.");
@@ -514,6 +532,10 @@ public abstract class initStorage {
 		Production.fillDistillateIntoCask(distillate_09,cask_04,15,LocalDate.parse("2024-05-01"));
 		Production.fillDistillateIntoCask(distillate_10,cask_04,75,LocalDate.parse("2024-06-01"));
 
+		// Casks that are ready for bottling
+		Production.fillDistillateIntoCask(distillate_11,cask_05,100,LocalDate.parse("2024-07-01"));
+		Production.fillDistillateIntoCask(distillate_12,cask_06,100,LocalDate.parse("2024-08-01"));
+
 		// *** Bottling ***
 		Production.caskBottling(cask_04,25,LocalDate.parse("2024-12-01"));
 
@@ -594,9 +616,9 @@ public abstract class initStorage {
 		HashMap<TasteProfile, Double> blueprint4 = new HashMap<>();
 
 		blueprint1.put(tasteProfile1, 100.0);
-		blueprint2.put(tasteProfile1, 50.0);
-		blueprint2.put(tasteProfile4, 50.0);
+		blueprint2.put(tasteProfile4, 100.0);
 		blueprint3.put(tasteProfile4, 10.0);
+		blueprint3.put(tasteProfile2, 90.0);
 		blueprint4.put(tasteProfile1, 25.0);
 		blueprint4.put(tasteProfile3, 50.0);
 		blueprint4.put(tasteProfile4, 25.0);
@@ -610,7 +632,7 @@ public abstract class initStorage {
 		Product product1 = BatchArea.createNewProduct("Product 1", 1000);
 		Product product2 = BatchArea.createNewProduct("Product 2", 500);
 		Product product3 = BatchArea.createNewProduct("Product 3", 1000);
-		Product product4 = BatchArea.createNewProduct("Product 1", 1000);
+		Product product4 = BatchArea.createNewProduct("Product 4", 1000);
 
 		product1.defineFormula(formula1);
 		product2.defineFormula(formula2);
@@ -619,6 +641,11 @@ public abstract class initStorage {
 		// =================== CASKS =================
 
 		cask_01.setTasteProfile(tasteProfile1);
+		cask_02.setTasteProfile(tasteProfile2);
+		cask_03.setTasteProfile(tasteProfile3);
+		cask_04.setTasteProfile(tasteProfile4);
+		cask_05.setTasteProfile(tasteProfile1);
+		cask_06.setTasteProfile(tasteProfile2);
 	}
 
 }
