@@ -299,90 +299,67 @@ public abstract class BatchArea {
 
 	// =================== CALCULATIONS ===================== //
 
+	/**
+	 * Calculates the maximum number of bottles that can be produced from the
+	 * available casks.
+	 *
+	 * @param product        The product for which the bottles are being calculated.
+	 * @param onlyReadyCasks If true, only casks that are ready will be considered.
+	 * @return The maximum number of bottles that can be produced.
+	 */
 	public static int calculateMaxNumBottles(Product product, boolean onlyReadyCasks) {
 		int maxNumBottles = Integer.MAX_VALUE;
 		List<Cask> casksToCheck = onlyReadyCasks ? Warehousing.getReadyCasks() : storage.getCasks();
 		double bottleSizeML = product.getBottleSize();
 		double bottleSizeLITERS = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS, bottleSizeML);
 		HashMap<TasteProfile, Double> blueprint = product.getFormula().getBlueprint();
-
-		System.out.println("Product: " + product);
-		System.out.println("Bottle size (ML): " + bottleSizeML);
-		System.out.println("Bottle size (Liters): " + bottleSizeLITERS);
-		System.out.println("Blueprint: " + blueprint);
-		System.out.println("Casks to check: " + casksToCheck.size());
-
 		for (TasteProfile tp : blueprint.keySet()) {
 			double percentage = blueprint.get(tp) / 100.0;
 			double totalVolumePerTP = 0;
-
-			System.out.println("TasteProfile: " + tp);
-			System.out.println("Percentage: " + percentage);
-
 			for (Cask cask : casksToCheck) {
 				if (cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)) {
 					totalVolumePerTP += cask.getLegalQuantity();
-					System.out.println("Cask: " + cask + ", Legal Quantity: " + cask.getLegalQuantity());
 				}
 			}
-
 			double amountBottlesPossiblePerTP = (totalVolumePerTP / bottleSizeLITERS) * percentage;
-			System.out.println("Total volume per TP: " + totalVolumePerTP);
-			System.out.println("Amount bottles possible per TP: " + amountBottlesPossiblePerTP);
-
 			maxNumBottles = Math.min(maxNumBottles, (int) amountBottlesPossiblePerTP);
-			System.out.println("Max number of bottles so far: " + maxNumBottles);
 		}
-
-		System.out.println("Final max number of bottles: " + maxNumBottles);
 		return maxNumBottles;
 	}
 
-	// OVERLOADED METHOD FOR PRODUCTION
+	/**
+	 * Calculates the maximum number of bottles that can be produced from the
+	 * available casks,
+	 * considering the reserved casks in the given batch.
+	 *
+	 * @param product        The product for which the bottles are being calculated.
+	 * @param onlyReadyCasks If true, only casks that are ready will be considered.
+	 * @param batch          The batch containing reserved casks.
+	 * @return The maximum number of bottles that can be produced.
+	 */
+
 	public static int calculateMaxNumBottles(Product product, boolean onlyReadyCasks, Batch batch) {
 		int maxNumBottles = Integer.MAX_VALUE;
 		List<Cask> casksToCheck = onlyReadyCasks ? Warehousing.getReadyCasks() : storage.getCasks();
 		double bottleSizeML = product.getBottleSize();
 		double bottleSizeLITERS = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS, bottleSizeML);
 		HashMap<TasteProfile, Double> blueprint = product.getFormula().getBlueprint();
-
-		System.out.println("Product: " + product);
-		System.out.println("Bottle size (ML): " + bottleSizeML);
-		System.out.println("Bottle size (Liters): " + bottleSizeLITERS);
-		System.out.println("Blueprint: " + blueprint);
-		System.out.println("Casks to check: " + casksToCheck.size());
-
 		for (TasteProfile tp : blueprint.keySet()) {
 			double percentage = blueprint.get(tp) / 100.0;
 			double totalVolumePerTP = 0;
-
-			System.out.println("TasteProfile: " + tp);
-			System.out.println("Percentage: " + percentage);
-
 			for (Cask cask : casksToCheck) {
-				System.out.println(batch.getReservedCasks());
-				double reservedAmount =0;
+				double reservedAmount = 0;
 				for (Cask c : batch.getReservedCasks().keySet()) {
 					if (c.equals(cask)) {
 						reservedAmount = batch.getReservedCasks().get(c);
 					}
 					if (cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)) {
 						totalVolumePerTP += cask.getLegalQuantity() + reservedAmount;
-						System.out.println(totalVolumePerTP);
-						System.out.println("Cask: " + cask + ", Legal Quantity: " + cask.getLegalQuantity()
-								+ ", Reserved Amount: " + reservedAmount);
 					}
 				}
-
 				double amountBottlesPossiblePerTP = (totalVolumePerTP / bottleSizeLITERS) * percentage;
-				System.out.println("Total volume per TP: " + totalVolumePerTP);
-				System.out.println("Amount bottles possible per TP: " + amountBottlesPossiblePerTP);
-
 				maxNumBottles = Math.min(maxNumBottles, (int) amountBottlesPossiblePerTP);
-				System.out.println("Max number of bottles so far: " + maxNumBottles);
 			}
-
-			System.out.println("Final max number of bottles: " + maxNumBottles);
 		}
 		return maxNumBottles;
 	}
