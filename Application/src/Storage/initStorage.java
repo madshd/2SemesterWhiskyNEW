@@ -25,6 +25,7 @@ import BatchArea.TasteProfile;
 import BatchArea.Product;
 
 import static Controllers.Production.addDescriotionToDistillate;
+import static Controllers.Production.addIngredientToDistillate;
 
 public abstract class initStorage {
 
@@ -80,6 +81,20 @@ public abstract class initStorage {
 	// =================== CASKS =================
 
 	public static void loadProduction() {
+		Warehouse warehouse = Warehousing.createWarehouse("Sherlock Whisky", "Baker Street 221 B");
+
+		LoggerObserver logger = new LoggerObserver();
+
+		// Register the observer
+		warehouse.registerWarehousingObserver(logger);
+
+		StorageRack rack1 = Warehousing.createStorageRack("221 B", 100);
+
+		warehouse.addStorageRack("221 B", rack1);
+
+		Warehousing.createCaskAndAdd(1, 100, Unit.LITERS, new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story"), "Sherry", warehouse, rack1);
+
+
 		Supplier sub_01 = Warehousing.createSupplier(
 				"Highland Barley Co.",
 				"123 Grain Street, Inverness, Scotland",
@@ -109,6 +124,62 @@ public abstract class initStorage {
 				"28 Winery Drive, Jerez, Spain",
 				"Supplier of seasoned sherry casks.",
 				"Known for their rich sherry heritage, Sherry Bliss Co. provides barrels seasoned with fine Spanish sherry for finishing whisky.");
+
+		Supplier sub_06 = Warehousing.createSupplier(
+				"Golden Fields Agriculture",
+				"123 Highland Drive, Inverness, Scotland",
+				"Supplier of premium barley for whisky production.",
+				"Golden Fields Agriculture has been the trusted supplier of barley to distilleries across Scotland since 1985. Their focus is on delivering high-enzyme barley varieties grown in Scotland’s fertile Highlands."
+		);
+
+		Supplier sub_07 = Warehousing.createSupplier(
+				"Loch Ness Water Co.",
+				"45 Spring Road, Loch Ness, Scotland",
+				"Provider of pure natural spring water for whisky distillation.",
+				"Loch Ness Water Co. sources its water from pristine natural springs in the heart of the Scottish Highlands. Their water is known for its purity and consistency, which enhances whisky fermentation and distillation."
+		);
+
+		Supplier sub_08 = Warehousing.createSupplier(
+				"Brewer's Choice Yeast Ltd.",
+				"78 Brewery Lane, Edinburgh, Scotland",
+				"Supplier of high-quality brewer's yeast for efficient fermentation.",
+				"Brewer's Choice Yeast Ltd. specializes in cultivating yeast strains tailored for whisky production, ensuring rich flavor complexity and consistent alcohol yields."
+		);
+
+		Supplier sub_09 = Warehousing.createSupplier(
+				"Islay Peat Moss",
+				"99 Peatland Road, Islay, Scotland",
+				"Provider of premium peat for smoking barley and infusing whisky with smoky flavors.",
+				"Islay Peat Moss has been sourcing peat from the island’s famous mosslands for over a century, helping distilleries create their signature smoky whisky profiles."
+		);
+
+		Supplier sub_10 = Warehousing.createSupplier(
+				"Highland Sweets Co.",
+				"50 Sugar Street, Glasgow, Scotland",
+				"Refined sugar supplier for boosting fermentation efficiency.",
+				"Highland Sweets Co. provides top-quality sugar for the whisky industry's fermentation process, ensuring higher alcohol yields and consistent results. The company is family-owned and deeply rooted in tradition."
+		);
+
+		Supplier sub_11 = Warehousing.createSupplier(
+				"Sall Barley Fields",
+				"Sall Bygvej 12, 8410 Rønde, Denmark",
+				"Local Danish supplier of high-quality barley for whisky production.",
+				"Sall Barley Fields is owned by the founders of Sall Whisky and specializes in cultivating premium barley varieties such as Evergreen, Stairway, and Irna. The fields provide not only for Sall Whisky's own production but are also trusted suppliers for some of the most renowned whisky brands globally. With a focus on sustainability and quality, Sall Barley Fields ensures every harvest meets the highest standards."
+		);
+
+		Supplier sub_12 = Warehousing.createSupplier(
+				"Malt & More Grain Co.",
+				"12 Field Street, Dundee, Scotland",
+				"Specialist in malted grains for distilleries nationwide.",
+				"Malt & More Grain Co. has been crafting malted grains like Golden Promise and Optic, ensuring consistent high-quality grain with malting characteristics tailored to whisky-making."
+		);
+
+		Supplier sub_13 = Warehousing.createSupplier(
+				"Burns & Co. Caramel",
+				"25 Sweet Lane, Edinburgh, Scotland",
+				"Trusted supplier of E150a caramel for whisky coloring.",
+				"Burns & Co. Caramel has served the whisky industry for decades with premium caramel coloring, providing master blenders with an option to create aesthetically striking and consistent batches."
+		);
 
 		Distiller distiller_01 = Production.createDistiller(
 				"Ewan MacGregor",
@@ -145,16 +216,16 @@ public abstract class initStorage {
 				"IF",
 				"Specialist in blending and balancing bold and delicate whisky flavors.");
 
-		Cask cask_01 = Warehousing.createCask(1, 200, Unit.LITERS, sub_03, "Bourbon Cask"); // Bourbon cask from Oak Master Barrels
-		Cask cask_02 = Warehousing.createCask(2, 250, Unit.LITERS, sub_03, "American Oak Cask"); // American Oak cask from Oak Master Barrels
-		Cask cask_03 = Warehousing.createCask(3, 225, Unit.LITERS, sub_05, "Sherry Cask"); // Sherry cask from Sherry Bliss Co.
-		Cask cask_04 = Warehousing.createCask(4, 500, Unit.LITERS, sub_03, "Large European Oak Cask"); // Large European Oak cask from Oak Master Barrels
-		Cask cask_05 = Warehousing.createCask(5, 300, Unit.LITERS, sub_05, "Seasoned Sherry Cask"); // Seasoned sherry cask from Sherry Bliss Co.
-		Cask cask_06 = Warehousing.createCask(6, 200, Unit.LITERS, sub_03, "Toasted Oak Cask"); // Toasted Oak cask from Oak Master Barrels
-		Cask cask_07 = Warehousing.createCask(7, 225, Unit.LITERS, sub_03, "Ex-Port Cask"); // Ex-Port cask from Oak Master Barrels
-		Cask cask_08 = Warehousing.createCask(8, 180, Unit.LITERS, sub_03, "Peated Oak Cask"); // Peated Oak cask from Peat & Smolder
-		Cask cask_09 = Warehousing.createCask(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask"); // Spanish Oak cask from Sherry Bliss Co.
-		Cask cask_10 = Warehousing.createCask(10, 600, Unit.LITERS, sub_03, "Large Blending Cask"); // Large blending cask from Oak Master
+		Cask cask_01 = Warehousing.createCaskAndAdd(1, 200, Unit.LITERS, sub_03, "Bourbon Cask", warehouse, rack1); // Bourbon cask from Oak Master Barrels
+		Cask cask_02 = Warehousing.createCaskAndAdd(2, 250, Unit.LITERS, sub_03, "American Oak Cask", warehouse, rack1); // American Oak cask from Oak Master Barrels
+		Cask cask_03 = Warehousing.createCaskAndAdd(3, 225, Unit.LITERS, sub_05, "Sherry Cask", warehouse, rack1); // Sherry cask from Sherry Bliss Co.
+		Cask cask_04 = Warehousing.createCaskAndAdd(4, 500, Unit.LITERS, sub_03, "Large European Oak Cask", warehouse, rack1); // Large European Oak cask from Oak Master Barrels
+		Cask cask_05 = Warehousing.createCaskAndAdd(5, 300, Unit.LITERS, sub_05, "Seasoned Sherry Cask", warehouse, rack1); // Seasoned sherry cask from Sherry Bliss Co.
+		Cask cask_06 = Warehousing.createCaskAndAdd(6, 200, Unit.LITERS, sub_03, "Toasted Oak Cask", warehouse, rack1); // Toasted Oak cask from Oak Master Barrels
+		Cask cask_07 = Warehousing.createCaskAndAdd(7, 225, Unit.LITERS, sub_03, "Ex-Port Cask", warehouse, rack1); // Ex-Port cask from Oak Master Barrels
+		Cask cask_08 = Warehousing.createCaskAndAdd(8, 180, Unit.LITERS, sub_03, "Peated Oak Cask", warehouse, rack1); // Peated Oak cask from Peat & Smolder
+		Cask cask_09 = Warehousing.createCaskAndAdd(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask", warehouse, rack1); // Spanish Oak cask from Sherry Bliss Co.
+		Cask cask_10 = Warehousing.createCaskAndAdd(10, 600, Unit.LITERS, sub_03, "Large Blending Cask", warehouse, rack1); // Large blending cask from Oak Master
 
 		Distillate distillate_01 = Production.createDistillate(
 				"Highland Essence",
@@ -256,6 +327,224 @@ public abstract class initStorage {
 				"Peaty and robust, this distillate reflects the rugged character of coastal winds and marine influence.");
 		addDescriotionToDistillate(distillate_10,
 				"A harmonious distillate with subtle hints of fresh bread, honey, and a lingering smoky finish.");
+
+		// *** Ingredients ***
+
+		Ingredient barleyEvergreen = Warehousing.createIngredientAndAdd(
+				"Barley - Evergreen",
+				"Locally sourced barley from the Evergreen field. Known for its high enzyme activity and natural sweetness.",
+				2001,
+				LocalDate.parse("2024-03-01"),
+				LocalDate.parse("2025-03-01"),
+				5000.0,
+				sub_06, // Golden Fields Agriculture
+				Unit.KILOGRAM,
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
+		);
+
+		Ingredient barleyStairway = Warehousing.createIngredientAndAdd(
+				"Barley - Stairway",
+				"A premium barley grown in the Stairway field. Offers a smooth and balanced flavor profile to the distillate.",
+				2002,
+				LocalDate.parse("2024-03-05"),
+				LocalDate.parse("2025-03-05"),
+				4450.0,
+				sub_11, // Pure Scotch Locals
+				Unit.KILOGRAM,
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
+		);
+
+		Ingredient barleyIrna = Warehousing.createIngredientAndAdd(
+				"Barley - Irna",
+				"High-quality barley from the Irna field, prized for its robust malting characteristics.",
+				2003,
+				LocalDate.parse("2024-02-15"),
+				LocalDate.parse("2025-02-15"),
+				3400.0,
+				sub_11, // Pure Scotch Locals
+				Unit.KILOGRAM,
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
+		);
+
+		Ingredient barleyGoldenPromise = Warehousing.createIngredientAndAdd(
+				"Barley - Golden Promise",
+				"A classic barley variety often used in whisky production for its creamy and malty flavor.",
+				2004,
+				LocalDate.parse("2024-01-20"),
+				LocalDate.parse("2025-01-20"),
+				600.0,
+				sub_12, // Malt & More Grain Co.
+				Unit.KILOGRAM,
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
+		);
+
+		Ingredient barleyOptic = Warehousing.createIngredientAndAdd(
+				"Barley - Optic",
+				"A versatile barley variety that delivers clean and consistent results during malting.",
+				2005,
+				LocalDate.parse("2024-02-10"),
+				LocalDate.parse("2025-02-10"),
+				400.0,
+				sub_12, // Malt & More Grain Co.
+				Unit.KILOGRAM,
+				IngredientType.GRAIN,
+				warehouse,
+				rack1
+		);
+
+		Ingredient waterSpring = Warehousing.createIngredientAndAdd(
+				"Pure Spring Water",
+				"Sourced from pristine local springs, this water ensures clean and smooth fermentation.",
+				3001,
+				LocalDate.parse("2024-01-10"),
+				LocalDate.parse("2025-01-10"),
+				55000.0,
+				sub_07, // Loch Ness Water Co.
+				Unit.LITERS,
+				IngredientType.WATER,
+				warehouse,
+				rack1
+		);
+
+		Ingredient yeastBrewers = Warehousing.createIngredientAndAdd(
+				"Brewer's Yeast",
+				"A specialized yeast strain used for efficient fermentation, producing complex fruity esters.",
+				3002,
+				LocalDate.parse("2024-02-05"),
+				LocalDate.parse("2024-06-05"),
+				500.0,
+				sub_08, // Brewer's Choice Yeast Ltd.
+				Unit.KILOGRAM,
+				IngredientType.YEAST,
+				warehouse,
+				rack1
+		);
+
+		Ingredient peatMoss = Warehousing.createIngredientAndAdd(
+				"Islay Peat Moss",
+				"Used to smoke barley, imparting a bold and smoky character typical of Islay whiskies.",
+				3003,
+				LocalDate.parse("2024-02-20"),
+				LocalDate.parse("2025-02-20"),
+				600.0,
+				sub_09, // Islay Peat Moss
+				Unit.KILOGRAM,
+				IngredientType.ADDITIVE,
+				warehouse,
+				rack1
+		);
+
+		Ingredient sugarFermentation = Warehousing.createIngredientAndAdd(
+				"Fermentation Sugar",
+				"Refined sugar used to assist fermentation, boosting alcohol yield in the distillate.",
+				3004,
+				LocalDate.parse("2024-01-15"),
+				LocalDate.parse("2024-12-15"),
+				500.0,
+				sub_10, // Highland Sweets Co.
+				Unit.KILOGRAM,
+				IngredientType.ADDITIVE,
+				warehouse,
+				rack1
+		);
+
+		Ingredient caramelColor = Warehousing.createIngredientAndAdd(
+				"Caramel Coloring",
+				"E150a coloring used for achieving a consistent appearance in blended whiskies.",
+				3005,
+				LocalDate.parse("2024-01-01"),
+				LocalDate.parse("2025-01-01"),
+				25.0,
+				sub_13, // Burns & Co. Caramel
+				Unit.LITERS,
+				IngredientType.ADDITIVE,
+				warehouse,
+				rack1
+		);
+
+		// Add ingredients to distillates
+// Tilføj ingredienser til Highland Essence
+		System.out.println(waterSpring.getQuantityStatus());
+		System.out.println(waterSpring.getRemainingQuantity());
+
+		addIngredientToDistillate(distillate_01, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_01, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_01, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_01, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_01, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
+
+		System.out.println(waterSpring.getQuantityStatus());
+		System.out.println(waterSpring.getRemainingQuantity());
+// Tilføj ingredienser til Islay Smoke
+		addIngredientToDistillate(distillate_02, barleyGoldenPromise, 600.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_02, waterSpring, 2625.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_02, yeastBrewers, 7.5, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_02, sugarFermentation, 15.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_02, peatMoss, 22.5, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Classic Malt
+		addIngredientToDistillate(distillate_03, barleyEvergreen, 800.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_03, waterSpring, 3500.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_03, yeastBrewers, 10.0, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_03, sugarFermentation, 20.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_03, peatMoss, 30.0, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Peat Fire
+		addIngredientToDistillate(distillate_04, barleyEvergreen, 400.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_04, waterSpring, 1750.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_04, yeastBrewers, 5.0, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_04, sugarFermentation, 10.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_04, peatMoss, 15.0, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Sherry Kiss
+		addIngredientToDistillate(distillate_05, barleyEvergreen, 700.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_05, waterSpring, 3062.5, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_05, yeastBrewers, 8.75, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_05, sugarFermentation, 17.5, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_05, peatMoss, 26.25, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Bourbon Blend
+		addIngredientToDistillate(distillate_06, barleyEvergreen, 900.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_06, waterSpring, 3937.5, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_06, yeastBrewers, 11.25, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_06, sugarFermentation, 22.5, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_06, peatMoss, 33.75, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Loch Nectar
+		addIngredientToDistillate(distillate_07, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_07, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_07, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_07, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_07, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Speyside Gold
+		addIngredientToDistillate(distillate_08, barleyStairway, 800.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_08, waterSpring, 3500.0, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_08, yeastBrewers, 10.0, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_08, sugarFermentation, 20.0, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_08, peatMoss, 30.0, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Oak Reserve
+		addIngredientToDistillate(distillate_09, barleyIrna, 750.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_09, waterSpring, 3281.25, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_09, yeastBrewers, 9.375, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_09, sugarFermentation, 18.75, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_09, peatMoss, 28.125, LocalDate.parse("2024-01-20"));
+
+// Tilføj ingredienser til Golden Highland
+		addIngredientToDistillate(distillate_10, barleyIrna, 500.0, LocalDate.parse("2024-03-01"));
+		addIngredientToDistillate(distillate_10, waterSpring, 2187.5, LocalDate.parse("2024-02-15"));
+		addIngredientToDistillate(distillate_10, yeastBrewers, 6.25, LocalDate.parse("2024-02-01"));
+		addIngredientToDistillate(distillate_10, sugarFermentation, 12.5, LocalDate.parse("2024-02-10"));
+		addIngredientToDistillate(distillate_10, peatMoss, 18.75, LocalDate.parse("2024-01-20"));
 
 		// *** Fillings ***
 		// One distallate capacity fully used across casks

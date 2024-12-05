@@ -1,7 +1,6 @@
 package Warehousing;
 
 import Common.CommonMethods;
-import Common.Stack;
 import Enumerations.Unit;
 import Interfaces.*;
 
@@ -12,6 +11,7 @@ import java.util.*;
 
 import BatchArea.Batch;
 import BatchArea.TasteProfile;
+import Interfaces.Stack;
 import Production.Distillate;
 import Production.FillDistillate;
 
@@ -45,6 +45,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	/**
 	 * Will return count of month from the latest end date to LocalDate.now from a distillate in curent lifecycle.
+	 *
 	 * @return
 	 */
 	public int getMaturityMonths() {
@@ -61,7 +62,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		fillings.sort((f1, f2) ->
 				((FillDistillate) f1).getDistillate().getEndDate().compareTo(((FillDistillate) f2).getDistillate().getEndDate()));
 
-		LocalDate lastEndDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
+		LocalDate lastEndDate = ((FillDistillate) fillings.getLast()).getDistillate().getEndDate();
 		return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
 	}
 
@@ -140,7 +141,8 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	/**
-	 * Get a start or end filling date based on provided life cycle
+	 * Get a start or end  filling date based on provided life cycle
+	 *
 	 * @param lifeCycle
 	 * @param startDate
 	 * @return
@@ -154,19 +156,25 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 		if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings availble");
 
-		fillings.removeIf(filling -> ((FillDistillate) filling).getLifeCycle() != lifeCycle);
+		fillings.forEach(filling -> {
+			if (((FillDistillate) filling).getLifeCycle() != lifeCycle) {
+				fillings.remove(filling);
+			}
+		});
 
-		fillings.sort(Comparator.comparing(Filling::getDate));
+		fillings.sort((f1, f2) ->
+				f1.getDate().compareTo(f2.getDate()));
 
 		if (startDate) {
-			return ((FillDistillate) fillings.get(0)).getDistillate().getEndDate();
+			return ((FillDistillate) fillings.getFirst()).getDistillate().getEndDate();
 		} else {
-			return ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
+			return ((FillDistillate) fillings.getLast()).getDistillate().getEndDate();
 		}
 	}
 
 	/**
-	 * Will return lifecycle based on filling dates.
+	 * Will return lifecucle based on filling dates.
+	 *
 	 * @param date
 	 * @return
 	 */
@@ -174,10 +182,11 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		List<Filling> fillings = getFillingStack();
 		if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings availble");
 
-		fillings.sort(Comparator.comparing(Filling::getDate));
+		fillings.sort((f1, f2) ->
+				f1.getDate().compareTo(f2.getDate()));
 
-		LocalDate firstDate = ((FillDistillate) fillings.get(0)).getDistillate().getEndDate();
-		LocalDate lastDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
+		LocalDate firstDate = ((FillDistillate) fillings.getFirst()).getDistillate().getEndDate();
+		LocalDate lastDate = ((FillDistillate) fillings.getLast()).getDistillate().getEndDate();
 
 		if (date.isBefore(firstDate)) {
 			throw new IllegalArgumentException("Provided date is before the first filling in this cask");
@@ -204,7 +213,6 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	/**
-	 *
 	 * @param fillDistillate
 	 * @return
 	 * @throws IllegalStateException
@@ -241,6 +249,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return quantity;
 	}
 
+
 	public List<Filling> getFillingStack() {
 		List<Filling> fillings = new ArrayList<>();
 
@@ -273,6 +282,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		} else {
 			reservedBatchesAmount.put(batch, reservedAmount - amount);
 		}
+
 	}
 
 	@Override
@@ -282,7 +292,8 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("Life cycle: %-2d\t | ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f", lifeCycle, caskID, maxQuantity, getRemainingQuantity());
+		return String.format("Life cycle: %-2d\t | ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f", lifeCycle, caskID, maxQuantity,
+				getRemainingQuantity());
 	}
 
 	public TasteProfile getTasteProfile() {
@@ -292,6 +303,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	public void setTasteProfile(TasteProfile tasteProfile) {
 		this.tasteProfile = tasteProfile;
 	}
+
 
 	// FAKE METHOD FOR INJECTING FAKE DATA
 	public double getFakeQuantity() {
@@ -305,6 +317,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	public double getMaxQuantity() {
 		return maxQuantity;
 	}
+
 
 	public Supplier getSupplier() {
 		return supplier;
