@@ -187,3 +187,38 @@
     -fx-text-fill: #6b4226;
     -fx-text-alignment: center;
 }
+/* Baggrund for tab header */
+.tab-pane .tab-header-area {
+    -fx-background-color: #d4a373; /* Amber farve for header baggrund */
+}
+
+.tab-pane *.tab-header-background {
+    -fx-background-color: #f7ede2;
+}
+
+/* Ikke-valgt tab */
+.tab-pane .tab {
+    -fx-background-color: #fffdf6; /* Lys cream for ikke-valgte tabs */
+    -fx-border-color: #d4a373;
+    -fx-border-radius: 5px;
+}
+
+/* Valgt tab */
+.tab-pane .tab:selected {
+    -fx-background-color: #c0845f; /* Mørkere amber for valgt tab */
+    -fx-text-base-color: white;
+}
+
+/* Hover-effekt for tabs */
+.tab-pane .tab:hover {
+    -fx-background-color: #e2b593; /* Lysere amber */
+}
+
+/* Baggrund for indholdsområdet */
+.tab-pane .tab-content-area {
+    -fx-background-color: #fffdf6; /* Lys cream */
+    -fx-border-color: #d4a373;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+}

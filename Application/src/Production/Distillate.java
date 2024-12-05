@@ -3,6 +3,7 @@ package Production;
 import Enumerations.Unit;
 import Interfaces.*;
 import Interfaces.Stack;
+import Warehousing.Ingredient;
 import Warehousing.StorageRack;
 
 import java.io.Serializable;
@@ -22,6 +23,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	private final List<StoryLine> storyLines = new ArrayList<>();
 	private final List<ProductCutInformation> productCutInformations = new ArrayList<>();
 	private final List<AlcoholPercentage> alcoholPercentages = new ArrayList<>();
+	private final List<Filling> fillIngredients = new ArrayList<>();
 
 	public Distillate(String name, LocalDate startDate, LocalDate endDate, double quantity, Distiller distiller,
 			Unit unit) {
@@ -125,6 +127,14 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 
 	public void addAlcoholPercentage(AlcoholPercentage alcoholPercentage) {
 		alcoholPercentages.add(alcoholPercentage);
+	}
+
+	public void addIngredientFilling(Filling filling){
+		fillIngredients.add(filling);
+	}
+
+	public boolean removeIngredientFilling(Filling filling){
+		return fillIngredients.remove(filling);
 	}
 
 	public List<StoryLine> getStoryLines() {

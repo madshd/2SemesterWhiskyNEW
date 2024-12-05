@@ -19,7 +19,7 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 	private Supplier supplier;
 	private IngredientType ingredientType;
 	private final Unit unit;
-	private final Stack<Filling> fillingStack = new Common.Stack<>();
+	private final List<Filling> fillIngredients = new ArrayList<>();
 	private final List<ObserverQuantityObserver> observers = new ArrayList<>();
 
 	// Nullable
@@ -107,8 +107,8 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 	public double getQuantityStatus() {
 		double quantity = 0;
 
-		for (Filling f : fillingStack) {
-			quantity += f.getQuantity();
+		for (Filling f : fillIngredients) {
+			quantity += (((FillIngredient) f).isDecrease()) ? f.getQuantity() * -1 : f.getQuantity();
 		}
 
 		return quantity;
@@ -116,19 +116,25 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 
 	@Override
 	public double updateQuantity(Filling fillingredient) throws IllegalStateException {
-		double newQuantity = fillingredient.getQuantity() + getQuantityStatus();
+		double fill = (((FillIngredient) fillingredient).isDecrease()) ? fillingredient.getQuantity() * -1
+				: fillingredient.getQuantity();
+		double newQuantity = fill + getRemainingQuantity();
 
 		if (newQuantity <= quantity && newQuantity >= 0) {
-			fillingStack.push(fillingredient);
+			fillIngredients.add(fillingredient);
 			return newQuantity;
 		} else {
-			throw new IllegalStateException("Provided quantity does not fit into this cask");
+			throw new IllegalStateException("Provided quantity exceeds what is present.");
 		}
+	}
+
+	public boolean removeFilling(Filling filling){
+		return fillIngredients.remove(filling);
 	}
 
 	@Override
 	public double getRemainingQuantity() {
-		return quantity - getQuantityStatus();
+		return quantity + getQuantityStatus();
 	}
 
 	@Override
