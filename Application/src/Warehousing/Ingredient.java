@@ -180,12 +180,16 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 	}
 
 	public String getListInfo() {
-		//TODO
-		// Leander needs for fix this!!
-		return "Ingredient{" +
-				"name='" + name + '\'' +
-				", description='" + description + '\'' +
-				", quantity=" + quantity +
-				'}';
+		int maxNameLength = 27;
+		String subName = supplier.getName();
+
+		String listName = (name.trim().length() > maxNameLength) ? name.substring(0,maxNameLength - 3) + "..." :
+				name.trim() + " ".repeat(maxNameLength - name.trim().length());
+
+		String listSub = (subName.trim().length() > maxNameLength) ? subName.substring(0,maxNameLength - 3) + "..." :
+				subName.trim() + " ".repeat(maxNameLength - subName.trim().length());
+
+		return String.format("#: %-4d | %s | %s | %s",
+				batchNo, listName, listSub, ingredientType);
 	}
 }
