@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+@SuppressWarnings("unused")
 public class ProduceBatchWindow {
 
 	private final ErrorWindow errorWindow = new ErrorWindow();
@@ -26,6 +27,7 @@ public class ProduceBatchWindow {
 	private final TextField bottleNumInput = new TextField();
 	private final TextField expectedBottles = new TextField();
 	private final TextField remainingBottles = new TextField();
+	private final TextField readyBottles = new TextField();
 	private Batch batch;
 	private final ProductionReceipt productionReceipt = new ProductionReceipt();
 	private Button produceButton = new Button("Produce Batch");
@@ -57,6 +59,17 @@ public class ProduceBatchWindow {
 		remainingBottles.setText(String.valueOf(batch.getNumRemainingBottles()));
 		ObservableList<Cask> caskList = FXCollections.observableArrayList(batch.getReservedCasks().keySet());
 		reservedCasks.setItems(caskList);
+		readyBottles.setText(Integer.toString(calcReadyBottles()));
+	}
+
+	public int calcReadyBottles(){
+		int readyBottles = 0;
+		for (Cask cask : batch.getReservedCasks().keySet()) {
+			if (cask.getMaturityMonths() > 36) {
+			readyBottles += batch.getReservedCasks().get(cask);
+			}
+		}
+		return readyBottles;
 	}
 
 	private void initContent(GridPane mainPane) {
@@ -88,7 +101,7 @@ public class ProduceBatchWindow {
 		expectedBottles.setFocusTraversable(false);
 		expectedBottles.setEditable(false);
 		expectedBottles.setDisable(true);
-		HBox expectedBox = new HBox(new Label("Total Expected Bottles: "), expectedBottles);
+		HBox expectedBox = new HBox(new Label("Total Batch Size: "), expectedBottles);
 		expectedBox.setAlignment(Pos.CENTER);
 		expectedBox.setSpacing(65);
 		mainPane.add(expectedBox, 0, 2);
@@ -104,18 +117,28 @@ public class ProduceBatchWindow {
 		mainPane.add(remainingBox, 0, 3);
 		remainingBottles.setMaxWidth(100);
 
+		// Bottles That can be produced now according to whats ready
+		readyBottles.setFocusTraversable(false);
+		readyBottles.setEditable(false);
+		readyBottles.setDisable(true);
+		HBox readyBox = new HBox(new Label("Ready to produce now: "), readyBottles);
+		readyBox.setAlignment(Pos.CENTER);
+		readyBox.setSpacing(90);
+		mainPane.add(readyBox, 0, 4);
+		readyBottles.setMaxWidth(100);
+
 		// Bottle Number Input
 		bottleNumInput.setFocusTraversable(false);
 		HBox bottleSizeBox = new HBox(new Label("Number of Bottles to Produce: "), bottleNumInput);
 		bottleSizeBox.setAlignment(Pos.CENTER);
 		bottleSizeBox.setSpacing(25);
-		mainPane.add(bottleSizeBox, 0, 4);
+		mainPane.add(bottleSizeBox, 0, 5);
 		bottleNumInput.setMaxWidth(100);
 
 		// Buttons
 		Button cancelButton = new Button("Cancel");
 		HBox buttonBox = new HBox(produceButton, cancelButton);
-		mainPane.add(buttonBox, 0, 5, 1, 1);
+		mainPane.add(buttonBox, 0, 6, 1, 1);
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.setSpacing(25);
 
@@ -184,7 +207,8 @@ public class ProduceBatchWindow {
 				loadingWindow.close();
 
 				// Produce batch and get the used casks
-				Map<Cask, Double> usedCasks = Controllers.BatchArea.produceBatch(batch, bottleNum);
+				Map<Cask, Double> usedCasks = Controllers.BatchArea.produceBatch(batch, bottleNum,
+						batch.isOnlyReadyCasks());
 
 				// Clear fields and show the production receipt window
 				clearFields();

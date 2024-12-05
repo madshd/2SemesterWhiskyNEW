@@ -155,10 +155,10 @@ public abstract class BatchArea {
 
 	// ====================== BATCH ========================= //
 
-	public static Batch createNewBatch(Product product, int numExpectedBottles) {
-		Batch batch = new Batch(product, numExpectedBottles);
+	public static Batch createNewBatch(Product product, int numExpectedBottles, boolean onlyReady) {
+		Batch batch = new Batch(product, numExpectedBottles, onlyReady);
 		storage.storeBatch(batch);
-		reserveQuantityInCasks(batch);
+		reserveQuantityInCasks(batch, onlyReady);
 		return batch;
 	}
 
@@ -168,9 +168,9 @@ public abstract class BatchArea {
 	 *
 	 * @param batch the batch for which the casks are to be reserved
 	 */
-	private static void reserveQuantityInCasks(Batch batch) {
+	private static void reserveQuantityInCasks(Batch batch, boolean onlyReadyCasks) {
 		Map<TasteProfile, Double> productionVolume = calculateProductionVolume(batch.getNumExpectedBottles(), batch);
-		Map<TasteProfile, List<Cask>> matchingCasks = getMatchingCasks(batch, productionVolume);
+		Map<TasteProfile, List<Cask>> matchingCasks = getMatchingCasks(batch, productionVolume, onlyReadyCasks);
 
 		for (TasteProfile tp : matchingCasks.keySet()) {
 			double remainingTPVolume = productionVolume.get(tp);
@@ -195,7 +195,8 @@ public abstract class BatchArea {
 	 * @throws IllegalArgumentException if the number of bottles to produce exceeds
 	 *                                  the expected number of bottles.
 	 */
-	public static Map<Cask, Double> produceBatch(Batch batch, int numBottlesToProduce) {
+	public static Map<Cask, Double> produceBatch(Batch batch, int numBottlesToProduce, boolean onlyReadyCasks){
+
 		// Check if production exceeds expectations
 		if (numBottlesToProduce + batch.getNumProducedBottles() > batch.getNumExpectedBottles()) {
 			throw new IllegalArgumentException("Number of bottles to produce exceeds the expected number of bottles.");
@@ -207,7 +208,7 @@ public abstract class BatchArea {
 		Map<TasteProfile, Double> productionVolumeTP = calculateProductionVolume(numBottlesToProduce, batch);
 
 		// Get matching casks
-		Map<TasteProfile, List<Cask>> matchingCasks = getMatchingCasks(batch, productionVolumeTP);
+		Map<TasteProfile, List<Cask>> matchingCasks = getMatchingCasks(batch, productionVolumeTP, onlyReadyCasks);
 
 		// Iterate over each taste profile
 		for (TasteProfile tp : matchingCasks.keySet()) {
@@ -254,11 +255,17 @@ public abstract class BatchArea {
 	 *         Casks that match the taste profile
 	 */
 	public static Map<TasteProfile, List<Cask>> getMatchingCasks(Batch batch,
-			Map<TasteProfile, Double> productionVolume) {
+			Map<TasteProfile, Double> productionVolume, Boolean onlyReadyCasks) {
 		Map<TasteProfile, List<Cask>> matchingCasks = new HashMap<>();
+
+		// Choose casks based on onlyReady flag
+		List<Cask> casksToCheck = onlyReadyCasks ? Warehousing.getReadyCasks() : storage.getCasks();
+
 		for (TasteProfile tp : productionVolume.keySet()) {
 			matchingCasks.put(tp, new ArrayList<>());
-			for (Cask cask : storage.getCasks()) {
+
+			// Iterate through the selected casks
+			for (Cask cask : casksToCheck) {
 				if (tp != null && tp.equals(cask.getTasteProfile())) {
 					matchingCasks.get(tp).add(cask);
 				}
@@ -294,17 +301,18 @@ public abstract class BatchArea {
 	 *                calculated
 	 * @return the maximum number of bottles that can be produced
 	 */
-	public static int calculateMaxNumBottles(Product product) {
+	public static int calculateMaxNumBottles(Product product, boolean onlyReadyCasks) {
 		int maxNumBottles = Integer.MAX_VALUE;
+		List<Cask> casksToCheck = onlyReadyCasks ? Warehousing.getReadyCasks() : storage.getCasks();
 		double bottleSizeML = product.getBottleSize();
 		double bottleSizeLITERS = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS, bottleSizeML);
 		HashMap<TasteProfile, Double> blueprint = product.getFormula().getBlueprint();
 		for (TasteProfile tp : blueprint.keySet()) {
 			double percentage = blueprint.get(tp) / 100.0;
 			double totalVolumePerTP = 0;
-			for (Cask cask : storage.getCasks()) {
+			for (Cask cask : casksToCheck) {
 				if (cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)) {
-					totalVolumePerTP += cask.getQuantityStatus();
+					totalVolumePerTP += cask.getLegalQuantity();
 				}
 			}
 			double amountBottlesPossiblePerTP = (totalVolumePerTP / bottleSizeLITERS) * percentage;

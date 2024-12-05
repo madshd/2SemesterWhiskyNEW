@@ -8,7 +8,7 @@ import Warehousing.Cask;
 
 public class Batch {
 
-	private static int batchIDglobalCount = 0;
+	private static int batchIDglobalCount = 1;
 	private final int batchID;
 	private final Product product;
 	private final LocalDate creationDate;
@@ -20,12 +20,14 @@ public class Batch {
 	private boolean productionComplete;
 
 	private final Map<Cask, Double> reservedCasks = new HashMap<>();
+	private boolean onlyReadyCasks = true;
 
-	public Batch(Product product, int numExpectedBottles) {
+	public Batch(Product product, int numExpectedBottles, boolean onlyReady) {
 		this.batchID = batchIDglobalCount++;
 		this.product = product;
 		this.creationDate = LocalDate.now();
 		this.numExpectedBottles = numExpectedBottles;
+		this.onlyReadyCasks = onlyReady;
 	}
 
 	/**
@@ -64,7 +66,6 @@ public class Batch {
 	}
 	// ---------------------------GENERIC-GETTERS----------------------------//
 
-
 	public String getListInfo() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Batch ID: " + batchID);
@@ -76,8 +77,8 @@ public class Batch {
 		sb.append(creationDate);
 		sb.append(" - ");
 		if (!productionComplete) {
-		sb.append("Expected Bottles: ");
-		sb.append(numExpectedBottles);
+			sb.append("Expected Bottles: ");
+			sb.append(numExpectedBottles);
 		} else {
 			sb.append("PRODUCTION COMPLETE - ");
 			sb.append("Produced Bottles: ");
@@ -131,7 +132,11 @@ public class Batch {
 		return label;
 	}
 
-    public int getNumRemainingBottles() {
+	public int getNumRemainingBottles() {
 		return numExpectedBottles - numProducedBottles;
-    }
+	}
+
+	public boolean isOnlyReadyCasks() {
+		return onlyReadyCasks;
+	}
 }

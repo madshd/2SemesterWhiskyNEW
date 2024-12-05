@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+@SuppressWarnings("unused")
 public class ShowLabel {
 
 	private final Stage showLabelStage = new Stage();

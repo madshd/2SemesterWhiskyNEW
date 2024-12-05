@@ -1,6 +1,8 @@
 package GUI.Batch;
 
 import GUI.Common.ConfirmationDialog;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -11,7 +13,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -20,8 +28,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import BatchArea.Formula;
 import GUI.Common.*;
+
+import java.time.LocalDate;
+
 import BatchArea.Batch;
 import BatchArea.Product;
 
@@ -34,13 +46,14 @@ public class BatchArea {
 	private static Scene scene;
 	private static ErrorWindow errorWindow = new ErrorWindow();
 	private static ListView<Formula> formulaList = new ListView<>();
-	private static ListView<Batch> batchesTable = new ListView<>();
-	private static ListView<Product> productsTable = new ListView<>();
+	private static TableView<Batch> batchTable = new TableView<>();
+	private static TableView<Product> productTable = new TableView<>();
 	private static Button createBatchButton = new Button("Create New Batch");
 	private static ProductCRUD productCRUD = new ProductCRUD();
 	private static BatchCRUD batchCRUD = new BatchCRUD();
 	private static ProduceBatchWindow produceBatchWindow = new ProduceBatchWindow();
 	private static ShowLabel showLabel = new ShowLabel();
+	private static Product selectedProduct;
 
 	public BatchArea() {
 		stage = new Stage();
@@ -79,8 +92,8 @@ public class BatchArea {
 
 		// For intuitive clearing of textarea focus
 		gridPane.setOnMouseClicked(event -> {
-			batchesTable.getSelectionModel().clearSelection();
-			productsTable.getSelectionModel().clearSelection();
+			batchTable.getSelectionModel().clearSelection();
+			productTable.getSelectionModel().clearSelection();
 			formulaList.getSelectionModel().clearSelection();
 			gridPane.requestFocus();
 		});
@@ -94,7 +107,7 @@ public class BatchArea {
 
 		// Define row constraints
 		RowConstraints row1 = new RowConstraints();
-		row1.setPercentHeight(5); // Heading 
+		row1.setPercentHeight(5); // Heading
 		RowConstraints row2 = new RowConstraints();
 		row2.setPercentHeight(45); // Batches
 		RowConstraints row3 = new RowConstraints();
@@ -123,6 +136,7 @@ public class BatchArea {
 		GridPane.setHalignment(lblHeader, HPos.CENTER);
 	}
 
+	@SuppressWarnings("unchecked")
 	private static GridPane createProductSection() {
 		GridPane productGrid = new GridPane();
 		productGrid.setPadding(new Insets(10));
@@ -135,13 +149,88 @@ public class BatchArea {
 		searchBar.setMinWidth(200);
 		searchBar.setFocusTraversable(false);
 
-		// Products Table
-		productsTable.setPlaceholder(new Label("No Products Available"));
-		productsTable.setMinHeight(300);
-		productsTable.setMaxHeight(200);
-		productsTable.setMinWidth(700);
-		productsTable.setEditable(false);
-		productsTable.setFocusTraversable(false);
+		// Product Table
+		productTable.setPlaceholder(new Label("No Products Available"));
+		productTable.setMinHeight(300);
+		productTable.setMaxHeight(200);
+		productTable.setMinWidth(900);
+		productTable.setMaxWidth(900);
+		productTable.setEditable(false);
+		productTable.setFocusTraversable(false);
+		productTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+		TableColumn<Product, String> nameColumn = new TableColumn<>("Name");
+		nameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+		nameColumn.setMinWidth(250);
+		nameColumn.setMaxWidth(250);
+
+		TableColumn<Product, String> idColumn = new TableColumn<>("ID");
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("productID"));
+		idColumn.setMinWidth(190);
+		idColumn.setMaxWidth(190);
+
+		TableColumn<Product, Integer> bottleSizeColumn = new TableColumn<>("Bottle Size");
+		bottleSizeColumn.setCellValueFactory(new PropertyValueFactory<>("bottleSize"));
+		bottleSizeColumn.setMinWidth(190);
+		bottleSizeColumn.setMaxWidth(190);
+
+		TableColumn<Product, Formula> formulaColumn = new TableColumn<>("Formula");
+		formulaColumn.setCellValueFactory(new PropertyValueFactory<>("formula"));
+		formulaColumn.setMinWidth(250);
+		formulaColumn.setMaxWidth(250);
+
+		productTable.getColumns().addAll(nameColumn, idColumn, bottleSizeColumn, formulaColumn);
+
+		ObservableList<Product> products = FXCollections.observableArrayList(Controllers.BatchArea.getAllProducts());
+		productTable.setItems(products);
+
+		productTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				// Here, newValue is the selected Product
+				selectedProduct = newValue;
+				System.out.println("Selected Product: " + selectedProduct);
+			} else {
+				selectedProduct = null;
+			}
+		});
+
+		bottleSizeColumn.setCellFactory(new Callback<TableColumn<Product, Integer>, TableCell<Product, Integer>>() {
+			@Override
+			public TableCell<Product, Integer> call(TableColumn<Product, Integer> param) {
+				return new TableCell<Product, Integer>() {
+					@Override
+					protected void updateItem(Integer item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty || item == null) {
+							setText(null);
+						} else {
+							// Append " mL" to the bottle size value
+							setText(item + " mL");
+						}
+					}
+				};
+			}
+		});
+
+		formulaColumn.setCellFactory(new Callback<TableColumn<Product, Formula>, TableCell<Product, Formula>>() {
+			@Override
+			public TableCell<Product, Formula> call(TableColumn<Product, Formula> param) {
+				return new TableCell<Product, Formula>() {
+					@Override
+					protected void updateItem(Formula item, boolean empty) {
+						super.updateItem(item, empty);
+
+						if (empty) {
+							setText(null); // Clear text if the row is empty
+						} else if (item == null) {
+							setText("No formula defined"); // Set text when formula is null
+						} else {
+							setText(item.toString()); // Use Formula's toString if it's not null
+						}
+					}
+				};
+			}
+		});
 
 		// Product Buttons
 		Button createProductButton = new Button("Create New Product");
@@ -159,11 +248,11 @@ public class BatchArea {
 		createProductButton.setOnAction(e -> {
 			productCRUD.show();
 			updateLists();
-			productsTable.getSelectionModel().select(Controllers.BatchArea.getMostRecentlyModifiedProduct());
+			productTable.getSelectionModel().select(Controllers.BatchArea.getMostRecentlyModifiedProduct());
 		});
 
 		defineFormulaButton.setOnAction(e -> {
-			Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();
+			Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
 			Formula selectedFormula = formulaList.getSelectionModel().getSelectedItem();
 
 			if (selectedProduct != null && selectedFormula != null) {
@@ -175,7 +264,7 @@ public class BatchArea {
 		});
 
 		deleteProductButton.setOnAction(e -> {
-			Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();
+			Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
 			if (selectedProduct != null && !Controllers.BatchArea.isProductUsedInBatch(selectedProduct)) {
 				Controllers.BatchArea.deleteProduct(selectedProduct);
 				updateLists();
@@ -184,10 +273,10 @@ public class BatchArea {
 
 		// Add components to Product GridPane
 		productGrid.add(new Label("Products"), 0, 0);
-		productGrid.add(productsTable, 0, 2);
+		productGrid.add(productTable, 0, 2);
 		productGrid.add(productButtons, 0, 3);
 
-		productsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+		productTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			createBatchButton.setDisable(newValue == null); // Disable if no item is selected
 			defineFormulaButton.setDisable(newValue == null); // Disable if no item is selected
 			deleteProductButton.setDisable(newValue == null); // Disable if no item is selected
@@ -196,6 +285,7 @@ public class BatchArea {
 		return productGrid;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static GridPane createBatchSection() {
 		GridPane batchGrid = new GridPane();
 		batchGrid.setPadding(new Insets(10));
@@ -209,12 +299,50 @@ public class BatchArea {
 		searchBar.setFocusTraversable(false);
 
 		// Batches Table
-		batchesTable.setPlaceholder(new Label("No Batches Available"));
-		batchesTable.setMinHeight(300);
-		batchesTable.setMaxHeight(200);
-		batchesTable.setMinWidth(700);
-		batchesTable.setEditable(false);
-		batchesTable.setFocusTraversable(false);
+		batchTable.setPlaceholder(new Label("No Batches Available"));
+		batchTable.setMinHeight(300);
+		batchTable.setMaxHeight(200);
+		batchTable.setMinWidth(900);
+		batchTable.setMaxWidth(900);
+		batchTable.setEditable(false);
+		batchTable.setFocusTraversable(false);
+		batchTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+		TableColumn<Batch, Integer> IDColumn = new TableColumn<>("ID");
+		IDColumn.setCellValueFactory(new PropertyValueFactory<>("batchID"));
+		IDColumn.setMinWidth(100);
+		IDColumn.setMaxWidth(100);
+
+		TableColumn<Batch, String> productColumn = new TableColumn<>("Product");
+		productColumn.setCellValueFactory(new PropertyValueFactory<>("product"));
+		productColumn.setMinWidth(200);
+		productColumn.setMaxWidth(200);
+
+		TableColumn<Batch, LocalDate> dateColumn = new TableColumn<>("Creation Date");
+		dateColumn.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
+		dateColumn.setMinWidth(150);
+		dateColumn.setMaxWidth(150);
+
+		TableColumn<Batch, Integer> batchSizeColumn = new TableColumn<>("Batch Size (Bottles)");
+		batchSizeColumn.setCellValueFactory(new PropertyValueFactory<>("numExpectedBottles"));
+		batchSizeColumn.setMinWidth(140);
+		batchSizeColumn.setMaxWidth(140);
+
+		TableColumn<Batch, Integer> producedNumColumn = new TableColumn<>("Produced Bottles");
+		producedNumColumn.setCellValueFactory(new PropertyValueFactory<>("numProducedBottles"));
+		producedNumColumn.setMinWidth(135);
+		producedNumColumn.setMaxWidth(135);
+
+		TableColumn<Batch, LocalDate> endDateColumn = new TableColumn<>("Completion Date");
+		endDateColumn.setCellValueFactory(new PropertyValueFactory<>("completionDate"));
+		endDateColumn.setMinWidth(150);
+		endDateColumn.setMaxWidth(150);
+
+		batchTable.getColumns().addAll(IDColumn, productColumn, batchSizeColumn, producedNumColumn,
+				dateColumn, endDateColumn);
+
+		ObservableList<Product> products = FXCollections.observableArrayList(Controllers.BatchArea.getAllProducts());
+		productTable.setItems(products);
 
 		// Batch Buttons
 		Button filterBatchButton = new Button("Filter");
@@ -244,14 +372,14 @@ public class BatchArea {
 
 		// Add components to Batch GridPane
 		batchGrid.add(new Label("Batches"), 0, 0);
-		batchGrid.add(batchesTable, 0, 1);
+		batchGrid.add(batchTable, 0, 1);
 		batchGrid.add(batchButtons1, 0, 2);
 		batchGrid.add(batchButtons2, 0, 3);
 
 		assignBatchButtonActions(createBatchButton, filterBatchButton, deleteBatchButton, produceBatchButton,
 				generateLabels, showLabels);
 
-		batchesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+		batchTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue == null) {
 				produceBatchButton.setDisable(true);
 				deleteBatchButton.setDisable(true);
@@ -260,7 +388,8 @@ public class BatchArea {
 			} else {
 				produceBatchButton.setDisable(Controllers.BatchArea.isProductionComplete(newValue));
 				deleteBatchButton.setDisable(!Controllers.BatchArea.isProductionStarted(newValue));
-				generateLabels.setDisable(!Controllers.BatchArea.isProductionComplete(newValue)||Controllers.BatchArea.isLabelGenerate(newValue));
+				generateLabels.setDisable(!Controllers.BatchArea.isProductionComplete(newValue)
+						|| Controllers.BatchArea.isLabelGenerate(newValue));
 				showLabels.setDisable(!Controllers.BatchArea.isLabelGenerate(newValue));
 			}
 		});
@@ -271,7 +400,6 @@ public class BatchArea {
 	private static void assignBatchButtonActions(Button createBatchButton, Button filterBatchButton,
 			Button deleteBatchButton, Button produceBatchButton, Button generateLabels, Button showLabels) {
 		createBatchButton.setOnAction(e -> {
-			Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();
 			if (selectedProduct == null) {
 				errorWindow.showError("Please select a Product from the list below.");
 				return;
@@ -285,7 +413,7 @@ public class BatchArea {
 		});
 
 		deleteBatchButton.setOnAction(e -> {
-			Batch selectedBatch = batchesTable.getSelectionModel().getSelectedItem();
+			Batch selectedBatch = batchTable.getSelectionModel().getSelectedItem();
 			if (selectedBatch != null) {
 				if (Controllers.BatchArea.isProductionStarted(selectedBatch)) {
 					errorWindow.showError(
@@ -298,12 +426,12 @@ public class BatchArea {
 		});
 
 		produceBatchButton.setOnAction(e -> {
-			produceBatchWindow.show(batchesTable.getSelectionModel().getSelectedItem());
+			produceBatchWindow.show(batchTable.getSelectionModel().getSelectedItem());
 			updateLists();
 		});
 
 		generateLabels.setOnAction(e -> {
-			Batch selectedBatch = batchesTable.getSelectionModel().getSelectedItem();
+			Batch selectedBatch = batchTable.getSelectionModel().getSelectedItem();
 			if (selectedBatch != null) {
 				Controllers.BatchArea.generateLabelForBatch(selectedBatch);
 				generateLabels.setDisable(true);
@@ -312,7 +440,7 @@ public class BatchArea {
 		});
 
 		showLabels.setOnAction(e -> {
-			Batch selectedBatch = batchesTable.getSelectionModel().getSelectedItem();
+			Batch selectedBatch = batchTable.getSelectionModel().getSelectedItem();
 			if (selectedBatch != null) {
 				showLabel.show(selectedBatch);
 			}
@@ -364,35 +492,14 @@ public class BatchArea {
 	public static void updateLists() {
 		clearLists();
 		formulaList.getItems().addAll(Controllers.BatchArea.getAllFormulae());
-		batchesTable.getItems().addAll(Controllers.BatchArea.getAllBatches());
-		productsTable.getItems().addAll(Controllers.BatchArea.getAllProducts());
-		useSpecifiedListView(productsTable, "Product");
-		useSpecifiedListView(batchesTable, "Batch");
+		batchTable.getItems().addAll(Controllers.BatchArea.getAllBatches());
+		productTable.getItems().addAll(Controllers.BatchArea.getAllProducts());
 	}
 
 	private static void clearLists() {
-		batchesTable.getItems().clear();
-		productsTable.getItems().clear();
+		batchTable.getItems().clear();
+		productTable.getItems().clear();
 		formulaList.getItems().clear();
-	}
-
-	private static <T> void useSpecifiedListView(ListView<T> listView, String dataType) {
-		listView.setCellFactory(lv -> new ListCell<>() {
-			@Override
-			protected void updateItem(T item, boolean empty) {
-				super.updateItem(item, empty);
-				if (empty || item == null) {
-					setText(null);
-				} else {
-					if (dataType.equals("Batch")) {
-						setText(((Batch) item).getListInfo());
-					}
-					if (dataType.equals("Product")) {
-						setText(((Product) item).getListInfo());
-					}
-				}
-			}
-		});
 	}
 
 	public void close() {

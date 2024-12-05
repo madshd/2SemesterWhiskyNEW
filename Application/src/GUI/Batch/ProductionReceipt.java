@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.File;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,8 +17,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import Warehousing.Cask;
 
+@SuppressWarnings("unused")
 public class ProductionReceipt {
 
 	private final Stage productionReceiptStage = new Stage();
@@ -91,6 +94,17 @@ public class ProductionReceipt {
 			productionReceiptStage.close();
 			BatchArea.updateLists();
 		});
+
+		// Handles closing the window if user tries to bypass saving the receipt to file
+		// all views and data will update as normally.
+		// this is not the goal, merely a safeguard to prevent data loss.
+		productionReceiptStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent event) {
+				clearFields();
+				BatchArea.updateLists();
+			}
+		});
 	}
 
 	@SuppressWarnings("unchecked")
@@ -100,8 +114,7 @@ public class ProductionReceipt {
 
 		// Cask ID Column
 		TableColumn<Map.Entry<Cask, Double>, String> caskIDColumn = new TableColumn<>("Cask ID");
-		caskIDColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getKey().getCaskID())
-		);
+		caskIDColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getKey().getCaskID()));
 
 		// Quantity To Use Column
 		TableColumn<Map.Entry<Cask, Double>, String> quantityToUseColumn = new TableColumn<>("Quantity To Use");
