@@ -137,6 +137,10 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 		return quantity + getQuantityStatus();
 	}
 
+	public List<Filling> getfillIngredients(){
+		return new ArrayList<>(fillIngredients);
+	}
+
 	@Override
 	public int compareTo(Item o) {
 		return this.name.compareTo(o.getName());
@@ -176,7 +180,7 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 	@Override
 	public String toString() {
 		return name + " " + description +
-				" " + quantity + " " + unit;
+				" " + getRemainingQuantity() + " " + unit;
 	}
 
 	public String getListInfo() {

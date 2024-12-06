@@ -4,6 +4,8 @@ import Controllers.Production;
 import GUI.Common.Common;
 import GUI.Common.ConfirmationDialog;
 import Interfaces.Item;
+import Interfaces.OberverQuantitySubject;
+import Interfaces.ObserverQuantityObserver;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -32,7 +34,7 @@ public class ProductionArea {
 	private Stage stage;
 	protected GridPane mainPane;
 	private Scene scene;
-	private Distillates distillates;
+	protected Distillates distillates;
 	private Casks casks;
 	protected FillDistillateIntoCask.DistillateElement fillDistillateElement;
 	protected FillDistillateIntoCask.CasksElement fillCaskElement;
@@ -96,7 +98,7 @@ public class ProductionArea {
 		gridPane.add(casks, 0, 2);
 	}
 
-	private class Distillates extends GridPane {
+	protected class Distillates extends GridPane implements ObserverQuantityObserver {
 		private final ListView<Item> lvwDistillates = new ListView<>();
 		private final TextArea txaDistillateDetails = new TextArea();
 
@@ -180,6 +182,7 @@ public class ProductionArea {
 
 		private void updateLists() {
 			List<Item> distilates = new ArrayList<>(Production.getDistillates());
+			distilates.forEach(d -> d.addObserver(this));
 			lvwDistillates.getItems().setAll(distilates);
 
 			Common.useSpecifiedListView(lvwDistillates);
@@ -190,6 +193,7 @@ public class ProductionArea {
 			casks.updatelist(selectedDistillate);
 			distillateBasics.updateBasics(selectedDistillate);
 			ditillateIngredient.updateIngredients(selectedDistillate);
+			distillateProductionDetails.updateProductionDetails(selectedDistillate);
 
 			if (selectedDistillate != null) {
 				String infoText = String.format("""
@@ -212,6 +216,11 @@ public class ProductionArea {
 			} else {
 				txaDistillateDetails.clear();
 			}
+		}
+
+		public void setWindowSetings(Distillate distillate){
+			lvwDistillates.getSelectionModel().select(distillate);
+			updateDistillateDetails();
 		}
 
 		private void openFillIntoCask() {
@@ -238,6 +247,11 @@ public class ProductionArea {
 			mainPane.add(distillateProductionDetails,0,3);
 		}
 
+		@Override
+		public void update(OberverQuantitySubject o) {
+			updateLists();
+			updateDistillateDetails();
+		}
 	}
 
 	private class Casks extends GridPane {

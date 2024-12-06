@@ -258,13 +258,12 @@ public abstract class FillDistillateIntoCask {
 
             double liters = Double.parseDouble(txfInputLiters.getText().trim());
 
-            if (liters > maxLittersToFill){
-                errorWindow.showError("Provided value exeeds max liters.");
-                return;
+            try {
+                Controllers.Production.fillDistillateIntoCask(selectedDistillate,selectedCask,liters,date);
+                pa.fillCaskElement.updateFillingList(pa);
+            }catch (IllegalStateException e){
+                errorWindow.showError(e.getMessage());
             }
-
-            Controllers.Production.fillDistillateIntoCask(selectedDistillate,selectedCask,liters,date);
-            pa.fillCaskElement.updateFillingList(pa);
 
         }
 

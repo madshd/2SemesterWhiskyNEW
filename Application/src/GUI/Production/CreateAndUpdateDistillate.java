@@ -3,6 +3,7 @@ package GUI.Production;
 import Controllers.Production;
 import Controllers.Warehousing;
 import GUI.Common.Common;
+import GUI.Common.ErrorWindow;
 import Interfaces.Filling;
 import Interfaces.Item;
 import Production.Distiller;
@@ -20,6 +21,8 @@ import Production.Distillate;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CreateAndUpdateDistillate {
@@ -41,6 +44,7 @@ public abstract class CreateAndUpdateDistillate {
         private final DatePicker dpStartDate = new DatePicker();
         private final DatePicker dpEndDate = new DatePicker();
         private final TextArea txaDescription = new TextArea();
+        private final ErrorWindow errorWindow = new ErrorWindow();
 
         public Basics(ProductionArea pa){
             // Generel settings
@@ -88,6 +92,7 @@ public abstract class CreateAndUpdateDistillate {
                     "Basic description behind the distillate, description should enforce the end Whisky story.");
             txaDescription.setPrefHeight(areaHeight * 0.1);
             txaDescription.setPrefWidth(200);
+            txaDescription.setWrapText(true);
             GridPane.setHalignment(txaDescription,HPos.RIGHT);
             this.add(txaDescription,3,1,1,3);
 
@@ -102,10 +107,10 @@ public abstract class CreateAndUpdateDistillate {
             if (distillate != null){
                 txfName.setText(distillate.getName());
                 cmbDistiller.setValue(distillate.getDistiller());
-                txfQuantity.setText(Double.toString(distillate.getRemainingQuantity()));
+                txfQuantity.setText(Double.toString(distillate.getQuantity()));
                 dpStartDate.setValue(distillate.getStartDate());
                 dpEndDate.setValue(distillate.getEndDate());
-                txaDescription.setText(distillate.getDescription());
+                txaDescription.setText(distillate.getDescription().trim());
             }else {
                 txfName.clear();
                 cmbDistiller.getItems().clear();
@@ -116,17 +121,46 @@ public abstract class CreateAndUpdateDistillate {
                 txaDescription.clear();
             }
         }
+
+        protected boolean storeChange(Distillate distillate){
+            boolean status = true;
+            try {
+                Double.parseDouble(txfQuantity.getText().trim());
+            }catch (NumberFormatException e){
+                errorWindow.showError("Value for quantity is not valid");
+            }
+
+            if (dpStartDate == null || dpEndDate == null){
+                errorWindow.showError("Dates are not valid.");
+                return false;
+            }
+
+            double quantity = Double.parseDouble(txfQuantity.getText().trim());
+            if (quantity < distillate.getQuantityStatus()){
+                errorWindow.showError("Quantity must be higher or equal to what has been filled into cask(s)");
+                return false;
+            }
+            String name = txfName.getText().trim();
+            Distiller distiller = cmbDistiller.getValue();
+            String description = txaDescription.getText().trim();
+
+            Controllers.Production.distillateUpdateBasicInfo(distillate,name,distiller,quantity,
+                    dpStartDate.getValue(),dpEndDate.getValue(),description);
+
+            return status;
+        }
     }
 
     public static class IngredientDetails extends GridPane {
 
         private final DatePicker dpfillDate = new DatePicker();
-        private final ComboBox<Ingredient> cmbIngredients = new ComboBox<>();
+        private final ComboBox<Item> cmbIngredients = new ComboBox<>();
         private final TextField txfQuantity = new TextField();
         private final ListView<Item> lvwIngrediants = new ListView<>();
         private final TextArea txaIngrediantDetails = new TextArea();
         private final TextArea txaNewIngrediantDetail = new TextArea();
         private Distillate distillate;
+        private final ErrorWindow errorWindow = new ErrorWindow();
 
         public IngredientDetails(ProductionArea pa){
             // Generel settings
@@ -161,9 +195,11 @@ public abstract class CreateAndUpdateDistillate {
             cmbIngredients.setPromptText("Ingredients");
             cmbIngredients.setPrefWidth(areaWidth * 0.15);
             cmbIngredients.setOnAction(actionEvent -> {
-                txaNewIngrediantDetail.setText(
-                        Common.insertLfIntoSting(cmbIngredients.getSelectionModel().getSelectedItem().getDescription(),23));
-                    });
+                if (cmbIngredients.getSelectionModel().getSelectedItem() != null){
+                    txaNewIngrediantDetail.setText(
+                            ((Ingredient) cmbIngredients.getSelectionModel().getSelectedItem()).getDescription());
+                }
+            });
 
             txfQuantity.setPromptText("Quantity");
 
@@ -179,10 +215,14 @@ public abstract class CreateAndUpdateDistillate {
             // Text area
             txaIngrediantDetails.setPromptText("Details on selected allready added ingredient");
             txaIngrediantDetails.setEditable(false);
+            txaIngrediantDetails.setWrapText(true);
+            txaIngrediantDetails.setMouseTransparent(true);
             this.add(txaIngrediantDetails,3,1);
 
             txaNewIngrediantDetail.setPromptText("Detaills on selected new ingredient.");
             txaNewIngrediantDetail.setEditable(false);
+            txaNewIngrediantDetail.setWrapText(true);
+            txaNewIngrediantDetail.setMouseTransparent(true);
             this.add(txaNewIngrediantDetail,1,1);
 
             VBox vBox = new VBox(20);
@@ -201,7 +241,7 @@ public abstract class CreateAndUpdateDistillate {
                 hBox.getChildren().add(newBtn);
                 newBtn.setUserData(abbreivations[i]);
                 newBtn.setPrefWidth(hboxBtnWidth);
-                newBtn.setOnAction(actionEvent -> btnAction(newBtn));
+                newBtn.setOnAction(actionEvent -> btnAction(pa,newBtn));
             }
 
             hBox.setAlignment(Pos.CENTER);
@@ -214,6 +254,7 @@ public abstract class CreateAndUpdateDistillate {
             cmbIngredients.getItems().setAll(Warehousing.getAllAvailableIngredients());
             this.distillate = distillate;
 
+
             if (distillate != null){
                 lvwIngrediants.getItems().setAll(distillate.getIngredientsInDistillate());
                 Common.useSpecifiedListView(lvwIngrediants);
@@ -225,11 +266,52 @@ public abstract class CreateAndUpdateDistillate {
 
             if (item != null && distillate != null){
                 txaIngrediantDetails.setText(distillate.getInfoOnIngredientUsed(((Ingredient) item)));
+            }else {
+                txaIngrediantDetails.clear();
             }
         }
 
-        private void btnAction(Button button){
+        private void btnAction(ProductionArea pa, Button button){
+            switch ((String) button.getUserData()){
+                case "add" -> {
+                    addFillIngredient(pa);
+                }
+                case "remove" -> {
+                    removeIngredientFromDistillate(pa);
+                }
+            }
+        }
 
+        private void addFillIngredient(ProductionArea pa){
+            Distillate tmp = this.distillate;
+            if (dpfillDate == null){
+                errorWindow.showError("Please set a date");
+                return;
+            }
+
+            try {
+                Double.parseDouble(txfQuantity.getText().trim());
+            }catch (NumberFormatException e){
+                errorWindow.showError("Quantity is not set correctly.");
+                return;
+            }
+
+            double quantity = Double.parseDouble(txfQuantity.getText().trim());
+            Ingredient ingredient = ((Ingredient) cmbIngredients.getSelectionModel().getSelectedItem());
+            Production.addIngredientToDistillate(distillate,ingredient,quantity,dpfillDate.getValue());
+            txaNewIngrediantDetail.clear();
+            pa.distillates.setWindowSetings(tmp);
+        }
+
+        private void removeIngredientFromDistillate(ProductionArea pa){
+            Distillate tmp = this.distillate;
+            Ingredient ingredient = (Ingredient) lvwIngrediants.getSelectionModel().getSelectedItem();
+
+            if (ingredient != null && tmp != null){
+                Production.removeIngredientFromDistillate(tmp,ingredient);
+                txaNewIngrediantDetail.clear();
+                pa.distillates.setWindowSetings(tmp);
+            }
         }
     }
 
@@ -242,6 +324,11 @@ public abstract class CreateAndUpdateDistillate {
         private final ListView<AlcoholPercentage> lvwAlchol = new ListView<>();
         private final ListView<ProductCutInformation> lvwCutInfo = new ListView<>();
         private final ListView<StoryLine> lvwStory = new ListView<>();
+        private final Tab alcohol = new Tab("Alcohol %");
+        private final Tab cutInfo = new Tab("Cut info");
+        private final Tab story = new Tab("Story");
+        private Distillate distillate;
+        private final ErrorWindow errorWindow = new ErrorWindow();
 
         public ProductionDetails(ProductionArea pa){
             // Generel settings
@@ -287,18 +374,23 @@ public abstract class CreateAndUpdateDistillate {
             this.add(vBox,0,1,2,1);
 
             // Tabpane
-            Tab alcohol = new Tab("Alcohol %");
-            Tab cutInfo = new Tab("Cut info");
-            Tab story = new Tab("Story");
             tabPane.getTabs().addAll(alcohol,cutInfo,story);
             tabPane.setPrefHeight(areaHeight * 0.4);
 
             alcohol.setContent(lvwAlchol);
             alcohol.setClosable(false);
+            alcohol.setId("1");
+            alcohol.setOnSelectionChanged(event -> updateOnTabShift("1"));
             cutInfo.setContent(lvwCutInfo);
             cutInfo.setClosable(false);
+            cutInfo.setId("2");
+            cutInfo.setOnSelectionChanged(event -> updateOnTabShift("2"));
             story.setContent(lvwStory);
             story.setClosable(false);
+            story.setId("3");
+            story.setOnSelectionChanged(event -> updateOnTabShift("3"));
+            tabPane.getSelectionModel().selectFirst();
+            updateOnTabShift("1");
 
             this.add(tabPane,2,1,2,1);
 
@@ -322,7 +414,7 @@ public abstract class CreateAndUpdateDistillate {
             HBox hBoxButtom = new HBox(20);
             int hboxButtomBtnWidth = 100;
             String[] btnButtomNames = {"Cancel", "Save"};
-            String[] abbreivationsButtom = {"cancel","Save"};
+            String[] abbreivationsButtom = {"cancel","save"};
 
             for (int i = 0; i < btnButtomNames.length; i++) {
                 Button newBtn = new Button(btnButtomNames[i]);
@@ -342,12 +434,83 @@ public abstract class CreateAndUpdateDistillate {
         private void btnAction(ProductionArea pa, Button button){
             switch ((String) button.getUserData()){
                 case "cancel" -> close(pa);
+                case "save" -> save(pa);
+                case "add" -> addElemnt(pa);
+            }
+        }
+
+        private void addElemnt(ProductionArea pa){
+            String tabID = tabPane.getSelectionModel().getSelectedItem().getId();
+            LocalDate date = dpDate.getValue();
+            String value = txfValue.getText().trim();
+            String text = txaText.getText().trim();
+
+            if (distillate == null){
+                errorWindow.showError("Please ensure basic info on distallate has been saved.");
+                return;
+            }
+
+            if (date != null){
+                switch (tabID){
+                    case "1" -> {
+                        try {
+                            Double.parseDouble(value);
+                        }catch (NumberFormatException e){
+                            errorWindow.showError("Provied procentage is not a valid number.");
+                            return;
+                        }
+                        double percentage = Double.parseDouble(value);
+                        Production.addAlcoholPercentage(distillate,percentage,date);
+                        pa.distillates.setWindowSetings(distillate);
+                    }
+                }
+            }else {
+                errorWindow.showError("Please select a date.");
+            }
+        }
+
+        public void updateProductionDetails(Distillate distillate){
+            dpDate.setValue(null);
+            txfValue.clear();
+            txaText.clear();
+            this.distillate = distillate;
+            if (distillate != null){
+                lvwAlchol.getItems().setAll(distillate.getAlcoholPercentages());
+                lvwCutInfo.getItems().setAll(distillate.getProductCutInformations());
+                lvwStory.getItems().setAll(distillate.getStoryLines());
+            }else {
+                lvwAlchol.getItems().clear();
+                lvwCutInfo.getItems().clear();
+                lvwStory.getItems().clear();
+            }
+        }
+
+        private void updateOnTabShift(String tabID){
+            switch (tabID){
+                case "1" ->{
+                    txaText.setDisable(true);
+                    txfValue.setDisable(false);
+                }
+                case "2" -> {
+                    txaText.setDisable(false);
+                    txfValue.setDisable(true);
+                }
+                case "3" -> {
+                    txaText.setDisable(false);
+                    txfValue.setDisable(true);
+                }
             }
         }
 
         private void close(ProductionArea pa){
             pa.mainPane.getChildren().clear();
             pa.initContent(pa.mainPane);
+        }
+
+        private void save(ProductionArea pa){
+            pa.distillateBasics.storeChange(distillate);
+
+            close(pa);
         }
     }
 }

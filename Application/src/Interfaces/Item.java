@@ -10,5 +10,7 @@ public interface Item extends Comparable<Item>{
     public int compareTo(Item o);
     public String getName();
 
+    public void addObserver(ObserverQuantityObserver o);
+
     void setStorageRack(StorageRack storageRack);
 }
