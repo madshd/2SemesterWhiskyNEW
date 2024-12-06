@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import Enumerations.TastingNote;
 import Warehousing.Cask;
 
 public class Batch {
@@ -18,7 +20,7 @@ public class Batch {
 	private int numExpectedBottles;
 	private int numProducedBottles;
 	private String label = null;
-	private final List<Cask> usedCasks = new ArrayList<>();
+	private final List<Cask> usedCask = new ArrayList<>();
 
 	private boolean productionComplete;
 
@@ -52,30 +54,46 @@ public class Batch {
 
 	public void addReservedCask(Cask cask, double quantity) {
 		this.reservedCasks.put(cask, quantity);
-		System.out.println(reservedCasks);
 	}
 
 	public void generateLabel() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(product.getProductName());
 		sb.append("\n");
-		sb.append(creationDate);
+		sb.append("Bottled: " + completionDate);
 		sb.append("\n");
-		sb.append(batchID);
+		sb.append("Batch Size: " + numProducedBottles + " bottles");
 		sb.append("\n");
-		sb.append(numProducedBottles);
-		sb.append("\n");
-		sb.append("Casks used in this batch: ");
-		for (Cask cask : usedCasks) {
-			sb.append("Cask ID"+cask.getCaskID());
+		sb.append("Tasting Notes: " + weightedTastingNotes() + "\n");
+		sb.append("-------------------------\n");
+		sb.append("Casks used in the production of this batch: \n");
+		for (Cask cask : usedCask) {
+			sb.append("\n    *** Cask ID: " + cask.getCaskID() + " ***");
 			sb.append("\n");
-			sb.append("Cask type: "+cask.getCaskType());
+			sb.append("Cask type: " + cask.getCaskType());
 			sb.append("\n");
-			sb.append("Cask story: "+ Controllers.Production.getCaskStory(cask, completionDate));
-		// TODO: getCaskInfo check how it look when Leander finishes it
+			sb.append("Cask story: " + Controllers.Production.getCaskStory(cask, completionDate));
+			// TODO: getCaskInfo check how it look when Leander finishes it
 		}
 		label = sb.toString();
 	}
+
+	private String weightedTastingNotes() {
+		int numNotes = 3;
+		StringBuilder sb = new StringBuilder();
+		List<TastingNote> tastingNotesSortedByPercentage = new ArrayList<>(
+				product.getFormula().getWeightedTastingNotes());
+		for (int i = 0; i < numNotes && i < tastingNotesSortedByPercentage.size(); i++) {
+			sb.append(tastingNotesSortedByPercentage.get(i));
+			sb.append(" ");
+		}
+		return sb.toString();
+	}
+
+	public void addUsedCask(Cask cask) {
+		usedCask.add(cask);
+	}
+
 	// ---------------------------GENERIC-GETTERS----------------------------//
 
 	public String getListInfo() {
@@ -136,15 +154,15 @@ public class Batch {
 	}
 
 	public static int getBatchIDglobalCount() {
-		int count = batchIDglobalCount;
-		return count + 1;
+		return batchIDglobalCount;
 	}
 
 	public String getLabel() {
 		return label;
 	}
 
-	public int getNumRemainingBottles() { return numExpectedBottles - numProducedBottles;
+	public int getNumRemainingBottles() {
+		return numExpectedBottles - numProducedBottles;
 	}
 
 }

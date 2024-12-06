@@ -60,7 +60,6 @@ public class ProduceBatchWindow {
 		ObservableList<Cask> caskList = FXCollections.observableArrayList(batch.getReservedCasks().keySet());
 		reservedCasks.setItems(caskList);
 		readyBottles.setText(Integer.toString(calcReadyBottles()));
-		System.out.println(batch.getReservedCasks());
 	}
 
 	public int calcReadyBottles() {
@@ -194,57 +193,33 @@ public class ProduceBatchWindow {
 	}
 
 	private void produce(int bottleNum) {
-		// Close the produceBatchStage first
-		System.out.println("Closing produceBatchStage...");
 		produceBatchStage.close();
 
-		// Show the loading window
-		System.out.println("Showing loading window...");
 		loadingWindow.show("Generating Production Receipt...");
 
-		// Use a Task to run the delay in the background thread
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				// Simulate a long-running operation (5 seconds)
-				System.out.println("Simulating long-running operation...");
 				Thread.sleep(1000);
 				return null;
 			}
 
 			@Override
 			protected void succeeded() {
-				// Close the loading window and show the production receipt
-				System.out.println("Task succeeded. Closing loading window...");
 				loadingWindow.close();
-
-				// Produce batch and get the used casks
-				System.out.println("Producing batch...");
 				Map<Cask, Double> usedCasks = Controllers.BatchArea.produceBatch(batch, bottleNum);
-				System.out.println("Batch produced. Used casks: " + usedCasks);
-
-				// Clear fields and show the production receipt window
-				System.out.println("Clearing fields...");
 				clearFields();
-				System.out.println("Showing production receipt...");
 				productionReceipt.show(usedCasks);
 			}
 
 			@Override
 			protected void failed() {
-				// Handle failure (optional)
-				System.err.println("Task failed. Closing loading window...");
 				loadingWindow.close();
-				System.err.println("Error occurred while generating the production receipt.");
 			}
 		};
-
-		// Run the task in a background thread
-		System.out.println("Starting background task...");
 		new Thread(task).start();
 	}
 
-	// Clear all fields
 	private void clearFields() {
 		bottleNumInput.clear();
 	}

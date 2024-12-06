@@ -50,21 +50,20 @@ public class BatchCRUD {
 	}
 
 	public void updateContent(Product product) {
-		calculateMaxBottles(product);
 		onlyReadyCheckBox.setSelected(true);
+		calculateMaxBottles(product);
 		batchID.setText(Batch.getBatchIDglobalCount() + "");
 		this.product = product;
 	}
 	public void calculateMaxBottles(Product product){
-		maxBottles = Controllers.BatchArea.calculateMaxNumBottles(product, onlyReadyCheckBox.isSelected());
+		maxBottles = Controllers.BatchArea.calculateMaxNumBottles(product, onlyReadyCheckBox.isSelected(), null);
 		numMaxBottles.setText(maxBottles + "");
 	}
 
 	// Initialize the content of the window
 	private void initContent(GridPane mainPane) {
 		// Main GridPane setup
-		mainPane.setPadding(new Insets(50));
-		mainPane.setHgap(10);
+		mainPane.setPadding(new Insets(50)); mainPane.setHgap(10);
 		mainPane.setVgap(10);
 		mainPane.setAlignment(Pos.CENTER);
 		mainPane.setGridLinesVisible(false);
@@ -90,6 +89,7 @@ public class BatchCRUD {
 		onlyReadyCheckBox = new CheckBox("Only use ready casks (3 years age)");
 		onlyReadyCheckBox.setSelected(true);
 		onlyReadyCheckBox.setFocusTraversable(false);
+		onlyReadyCheckBox.setNodeOrientation(javafx.geometry.NodeOrientation.RIGHT_TO_LEFT);
 		onlyReadyCheckBox.setOnAction(e -> calculateMaxBottles(product));
 
 		// Number of Expected Bottles

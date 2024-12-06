@@ -54,10 +54,10 @@ public class ShowLabel {
 		labelArea.setEditable(false);
 		labelArea.setFocusTraversable(false);
 		mainPane.add(labelArea, 0, 0);
-		labelArea.setPrefSize(400, 200);
+		labelArea.setPrefSize(500, 300);
 
 		Button okButton = new Button("OK");
-		okButton.setDisable(true);
+		okButton.setDisable(false);
 		HBox buttonBox = new HBox(okButton);
 		mainPane.add(buttonBox, 0, 1, 1, 1);
 		buttonBox.setAlignment(Pos.CENTER);

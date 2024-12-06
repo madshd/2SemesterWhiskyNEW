@@ -1,5 +1,4 @@
 package GUI.Batch;
-
 import java.util.ArrayList;
 
 import BatchArea.TasteProfile;

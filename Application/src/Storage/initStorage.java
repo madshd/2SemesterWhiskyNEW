@@ -821,6 +821,10 @@ public abstract class initStorage {
 		Formula formula2 = BatchArea.createNewFormula("Formula 2", blueprint2);
 		Formula formula3 = BatchArea.createNewFormula("Formula 3", blueprint3);
 		Formula formula4 = BatchArea.createNewFormula("Formula 4", blueprint4);
+
+		for(TastingNote tn : notes1) {
+			tasteProfile1.addTastingNote(tn);
+		}
 		// =================== PRODUCTS =================
 
 		Product product1 = BatchArea.createNewProduct("Product 1", 1000);

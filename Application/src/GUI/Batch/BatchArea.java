@@ -444,6 +444,7 @@ public class BatchArea {
 				Controllers.BatchArea.generateLabelForBatch(selectedBatch);
 				generateLabels.setDisable(true);
 				showLabel.show(selectedBatch);
+				showLabels.setDisable(false);
 			}
 		});
 
