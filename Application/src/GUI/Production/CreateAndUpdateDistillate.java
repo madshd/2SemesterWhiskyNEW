@@ -21,6 +21,7 @@ import Production.Distillate;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -327,6 +328,7 @@ public abstract class CreateAndUpdateDistillate {
         private final Tab cutInfo = new Tab("Cut info");
         private final Tab story = new Tab("Story");
         private Distillate distillate;
+        private final ErrorWindow errorWindow = new ErrorWindow();
 
         public ProductionDetails(ProductionArea pa){
             // Generel settings
@@ -433,6 +435,37 @@ public abstract class CreateAndUpdateDistillate {
             switch ((String) button.getUserData()){
                 case "cancel" -> close(pa);
                 case "save" -> save(pa);
+                case "add" -> addElemnt(pa);
+            }
+        }
+
+        private void addElemnt(ProductionArea pa){
+            String tabID = tabPane.getSelectionModel().getSelectedItem().getId();
+            LocalDate date = dpDate.getValue();
+            String value = txfValue.getText().trim();
+            String text = txaText.getText().trim();
+
+            if (distillate == null){
+                errorWindow.showError("Please ensure basic info on distallate has been saved.");
+                return;
+            }
+
+            if (date != null){
+                switch (tabID){
+                    case "1" -> {
+                        try {
+                            Double.parseDouble(value);
+                        }catch (NumberFormatException e){
+                            errorWindow.showError("Provied procentage is not a valid number.");
+                            return;
+                        }
+                        double percentage = Double.parseDouble(value);
+                        Production.addAlcoholPercentage(distillate,percentage,date);
+                        pa.distillates.setWindowSetings(distillate);
+                    }
+                }
+            }else {
+                errorWindow.showError("Please select a date.");
             }
         }
 
