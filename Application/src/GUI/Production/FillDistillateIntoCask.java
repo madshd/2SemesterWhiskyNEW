@@ -73,6 +73,8 @@ public abstract class FillDistillateIntoCask {
             txaDistillateDetails.setEditable(false);
             txaDistillateDetails.setPrefHeight(lvwHeightCol0Top);
             txaDistillateDetails.setPrefWidth(areaWidth - lvwWithCol0);
+            txaDistillateDetails.setMouseTransparent(true);
+            txaDistillateDetails.setWrapText(true);
             this.add(txaDistillateDetails, 2, 2, 2, 1);
 
             updateLists();
@@ -108,10 +110,10 @@ public abstract class FillDistillateIntoCask {
 						Description: %s
 						""",
                         selectedDistillate.getDistiller().toString(),
-                        Common.insertLfIntoSting(selectedDistillate.getDistiller().getStory(), 70),
+                        selectedDistillate.getDistiller().getStory(),
                         selectedDistillate.getNewMakeID(), selectedDistillate.getStartDate().toString(),
                         selectedDistillate.getEndDate().toString(),
-                        Common.insertLfIntoSting(selectedDistillate.getDescription(), 70));
+                        selectedDistillate.getDescription());
                 txaDistillateDetails.setText(infoText);
             } else {
                 txaDistillateDetails.clear();
@@ -164,6 +166,7 @@ public abstract class FillDistillateIntoCask {
             lvwCaskFillings.setEditable(false);
             lvwCaskFillings.setPrefHeight(lvwHeightCol0Top);
             lvwCaskFillings.setPrefWidth(areaWidth - lvwWithCol0);
+            lvwCaskFillings.setMouseTransparent(true);
             this.add(lvwCaskFillings, 2, 2, 2, 1);
 
         }
@@ -258,13 +261,12 @@ public abstract class FillDistillateIntoCask {
 
             double liters = Double.parseDouble(txfInputLiters.getText().trim());
 
-            if (liters > maxLittersToFill){
-                errorWindow.showError("Provided value exeeds max liters.");
-                return;
+            try {
+                Controllers.Production.fillDistillateIntoCask(selectedDistillate,selectedCask,liters,date);
+                pa.fillCaskElement.updateFillingList(pa);
+            }catch (IllegalStateException e){
+                errorWindow.showError(e.getMessage());
             }
-
-            Controllers.Production.fillDistillateIntoCask(selectedDistillate,selectedCask,liters,date);
-            pa.fillCaskElement.updateFillingList(pa);
 
         }
 

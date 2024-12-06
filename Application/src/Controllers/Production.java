@@ -51,9 +51,42 @@ public abstract class Production {
 		distillate.setDescription(description);
 	}
 
-	public static void addStoryToDestillate(Distillate distillate, String story, LocalDate date){
+	public static void addStoryToDistillate(Distillate distillate, String story, LocalDate date){
 		StoryLine storyLine = new StoryLine(date,story);
 		distillate.addStoryLine(storyLine);
+	}
+
+	public static boolean removeStoryFromDistillate(Distillate distillate, StoryLine storyLine){
+		return distillate.removeStoryLine(storyLine);
+	}
+
+	public static void addAlcoholPercentage(Distillate distillate, double percentage, LocalDate date){
+		AlcoholPercentage alcoholPercentage = new AlcoholPercentage(date,percentage);
+		distillate.addAlcoholPercentage(alcoholPercentage);
+	}
+
+	public static boolean removeAlcholPercentage(Distillate distillate, AlcoholPercentage alcoholPercentage){
+		return distillate.removeAlcoholPercentage(alcoholPercentage);
+	}
+
+	public static void addProductionCutInformation(Distillate distillate, String info, LocalDate date){
+		ProductCutInformation productCutInformation = new ProductCutInformation(date,info);
+		distillate.addProductCutInformation(productCutInformation);
+	}
+
+	public static boolean removeProductionCutInformation(Distillate distillate, ProductCutInformation productCutInformation){
+		return distillate.removeProductionCutInformation(productCutInformation);
+	}
+
+	public static boolean distillateUpdateBasicInfo(Distillate distillate, String name, Distiller distiller, double quantity, LocalDate startDate,
+											 LocalDate endDate, String description){
+		distillate.setName(name);
+		distillate.setDistiller(distiller);
+		distillate.setQuantity(quantity);
+		distillate.setStartDate(startDate);
+		distillate.setEndDate(endDate);
+		distillate.setDescription(description);
+		return true;
 	}
 
 	/**
@@ -84,6 +117,25 @@ public abstract class Production {
 		ingredient.updateQuantity(fillingDecrease);
 	}
 
+	public static boolean removeIngredientFromDistillate(Distillate distillate, Item ingredient){
+		distillate.getFillIngredients().forEach(filling -> {
+			Ingredient ing = ((FillIngredient) filling).getIngredient();
+
+			if (ing.equals(ingredient)){
+				distillate.removeIngredientFilling(filling);
+			}
+		});
+
+		((Ingredient) ingredient).getfillIngredients().forEach(filling -> {
+			Distillate dis = ((FillIngredient) filling).getDistillate();
+
+			if (dis.equals(distillate)){
+				((Ingredient) ingredient).removeFilling(filling);
+			}
+		});
+		return true;
+	}
+
 	public static List<Distiller> getDistillers(){
 		return storage.getDistillers();
 	}
@@ -96,11 +148,17 @@ public abstract class Production {
 	 * @param date
 	 * @return
 	 */
-	public static double fillDistillateIntoCask(Distillate distillate, Cask cask, double quantity ,LocalDate date){
+	public static double fillDistillateIntoCask(Distillate distillate, Cask cask, double quantity ,LocalDate date)
+			throws IllegalStateException{
 		Filling filling = new FillDistillate(date,quantity,cask,distillate,null);
-		distillate.updateQuantity(filling);
-		return cask.updateQuantity(filling);
+		try {
+			distillate.updateQuantity(filling);
+			return cask.updateQuantity(filling);
+		}catch (IllegalStateException e){
+			throw new IllegalStateException("Provided quantity does not fit this distillate");
+		}
 	}
+
 
 	public static List<Item> getDistillates(){
 		List<Item> distillates = new ArrayList<>();

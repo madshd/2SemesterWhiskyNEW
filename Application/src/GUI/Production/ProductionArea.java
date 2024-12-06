@@ -4,6 +4,8 @@ import Controllers.Production;
 import GUI.Common.Common;
 import GUI.Common.ConfirmationDialog;
 import Interfaces.Item;
+import Interfaces.OberverQuantitySubject;
+import Interfaces.ObserverQuantityObserver;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -32,7 +34,7 @@ public class ProductionArea {
 	private Stage stage;
 	protected GridPane mainPane;
 	private Scene scene;
-	private Distillates distillates;
+	protected Distillates distillates;
 	private Casks casks;
 	protected FillDistillateIntoCask.DistillateElement fillDistillateElement;
 	protected FillDistillateIntoCask.CasksElement fillCaskElement;
@@ -96,9 +98,10 @@ public class ProductionArea {
 		gridPane.add(casks, 0, 2);
 	}
 
-	private class Distillates extends GridPane {
+	protected class Distillates extends GridPane implements ObserverQuantityObserver {
 		private final ListView<Item> lvwDistillates = new ListView<>();
 		private final TextArea txaDistillateDetails = new TextArea();
+		private Button btnCreateOrUpdate;
 
 		public Distillates(ProductionArea pa) {
 			// Generel settings
@@ -141,12 +144,14 @@ public class ProductionArea {
 			txaDistillateDetails.setEditable(false);
 			txaDistillateDetails.setPrefHeight(lvwHeightCol0Top);
 			txaDistillateDetails.setPrefWidth(areaWidth - lvwWithCol0);
+			txaDistillateDetails.setMouseTransparent(true);
+			txaDistillateDetails.setWrapText(true);
 			this.add(txaDistillateDetails, 2, 2, 2, 1);
 
 			// Button panel
 			HBox hBox = new HBox(20);
 			int hboxBtnWidth = 250;
-			String[] buttonNames = { "Create or update distillate", "Fill distillate into cask" };
+			String[] buttonNames = { "Create new distillate", "Fill distillate into cask" };
 			String[] abbreviations = { "Create", "Fill" };
 
 			for (int i = 0; i < buttonNames.length; i++) {
@@ -159,6 +164,8 @@ public class ProductionArea {
 
 			hBox.setPrefWidth(lvwWithCol0);
 			hBox.setAlignment(Pos.CENTER);
+			btnCreateOrUpdate = (Button) hBox.getChildren().get(0);
+
 			this.add(hBox, 0, 3, 2, 1);
 
 			updateLists();
@@ -180,6 +187,7 @@ public class ProductionArea {
 
 		private void updateLists() {
 			List<Item> distilates = new ArrayList<>(Production.getDistillates());
+			distilates.forEach(d -> d.addObserver(this));
 			lvwDistillates.getItems().setAll(distilates);
 
 			Common.useSpecifiedListView(lvwDistillates);
@@ -190,8 +198,10 @@ public class ProductionArea {
 			casks.updatelist(selectedDistillate);
 			distillateBasics.updateBasics(selectedDistillate);
 			ditillateIngredient.updateIngredients(selectedDistillate);
+			distillateProductionDetails.updateProductionDetails(selectedDistillate);
 
 			if (selectedDistillate != null) {
+				btnCreateOrUpdate.setText("Update selected distillate");
 				String infoText = String.format("""
 						*****\t Distillate Created By \t*****
 						Distiller: %s
@@ -204,14 +214,21 @@ public class ProductionArea {
 						Description: %s
 						""",
 						selectedDistillate.getDistiller().toString(),
-						Common.insertLfIntoSting(selectedDistillate.getDistiller().getStory(), 70),
+						selectedDistillate.getDistiller().getStory(),
 						selectedDistillate.getNewMakeID(), selectedDistillate.getStartDate().toString(),
 						selectedDistillate.getEndDate().toString(),
-						Common.insertLfIntoSting(selectedDistillate.getDescription(), 70));
+						selectedDistillate.getDescription());
 				txaDistillateDetails.setText(infoText);
 			} else {
+				btnCreateOrUpdate.setText("Create new distillate");
 				txaDistillateDetails.clear();
 			}
+		}
+
+		public void setWindowSetings(Distillate distillate){
+			updateLists();
+			lvwDistillates.getSelectionModel().select(distillate);
+			updateDistillateDetails();
 		}
 
 		private void openFillIntoCask() {
@@ -232,12 +249,22 @@ public class ProductionArea {
 			headerLabel.setId("LabelHeader");
 			headerLabel.setPrefWidth(screenBounds.getWidth() - 300);
 			headerLabel.setAlignment(Pos.CENTER);
+			Distillate selectedDistillate = (Distillate) lvwDistillates.getSelectionModel().getSelectedItem();
+			distillateBasics.updateBasics(selectedDistillate);
+			ditillateIngredient.updateIngredients(selectedDistillate);
+			distillateProductionDetails.updateProductionDetails(selectedDistillate);
+
 			mainPane.add(headerLabel, 0, 0);
 			mainPane.add(distillateBasics,0,1);
 			mainPane.add(ditillateIngredient,0,2);
 			mainPane.add(distillateProductionDetails,0,3);
 		}
 
+		@Override
+		public void update(OberverQuantitySubject o) {
+			updateLists();
+			updateDistillateDetails();
+		}
 	}
 
 	private class Casks extends GridPane {
@@ -284,6 +311,8 @@ public class ProductionArea {
 			txaCaskDetails.setEditable(false);
 			txaCaskDetails.setPrefHeight(lvwHeightCol0Top);
 			txaCaskDetails.setPrefWidth(areaWidth - lvwWithCol0);
+			txaCaskDetails.setMouseTransparent(true);
+			txaCaskDetails.setWrapText(true);
 			this.add(txaCaskDetails, 2, 2, 2, 1);
 
 			// Button panel

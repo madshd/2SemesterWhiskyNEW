@@ -17,8 +17,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import BatchArea.TasteProfile;
-import javafx.scene.control.Alert;
-
 import java.util.ArrayList;
 
 /*
@@ -346,8 +344,8 @@ public abstract class Warehousing {
 	 * @return a list of available ingredients
 	 */
 
-	public static List<Ingredient> getAllAvailableIngredients() {
-		List<Ingredient> ingredients = new ArrayList<>();
+	public static List<Item> getAllAvailableIngredients() {
+		List<Item> ingredients = new ArrayList<>();
 		for (Warehouse wh : getAllWarehouses()) {
 			for (StorageRack sr : wh.getRacks().values()) {
 				for (Item item : sr.getList()) {
