@@ -6,22 +6,17 @@ import GUI.Common.ConfirmationDialog;
 import GUI.Common.ErrorWindow;
 import GUI.Common.UpdateCaskCommonDialog;
 import Interfaces.Item;
-import Storage.Storage;
 import Warehousing.Warehouse;
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
@@ -31,9 +26,7 @@ import javafx.stage.WindowEvent;
 import Warehousing.StorageRack;
 import Warehousing.LoggerObserver;
 import Warehousing.Cask;
-
-import java.util.ArrayList;
-import java.util.List;
+import Warehousing.Ingredient;
 
 public class WarehousingArea {
 
@@ -49,7 +42,6 @@ public class WarehousingArea {
 
 	private static ListView<StorageRack> storageRacksList = new ListView<>();
 	private Button btnDeleteStorageRack = new Button("Delete");
-	private Button btnUpdateStorageRack = new Button("Update");
 	private Button btnCreateStorageRack = new Button("Create");
 
 	private static ListView<Item> inventoryList = new ListView<>();
@@ -107,13 +99,12 @@ public class WarehousingArea {
 		gridPane.setVgap(10);
 
 		// Knappesektioner
-
 		HBox warehouseCRUDButtons = new HBox();
 		warehouseCRUDButtons.getChildren().addAll(btnDeleteWarehouse, btnUpdateWarehouse, btnCreateWarehouse);
 		warehouseCRUDButtons.setSpacing(10);
 
 		HBox storageRackCRUDButtons = new HBox();
-		storageRackCRUDButtons.getChildren().addAll(btnDeleteStorageRack, btnUpdateStorageRack, btnCreateStorageRack);
+		storageRackCRUDButtons.getChildren().addAll(btnDeleteStorageRack, btnCreateStorageRack);
 		storageRackCRUDButtons.setSpacing(10);
 
 		HBox inventoryCRUDButtons = new HBox();
@@ -145,14 +136,14 @@ public class WarehousingArea {
 		btnCreateCask.setOnAction(e -> btnCreateCaskAction());
 
 		btnDeleteWarehouse.setOnAction(e -> btnDeleteWarehouseAction());
-//		btnUpdateWarehouse.setOnAction(e ->());
-//		btnCreateWarehouse.setOnAction(e ->());
+		btnUpdateWarehouse.setOnAction(e -> updateWarehouseAction());
+		btnCreateWarehouse.setOnAction(e -> createWarehouseAction());
 
 		btnDeleteStorageRack.setOnAction(e -> btnDeleteStorageRackAction());
-//		btnUpdateStorageRack.setOnAction(e ->());
-//		btnCreateStorageRack.setOnAction(e ->());
+		btnCreateStorageRack.setOnAction(e -> createStorageRack());
 
-//		btnDeleteInventory.setOnAction(e -> ());
+
+		btnDeleteInventory.setOnAction(e -> deleteInventoryItem());
 
 
 		btnUpdateInventory.setOnAction(e -> updateItem());
@@ -162,6 +153,59 @@ public class WarehousingArea {
 		gridPane.add(warehouseMovementsList, 0, 4, 3, 1); // Spænd over alle kolonner
 		gridPane.add(warehouseMovementsLabel, 0, 3);
 
+	}
+
+	private void createStorageRack() {
+		Warehouse selectedWarehouse = warehouseList.getSelectionModel().getSelectedItem();
+		if (selectedWarehouse != null) {
+			StorageRackDialog storageRackCreate = new StorageRackDialog();
+			Stage dialogStage = new Stage();
+			try {
+				storageRackCreate.start(dialogStage);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			dialogStage.setOnHiding(event -> updateLists());
+		}
+	}
+
+	private void updateWarehouseAction() {
+		Warehouse selectedWarehouse = warehouseList.getSelectionModel().getSelectedItem();
+		if (selectedWarehouse != null) {
+			WarehouseUpdate warehouseUpdate = new WarehouseUpdate(selectedWarehouse);
+			Stage dialogStage = new Stage();
+			try {
+				warehouseUpdate.start(dialogStage);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			dialogStage.setOnHiding(event -> updateLists());
+		}
+	}
+
+	private void createWarehouseAction() {
+		WarehouseCreate warehouseCreate = new WarehouseCreate();
+		Stage dialogStage = new Stage();
+		try {
+			warehouseCreate.start(dialogStage);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		dialogStage.setOnHiding(event -> updateLists());
+	}
+
+	private void deleteInventoryItem() {
+		Item selectedItem = inventoryList.getSelectionModel().getSelectedItem();
+		StorageRack selectedStorageRack = storageRacksList.getSelectionModel().getSelectedItem();
+		if (selectedItem.getRemainingQuantity() == 0) {
+			if (selectedItem != null) {
+				Warehousing.deleteItem(selectedStorageRack, selectedItem);
+				updateLists();
+			}
+		} else {
+			ErrorWindow errorWindow = new ErrorWindow();
+			errorWindow.showError("The item isn't empty and can't be deleted.");
+		}
 	}
 
 	public void updateItem() {
@@ -237,7 +281,7 @@ public class WarehousingArea {
 		dialogStage.setOnHiding(event -> updateLists());
 	}
 
-	private static void updateLists() {
+	public static void updateLists() {
 		// Clear existing items
 		warehouseList.getItems().clear();
 		storageRacksList.getItems().clear();

@@ -48,8 +48,16 @@ public class Warehouse implements WarehousingSubject {
     }
 
 
-    public void removeStorageRack(StorageRack storageRack) {
-        if (storageRack != null && racks.containsValue(storageRack)) {
+public void removeStorageRack(StorageRack storageRack) {
+    if (storageRack != null && racks.containsValue(storageRack)) {
+        boolean isEmpty = true;
+        for (Item item : storageRack.getList()) {
+            if (item != null) {
+                isEmpty = false;
+                break;
+            }
+        }
+        if (isEmpty) {
             racks.values().remove(storageRack);
             storageRack.setWarehouse(null);
             if (!warehousingObservers.isEmpty()) {
@@ -57,6 +65,7 @@ public class Warehouse implements WarehousingSubject {
             }
         }
     }
+}
 
     public void notifyWarehousingObserversWithDetails(String details) {
         for (WarehousingObserver observer : warehousingObservers) {

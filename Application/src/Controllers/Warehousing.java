@@ -151,6 +151,12 @@ public abstract class Warehousing {
 			Warehouse warehouse,
 			StorageRack storageRack) {
 
+		for (Item item : storageRack.getList()) {
+			if (item instanceof Cask && ((Cask) item).getCaskID() == caskID) {
+				throw new IllegalArgumentException("A cask with the given ID already exists.");
+			}
+		}
+
 		Cask cask = createCask(caskID, maxQuantity, Unit.LITERS, supplier, caskType);
 		try {
 			for (int i = 0; i < storageRack.getList().size(); i++) {
@@ -384,4 +390,92 @@ public abstract class Warehousing {
 				}
 			}
 		}
+
+	public static List<StorageRack> getUnusedStorageRacks() {
+		List<StorageRack> unusedStorageRacks = new ArrayList<>();
+		for (StorageRack sr : storage.getStorageRacks()) {
+			if (sr.getWarehouse() == null) {
+				unusedStorageRacks.add(sr);
+			}
+		}
+		return unusedStorageRacks;
+	}
+
+/**
+ * Moves a storage rack to a specified warehouse.
+ *
+ * @param storageRack The storage rack to be moved.
+ * @param warehouse The warehouse to which the storage rack will be moved.
+ * @throws IllegalArgumentException if the storage rack is already in a warehouse.
+ */
+public static void moveStorageRackToWarehouse(StorageRack storageRack, Warehouse warehouse) {
+	if (storageRack.getWarehouse() != null) {
+		throw new IllegalArgumentException("Storage rack is already in a warehouse.");
+	}
+	storageRack.setWarehouse(warehouse);
+	warehouse.addStorageRack(storageRack.getId(), storageRack);
+}
+
+/**
+ * Removes a storage rack from its current warehouse.
+ *
+ * @param storageRack The storage rack to be removed.
+ * @throws IllegalArgumentException if the storage rack is not in a warehouse.
+ */
+
+public static void removeStorageRackFromWarehouse(StorageRack storageRack) {
+	Warehouse warehouse = storageRack.getWarehouse();
+	if (warehouse == null) {
+		throw new IllegalArgumentException("Storage rack is not in a warehouse.");
+	}
+	warehouse.removeStorageRack(storageRack);
+	storageRack.setWarehouse(null);
+}
+
+/**
+ * Retrieves a warehouse by its name.
+ * Iterates through the list of warehouses and returns the warehouse that matches the given name.
+ * If no warehouse is found with the specified name, returns null.
+ *
+ * @param name The name of the warehouse to be retrieved.
+ * @return The warehouse with the specified name, or null if no such warehouse exists.
+ */
+public static Warehouse getWarehouseByName(String name) {
+	for (Warehouse warehouse : storage.getWarehouses()) {
+		if (warehouse.getName().equals(name)) {
+			return warehouse;
+		}
+	}
+	return null;
+}
+
+/**
+ * Updates the specified warehouse by adding the provided storage racks to it.
+ * If the warehouse is not null, each storage rack in the list is added to the warehouse.
+ *
+ * @param warehouse The warehouse to be updated.
+ * @param storageRacks The list of storage racks to be added to the warehouse.
+ */
+public static void updateWarehouse(Warehouse warehouse, List<StorageRack> storageRacks) {
+	if (warehouse != null) {
+		for (StorageRack rack : storageRacks) {
+			warehouse.addStorageRack(rack.getId(), rack);
+		}
+	}
+}
+
+/**
+ * Deletes an item from the specified storage rack.
+ * Removes the item from the storage rack at the location where it is found.
+ * Doesn't actually delete the object from memory, as long as it is still referenced elsewhere.
+ * It should not be eligible for garbage collection as long as it is still in the storage.
+ * @param storageRack The storage rack from which the item will be removed.
+ * @param item The item to be removed from the storage rack.
+ */
+public static void deleteItem(StorageRack storageRack, Item item) {
+	storageRack.removeItem(item, storageRack.getItemLocation(item));
+}
+
+
+
 }
