@@ -1,7 +1,9 @@
 package BatchArea;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Warehousing.Cask;
@@ -16,6 +18,7 @@ public class Batch {
 	private int numExpectedBottles;
 	private int numProducedBottles;
 	private String label = null;
+	private final List<Cask> usedCasks = new ArrayList<>();
 
 	private boolean productionComplete;
 
@@ -55,12 +58,22 @@ public class Batch {
 	public void generateLabel() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(product.getProductName());
-		sb.append(" - ");
+		sb.append("\n");
 		sb.append(creationDate);
-		sb.append(" - Batch ID: ");
+		sb.append("\n");
 		sb.append(batchID);
-		sb.append(" - Bottle X of ");
+		sb.append("\n");
 		sb.append(numProducedBottles);
+		sb.append("\n");
+		sb.append("Casks used in this batch: ");
+		for (Cask cask : usedCasks) {
+			sb.append("Cask ID"+cask.getCaskID());
+			sb.append("\n");
+			sb.append("Cask type: "+cask.getCaskType());
+			sb.append("\n");
+			sb.append("Cask story: "+ Controllers.Production.getCaskStory(cask, completionDate));
+		// TODO: getCaskInfo check how it look when Leander finishes it
+		}
 		label = sb.toString();
 	}
 	// ---------------------------GENERIC-GETTERS----------------------------//

@@ -35,7 +35,8 @@ public class ShowLabel {
 	}
 
 	private void updateContent(Batch batch) {
-		labelArea.setText("Label");
+		labelArea.setText(batch.getLabel());
+		labelArea.setId("labelArea");
 	}
 
 	private void initContent(GridPane mainPane) {

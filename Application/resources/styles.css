@@ -146,6 +146,10 @@
     -fx-text-fill: white; /* White text for contrast */
 }
 
+#labelArea *.text {
+    -fx-text-alignment: center;
+}
+
 /* ProgressBar styling */
 .progress-bar {
     -fx-accent: #d4a373;
