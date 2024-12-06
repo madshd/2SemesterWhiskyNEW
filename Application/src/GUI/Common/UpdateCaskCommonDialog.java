@@ -71,6 +71,7 @@ public class UpdateCaskCommonDialog extends Application {
 
         // Set up the action of the buttons
         btnUpdate.setOnAction(e -> btnUpdateAction());
+        btnCancel.setOnAction(e -> stage.close());
         // Set up the scene and show the stage
         Scene scene = new Scene(grid, 600, 400);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
