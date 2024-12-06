@@ -95,9 +95,6 @@ public abstract class initStorage {
 
 		warehouse.addStorageRack("221 B", rack1);
 
-		Warehousing.createCaskAndAdd(1, 100, Unit.LITERS, new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story"), "Sherry", warehouse, rack1);
-
-
 		Supplier sub_01 = Warehousing.createSupplier(
 				"Highland Barley Co.",
 				"123 Grain Street, Inverness, Scotland",
@@ -767,13 +764,12 @@ public abstract class initStorage {
 		// Register the observer
 		warehouse.registerWarehousingObserver(logger);
 
-		StorageRack rack1 = Warehousing.createStorageRack("Rack 1", 100);
-		StorageRack rack2 = Warehousing.createStorageRack("Rack 2", 100);
-		StorageRack rack3 = Warehousing.createStorageRack("Rack 3", 100);
-		StorageRack rack4 = Warehousing.createStorageRack("Rack 4", 100);
+		StorageRack rack1 = Warehousing.createStorageRack("Rack 1", 10);
+		StorageRack rack2 = Warehousing.createStorageRack("Rack 2", 10);
 
-		warehouse.addStorageRack("W1R1", rack1);
-		warehouse.addStorageRack("W1R2", rack2);
+		warehouse.addStorageRack("Rack 1", rack1);
+		warehouse.addStorageRack("Rack 2", rack2);
+
 
 		Supplier supplier1 = new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story");
 
@@ -781,8 +777,8 @@ public abstract class initStorage {
 				LocalDate.of(2024, 11, 27), LocalDate.of(2024, 12, 27), 1, supplier1, Unit.TONNES,
 				IngredientType.GRAIN);
 
-		rack1.addItem(2, ingredient1);
-		rack1.moveItem(ingredient1, 2, 0);
+		rack1.addItem(1, ingredient1);
+//		rack1.moveItem(ingredient1, 2, 0);
 
 	}
 

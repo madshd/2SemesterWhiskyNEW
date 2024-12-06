@@ -10,7 +10,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import BatchArea.Batch;
-
 import BatchArea.TasteProfile;
 import Interfaces.Stack;
 import Production.Distillate;
@@ -132,10 +131,10 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return String.format("""
 				*****\t Supplier description\t *****
 				%s
-								
+				
 				****\t Cask life cycle\t *****
 				Current life cycle: %d
-								
+				
 				*****\t Filling details\t *****
 				%s
 				""", supplier.getDescription(), lifeCycle, getFillingTextLines());
@@ -310,5 +309,17 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	public double getFakeQuantity() {
 		return 1000;
 	}
-}
 
+	public int getCaskID() {
+		return caskID;
+	}
+
+	public double getMaxQuantity() {
+		return maxQuantity;
+	}
+
+
+	public Supplier getSupplier() {
+		return supplier;
+	}
+}
