@@ -92,9 +92,6 @@ public abstract class initStorage {
 
 		warehouse.addStorageRack("221 B", rack1);
 
-		Warehousing.createCaskAndAdd(1, 100, Unit.LITERS, new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story"), "Sherry", warehouse, rack1);
-
-
 		Supplier sub_01 = Warehousing.createSupplier(
 				"Highland Barley Co.",
 				"123 Grain Street, Inverness, Scotland",
@@ -578,7 +575,6 @@ public abstract class initStorage {
 		warehouse.addStorageRack("Rack 1", rack1);
 		warehouse.addStorageRack("Rack 2", rack2);
 
-		Warehousing.createCaskAndAdd(1, 100, Unit.LITERS, new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story"), "Sherry", warehouse, rack1);
 
 		Supplier supplier1 = new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story");
 
