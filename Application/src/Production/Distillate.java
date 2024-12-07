@@ -46,7 +46,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	 */
 	@Override
 	public double updateQuantity(Filling fillDistillate) throws IllegalStateException {
-		double newQuantity = getRemainingQuantity() - fillDistillate.getQuantity();
+		double newQuantity = getRemainingQuantity() + fillDistillate.getQuantity();
 
 		if (newQuantity >= 0) {
 			fillingStack.push(fillDistillate);
@@ -60,18 +60,15 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	public double getQuantityStatus() {
 		double quantity = 0;
 
-		for (
-
-				Filling f : fillingStack) {
+		for (Filling f : fillingStack) {
 			quantity += f.getQuantity();
 		}
-
 		return quantity;
 	}
 
 	@Override
 	public double getRemainingQuantity() {
-		return this.quantity - getQuantityStatus();
+		return this.quantity + getQuantityStatus();
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package Warehousing;
 
 import Common.CommonMethods;
+import Enumerations.FillType;
 import Enumerations.Unit;
 import Interfaces.*;
 
@@ -128,16 +129,40 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	public String getDetails() {
+		Set<Item> tranferCasks = getCasksAddedByTransfer(lifeCycle);
+		StringBuilder sbCask = new StringBuilder();
+		for (Item i : tranferCasks){
+			sbCask.append(String.format("""
+					ID: %s | Supplier: %s
+					""", i.getName(), ((Cask)i).getSupplier().getName()));
+		}
+
+		List<Filling> fillings = getFillingsStackHavingLifeCycleGroupedByDistillate(lifeCycle,LocalDate.now());
+		StringBuilder sbFill = new StringBuilder();
+
+		for (Filling f : fillings){
+			Distillate distillate = ((FillDistillate)f).getDistillate();
+			sbFill.append(String.format("""
+					ID: %-20s | Name: %s
+					""",distillate.getNewMakeID(),distillate.getName()));
+		}
+
 		return String.format("""
-				*****\t Supplier description\t *****
+				*****\t Supplier description \t *****
 				%s
 				
-				****\t Cask life cycle\t *****
+				****\t Cask life cycle \t *****
 				Current life cycle: %d
 				
-				*****\t Filling details\t *****
+				****\t Content cask(s) list \t *****
 				%s
-				""", supplier.getDescription(), lifeCycle, getFillingTextLines());
+				
+				****\t Distillate list \t *****
+				%s
+				
+				*****\t Filling details \t *****
+				%s
+				""", supplier.getDescription(), lifeCycle,sbCask.toString(),sbFill.toString() ,getFillingTextLines());
 	}
 
 	/**
@@ -249,7 +274,6 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return quantity;
 	}
 
-
 	public List<Filling> getFillingStack() {
 		List<Filling> fillings = new ArrayList<>();
 
@@ -260,15 +284,64 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return fillings;
 	}
 
-	public List<Filling> getFillingsStackByLifeCycle(int lifeCycle) {
+
+	public List<Filling> getFillingsStackByLifeCycle(int lifeCycle){
 		List<Filling> fillings = new ArrayList<>();
 
-		for (Filling f : fillingStack) {
-			if (((FillDistillate) f).getLifeCycle() == lifeCycle) {
+		for (Filling f : getFillingStack()){
+			FillDistillate filling = (FillDistillate) f;
+			if (filling.getLifeCycle() == lifeCycle){
 				fillings.add(f);
 			}
 		}
+
 		return fillings;
+	}
+
+	/**
+	 * Groups fillings by distillate. This function should not be used in regards to any transfer actions as the history
+	 * chain might be broken.
+	 * @param lifeCycle
+	 * @param date
+	 * @return
+	 */
+	public List<Filling> getFillingsStackHavingLifeCycleGroupedByDistillate(int lifeCycle, LocalDate date) {
+		List<Filling> fillings = new ArrayList<>();
+		Map<Distillate,Double> groupedFillings = new HashMap<>();
+
+		for (Filling f : getFillingStack()){
+			FillDistillate currentFilling = (FillDistillate) f;
+			if (currentFilling.getLifeCycle() == lifeCycle){
+				Distillate distillate = currentFilling.getDistillate();
+				groupedFillings.merge(distillate,currentFilling.getQuantity(),Double::sum);
+			}
+		}
+
+		for (Map.Entry<Distillate,Double> entry : groupedFillings.entrySet()){
+			Distillate distillate = entry.getKey();
+			double quantity = entry.getValue();
+			Filling filling = new FillDistillate(date,quantity,this,distillate,null,
+					false, FillType.FILLING);
+			fillings.add(filling);
+		}
+		return fillings;
+	}
+
+	/**
+	 * Returns alle fillings related to a given cask life cycle.
+	 * @param LifeCycle
+	 * @return
+	 */
+	public Set<Item> getCasksAddedByTransfer(int LifeCycle){
+		Set<Item> casks = new HashSet<>();
+
+		for (Filling f : getFillingStack()){
+			if (((FillDistillate)f).getLifeCycle() == lifeCycle){
+				FillDistillate filling = (FillDistillate) f;
+				casks.add(filling.getPrevFillingsRecursive().getCask());
+			}
+		}
+		return casks;
 	}
 
 	public void makeReservation(Batch batch, double amount) {

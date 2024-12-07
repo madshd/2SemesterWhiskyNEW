@@ -7,7 +7,6 @@ import Interfaces.Filling;
 import Interfaces.Item;
 import Interfaces.OberverQuantitySubject;
 import Interfaces.ObserverQuantityObserver;
-import Production.Distillate;
 import Warehousing.Cask;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.HPos;
@@ -21,7 +20,7 @@ import java.util.List;
 
 import static Controllers.Warehousing.getCasksMinQuantity;
 
-public abstract class FillDistillateIntoCask {
+public abstract class CaskToCaskTransfer {
 
     private static void applyCommonSettings(GridPane pane, ProductionArea pa) {
         pane.setBorder(pa.border);
@@ -31,113 +30,23 @@ public abstract class FillDistillateIntoCask {
         pane.setGridLinesVisible(pa.gridLines);
     }
 
-    public static class DistillateElement extends GridPane implements ObserverQuantityObserver {
-        private final ListView<Item> lvwDistillates = new ListView<>();
-        private final TextArea txaDistillateDetails = new TextArea();
-        protected Distillate selectedDistillate;
 
-        public DistillateElement(ProductionArea pa){
-            // Generel settings
-            applyCommonSettings(this, pa);
-            double areaWidth = pa.screenBounds.getWidth() - 300 * 0.9;
-            double areaHeight = pa.screenBounds.getHeight() * 0.9;
 
-            // Subtitel
-            Label lblSubTitel = new Label("Distillates");
-            lblSubTitel.setId("LabelSubtitle");
-            GridPane.setHalignment(lblSubTitel, HPos.CENTER);
-            lblSubTitel.setPrefWidth(areaWidth);
-            lblSubTitel.setAlignment(Pos.CENTER);
-            this.add(lblSubTitel, 0, 0, 4, 1);
-
-            // Labels
-            Label lblList = new Label("Avaliable distillates");
-            this.add(lblList, 0, 1);
-            Label lblDetails = new Label("Detailed info on selected distillate");
-            this.add(lblDetails, 2, 1);
-
-            // Lists
-            double lvwWithCol0 = areaWidth * 0.6;
-            double lvwHeightCol0Top = areaHeight * 0.3;
-
-            lvwDistillates.setEditable(false);
-            lvwDistillates.setPrefWidth(lvwWithCol0);
-            lvwDistillates.setPrefHeight(lvwHeightCol0Top);
-            this.add(lvwDistillates, 0, 2, 2, 1);
-            ChangeListener<Item> lvwDistillateListener = (ov, o, n) -> {
-                updateDistillateDetails(pa);
-            };
-            lvwDistillates.getSelectionModel().selectedItemProperty().addListener(lvwDistillateListener);
-
-            // TextArea
-            txaDistillateDetails.setEditable(false);
-            txaDistillateDetails.setPrefHeight(lvwHeightCol0Top);
-            txaDistillateDetails.setPrefWidth(areaWidth - lvwWithCol0);
-            txaDistillateDetails.setMouseTransparent(true);
-            txaDistillateDetails.setWrapText(true);
-            this.add(txaDistillateDetails, 2, 2, 2, 1);
-
-            updateLists();
-        }
-
-        private void updateLists() {
-            List<Item> distilates = new ArrayList<>(Production.getDistillates());
-
-            distilates.forEach(item -> {
-                Distillate d = (Distillate) item;
-                d.addObserver(this);
-            });
-
-            lvwDistillates.getItems().setAll(distilates);
-
-            Common.useSpecifiedListView(lvwDistillates);
-
-        }
-
-        private void updateDistillateDetails(ProductionArea pa) {
-            selectedDistillate = (Distillate) lvwDistillates.getSelectionModel().getSelectedItem();
-            pa.fillCaskElement.updatelist(pa,selectedDistillate);
-            if (selectedDistillate != null) {
-                String infoText = String.format("""
-						*****\t Distillate Created By \t*****
-						Distiller: %s
-						Story: %s
-
-						*****\t Distillate Details \t*****
-						New Make ID: %s
-						Production Start Date: %s
-						Productino End Date: %s
-						Description: %s
-						""",
-                        selectedDistillate.getDistiller().toString(),
-                        selectedDistillate.getDistiller().getStory(),
-                        selectedDistillate.getNewMakeID(), selectedDistillate.getStartDate().toString(),
-                        selectedDistillate.getEndDate().toString(),
-                        selectedDistillate.getDescription());
-                txaDistillateDetails.setText(infoText);
-            } else {
-                txaDistillateDetails.clear();
-            }
-        }
-
-        @Override
-        public void update(OberverQuantitySubject o) {
-            updateLists();
-        }
-    }
-
-    public static class CasksElement extends GridPane{
+    public static class CasksFrom extends GridPane implements ObserverQuantityObserver {
         private final ListView<Item> lvwCasks = new ListView<>();
         private final ListView<Filling > lvwCaskFillings = new ListView();
+        private final ProductionArea pa;
 
-        public CasksElement(ProductionArea pa){
+
+        public CasksFrom(ProductionArea pa){
             // Generel settings
             applyCommonSettings(this, pa);
             double areaWidth = pa.screenBounds.getWidth() - 300 * 0.9;
             double areaHeight = pa.screenBounds.getHeight() * 0.9;
+            this.pa = pa;
 
             // Subtitel
-            Label lblSubTitel = new Label("Casks");
+            Label lblSubTitel = new Label("Filling from cask");
             lblSubTitel.setId("LabelSubtitle");
             GridPane.setHalignment(lblSubTitel, HPos.CENTER);
             lblSubTitel.setPrefWidth(areaWidth);
@@ -166,15 +75,90 @@ public abstract class FillDistillateIntoCask {
             lvwCaskFillings.setEditable(false);
             lvwCaskFillings.setPrefHeight(lvwHeightCol0Top);
             lvwCaskFillings.setPrefWidth(areaWidth - lvwWithCol0);
-            lvwCaskFillings.setMouseTransparent(true);
+            this.add(lvwCaskFillings, 2, 2, 2, 1);
+
+            updatelist(pa);
+        }
+
+        public void updatelist(ProductionArea pa) {
+            List<Item> casks = new ArrayList<>(getCasksMinQuantity(null));
+
+            casks.forEach(cask -> cask.addObserver(this));
+
+            lvwCasks.getItems().setAll(casks);
+
+            Common.useSpecifiedListView(lvwCasks);
+        }
+
+        private void updateFillingList(ProductionArea pa) {
+            Cask selectedCask = (Cask) lvwCasks.getSelectionModel().getSelectedItem();
+            pa.transferCasksTo.updatelist(pa,selectedCask);
+
+            if (selectedCask != null) {
+                lvwCaskFillings.getItems().setAll(selectedCask.getFillingStack());
+            } else {
+                lvwCaskFillings.getItems().clear();
+            }
+        }
+
+        @Override
+        public void update(OberverQuantitySubject o) {
+            updatelist(pa);
+            updateFillingList(pa);
+        }
+    }
+
+    public static class CasksTo extends GridPane{
+        private final ListView<Item> lvwCasks = new ListView<>();
+        private final ListView<Filling > lvwCaskFillings = new ListView();
+        private Cask caskFrom;
+
+        public CasksTo(ProductionArea pa){
+            // Generel settings
+            applyCommonSettings(this, pa);
+            double areaWidth = pa.screenBounds.getWidth() - 300 * 0.9;
+            double areaHeight = pa.screenBounds.getHeight() * 0.9;
+
+            // Subtitel
+            Label lblSubTitel = new Label("Filling into cask");
+            lblSubTitel.setId("LabelSubtitle");
+            GridPane.setHalignment(lblSubTitel, HPos.CENTER);
+            lblSubTitel.setPrefWidth(areaWidth);
+            lblSubTitel.setAlignment(Pos.CENTER);
+            this.add(lblSubTitel, 0, 0, 4, 1);
+
+            // Labels
+            Label lblList = new Label("Avaliable Casks");
+            this.add(lblList, 0, 1);
+            Label lblDetails = new Label("Fillings in selected cask");
+            this.add(lblDetails, 2, 1);
+
+            // Lists
+            double lvwWithCol0 = areaWidth * 0.6;
+            double lvwHeightCol0Top = areaHeight * 0.3;
+
+            lvwCasks.setEditable(false);
+            lvwCasks.setPrefWidth(lvwWithCol0);
+            lvwCasks.setPrefHeight(lvwHeightCol0Top);
+            this.add(lvwCasks, 0, 2, 2, 1);
+            ChangeListener<Item> lvwCasksListener = (ov, o, n) -> {
+                updateFillingList(pa);
+            };
+            lvwCasks.getSelectionModel().selectedItemProperty().addListener(lvwCasksListener);
+
+            lvwCaskFillings.setEditable(false);
+            lvwCaskFillings.setPrefHeight(lvwHeightCol0Top);
+            lvwCaskFillings.setPrefWidth(areaWidth - lvwWithCol0);
             this.add(lvwCaskFillings, 2, 2, 2, 1);
 
         }
 
-        public void updatelist(ProductionArea pa, Distillate distillate) {
-            pa.fillInputElement.calculateFilling(distillate,(Cask) lvwCasks.getSelectionModel().getSelectedItem());
-            if (distillate != null) {
+        public void updatelist(ProductionArea pa, Item cask) {
+            caskFrom = (Cask) cask;
+            if (cask != null) {
                 List<Item> casks = new ArrayList<>(getCasksMinQuantity(0.0));
+                casks.remove(cask);
+
                 lvwCasks.getItems().setAll(casks);
 
                 Common.useSpecifiedListView(lvwCasks);
@@ -185,7 +169,7 @@ public abstract class FillDistillateIntoCask {
 
         private void updateFillingList(ProductionArea pa) {
             Cask selectedCask = (Cask) lvwCasks.getSelectionModel().getSelectedItem();
-            pa.fillInputElement.calculateFilling(pa.fillDistillateElement.selectedDistillate,selectedCask);
+            pa.transferInputElement.calculateFilling(caskFrom,selectedCask);
 
             if (selectedCask != null) {
                 lvwCaskFillings.getItems().setAll(selectedCask.getFillingStack());
@@ -201,8 +185,8 @@ public abstract class FillDistillateIntoCask {
         private final Label lblInfoMaxLiters = new Label();
         private Button btnAddFillment = new Button("Add filling to cask");
         private double maxLittersToFill = 0;
-        private Cask selectedCask;
-        private Distillate selectedDistillate;
+        private Cask selectedCaskFrom;
+        private Cask selectedCaskTo;
         private ErrorWindow errorWindow = new ErrorWindow();
 
         public InputElement(ProductionArea pa){
@@ -262,36 +246,35 @@ public abstract class FillDistillateIntoCask {
             double liters = Double.parseDouble(txfInputLiters.getText().trim());
 
             try {
-                Controllers.Production.fillDistillateIntoCask(selectedDistillate,selectedCask,liters,date);
-                pa.fillCaskElement.updateFillingList(pa);
-            }catch (IllegalStateException e){
+                Production.caskToCaskTransfer(selectedCaskFrom,selectedCaskTo,liters,date);
+            }catch (IllegalArgumentException e){
                 errorWindow.showError(e.getMessage());
             }
 
         }
 
-        protected void calculateFilling(Distillate distillate, Cask cask){
-            if (distillate != null && cask != null){
-                selectedCask = cask;
-                selectedDistillate = distillate;
+        protected void calculateFilling(Cask caskFrom, Cask caskTo){
+            if (caskFrom != null && caskTo != null){
+                selectedCaskFrom = caskFrom;
+                selectedCaskTo = caskTo;
                 txfInputLiters.setDisable(false);
                 dpDateForFilling.setDisable(false);
                 btnAddFillment.setDisable(false);
-                double remainingDistillate = distillate.getRemainingQuantity();
-                double remainingCaskQuantity = cask.getRemainingQuantity();
+                double remainingCaskFrom = caskFrom.getRemainingQuantity();
+                double remainingCaskTo = caskTo.getRemainingQuantity();
 
-                if (remainingDistillate > remainingCaskQuantity){
-                    maxLittersToFill = remainingCaskQuantity;
+                if (remainingCaskFrom > remainingCaskTo){
+                    maxLittersToFill = remainingCaskTo;
                     lblInfoMaxLiters.setText(String.format("Max %,-4.2f liters", maxLittersToFill));
                 }else {
-                    maxLittersToFill = remainingDistillate;
+                    maxLittersToFill = remainingCaskFrom;
                     lblInfoMaxLiters.setText(String.format("Max %,-4.2f liters", maxLittersToFill));
                 }
             }else {
                 txfInputLiters.setDisable(true);
                 dpDateForFilling.setDisable(true);
                 btnAddFillment.setDisable(true);
-                lblInfoMaxLiters.setText("Please selecet a distillate and a cask.");
+                lblInfoMaxLiters.setText("Please selecet a 'From Cask' and a 'Into Cask.");
             }
         }
 
