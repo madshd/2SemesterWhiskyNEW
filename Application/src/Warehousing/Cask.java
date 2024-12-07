@@ -143,8 +143,8 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		for (Filling f : fillings){
 			Distillate distillate = ((FillDistillate)f).getDistillate();
 			sbFill.append(String.format("""
-					ID: %-20s | Name: %s
-					""",distillate.getNewMakeID(),distillate.getName()));
+					ID: %-20s | Name: %-20s | Quantity: %,-6.2f
+					""",distillate.getNewMakeID(),distillate.getName(), getQuantityStatusByDistillate(distillate,lifeCycle)));
 		}
 
 		return String.format("""
@@ -156,13 +156,13 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 				
 				****\t Content cask(s) list \t *****
 				%s
-				
 				****\t Distillate list \t *****
 				%s
+				Total quantity: %,-6.2f
 				
 				*****\t Filling details \t *****
 				%s
-				""", supplier.getDescription(), lifeCycle,sbCask.toString(),sbFill.toString() ,getFillingTextLines());
+				""", supplier.getDescription(), lifeCycle,sbCask.toString(),sbFill.toString(), getQuantityStatus() ,getFillingTextLines());
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	public double updateQuantity(Filling fillDistillate) throws IllegalStateException {
 		double newQuantity = fillDistillate.getQuantity() + getQuantityStatus();
 
-		// Ensure that a new cask will an empty date that fits the first filling.
+		// Ensure that a new cask will have an empty date that fits the first filling.
 		if (fillingStack.isEmpty()) {
 			lifeCycle++;
 		}
@@ -255,12 +255,12 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 			fillingStack.push(fillDistillate);
 			notifyObservers();
 			// This will start a new life cycle in the cask
-			if (newQuantity == 0) {
+			if (newQuantity == 0 && !((FillDistillate)fillDistillate).getFillType().equals(FillType.CASKHISTORY)) {
 				lifeCycle++;
 			}
 			return newQuantity;
 		} else {
-			throw new IllegalStateException("Provided quantity does not fit into this cask");
+			throw new IllegalArgumentException("Provided quantity does not fit into this cask");
 		}
 	}
 
@@ -271,6 +271,19 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 			quantity += f.getQuantity();
 		}
 
+		return quantity;
+	}
+
+	public double getQuantityStatusByDistillate(Distillate distillate, int lifeCycle){
+		double quantity = 0;
+
+		for (Filling f : getFillingStack()){
+			if (((FillDistillate)f).getLifeCycle() == lifeCycle){
+				if (((FillDistillate)f).getDistillate().equals(distillate)){
+					quantity += f.getQuantity();
+				}
+			}
+		}
 		return quantity;
 	}
 

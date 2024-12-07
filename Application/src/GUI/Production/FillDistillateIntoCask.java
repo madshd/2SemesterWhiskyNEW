@@ -264,7 +264,7 @@ public abstract class FillDistillateIntoCask {
             try {
                 Controllers.Production.fillDistillateIntoCask(selectedDistillate,selectedCask,liters,date);
                 pa.fillCaskElement.updateFillingList(pa);
-            }catch (IllegalStateException e){
+            }catch (IllegalArgumentException e){
                 errorWindow.showError(e.getMessage());
             }
 

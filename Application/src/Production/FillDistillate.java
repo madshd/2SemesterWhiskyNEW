@@ -60,6 +60,10 @@ public class FillDistillate implements Filling, Comparable<FillDistillate>{
         return decrease;
     }
 
+    public FillType getFillType() {
+        return fillType;
+    }
+
     public Cask getCask() {
         return cask;
     }

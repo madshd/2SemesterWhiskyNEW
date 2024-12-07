@@ -158,13 +158,13 @@ public abstract class Production {
 		try {
 			distillate.updateQuantity(fillingDeCrease);
 			return cask.updateQuantity(fillingInCrease);
-		}catch (IllegalStateException e){
-			throw new IllegalStateException("Provided quantity does not fit this distillate");
+		}catch (IllegalArgumentException e){
+			throw new IllegalArgumentException("Provided quantity does not fit this distillate");
 		}
 	}
 
 	/**
-	 *
+	 *Tranfers quantity from one cask to another
 	 * @param caskFrom
 	 * @param caskTo
 	 * @param quantity
@@ -185,11 +185,28 @@ public abstract class Production {
 			throw new IllegalArgumentException("Quantity exeeds the capacity of 'To Cask': " + caskTo.getName());
 		}
 
-		double calculationFactor = quantity/caskFromQuantity;
+		if (((Cask)caskTo).getFillingsStackByLifeCycle(((Cask) caskTo).getLifeCycle()).isEmpty()){
+			Distillate distillate = null;
+
+			for (Distillate d : storage.getDistillates()){
+				if (d.getName().equalsIgnoreCase("caskIsEmpty")){
+					distillate = d;
+				}
+			}
+			Filling f = new FillDistillate(date,0,((Cask) caskTo),distillate,null,true,FillType.CASKHISTORY);
+			caskTo.updateQuantity(f);
+		}
+
+		double fillStackSum = 0;
+		for (Filling f : ((Cask)caskFrom).getFillingsStackByLifeCycle(((Cask) caskFrom).getLifeCycle())){
+			fillStackSum += Math.abs(f.getQuantity());
+		}
+
+		double calculationFactor = quantity/fillStackSum;
 
 		((Cask) caskFrom).getFillingsStackByLifeCycle(((Cask) caskFrom).getLifeCycle()).forEach(filling -> {
-			if (!filling.isDecrease()){
-				double changeQauntity = filling.getQuantity() * calculationFactor;
+//			if (!filling.isDecrease()){
+				double changeQauntity = Math.abs(filling.getQuantity()) * calculationFactor;
 				Distillate distillate = ((FillDistillate) filling).getDistillate();
 				Filling encreaseQuantity = new FillDistillate(date,changeQauntity, ((Cask) caskTo), distillate,
 						((FillDistillate) filling),false,FillType.TRANSFER);
@@ -198,7 +215,7 @@ public abstract class Production {
 
 				caskFrom.updateQuantity(decreaseQuantity);
 				caskTo.updateQuantity(encreaseQuantity);
-			}
+//			}
 		});
 		return true;
 	}
