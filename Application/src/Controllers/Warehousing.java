@@ -398,6 +398,17 @@ public static Ingredient createIngredientAndAdd(
 			}
 		}
 
+	public static void updateIngredient(Ingredient ingredient, double quantity, Warehouse selectedWarehouse, StorageRack selectedStorageRack) {
+		ingredient.setQuantity(quantity);
+		if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
+			if (selectedWarehouse != null && selectedStorageRack != null) {
+				int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
+				int toIndex = selectedStorageRack.getFreeShelf();
+				moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+			}
+		}
+	}
+
 /**
  * Retrieves a list of unused storage racks.
  * A storage rack is considered unused if it is not assigned to any warehouse.
