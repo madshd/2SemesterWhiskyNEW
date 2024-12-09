@@ -1,8 +1,15 @@
 package BatchArea;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import Enumerations.TastingNote;
 
 public class Formula implements Serializable {
 
@@ -47,5 +54,23 @@ public class Formula implements Serializable {
 
 	public void setBlueprint(HashMap<TasteProfile, Double> blueprint) {
 		this.blueprint = blueprint;
+	}
+
+	public Set<TastingNote> getWeightedTastingNotes() {
+		Map<TasteProfile, Double> sortedTasteProfiles = blueprint.entrySet().stream()
+				.sorted(Map.Entry.<TasteProfile, Double>comparingByValue(Comparator.reverseOrder()))
+				.collect(Collectors.toMap(
+						Map.Entry::getKey,
+						Map.Entry::getValue,
+						(e1, e2) -> {
+							return e1;
+						},
+						LinkedHashMap::new));
+
+		Set<TastingNote> weightedTastingNotes = new HashSet<>();
+		for (TasteProfile tp : sortedTasteProfiles.keySet()) {
+			weightedTastingNotes.addAll(tp.getTastingNotes());
+		}
+		return weightedTastingNotes;
 	}
 }

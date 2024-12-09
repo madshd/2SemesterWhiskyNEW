@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -25,6 +26,7 @@ public class BatchCRUD {
 	private TextField numMaxBottles = new TextField();
 	private TextField numExpectedBottles = new TextField();
 	private Product product;
+	private CheckBox onlyReadyCheckBox;
 	int maxBottles = 0;
 
 	public BatchCRUD() {
@@ -48,17 +50,20 @@ public class BatchCRUD {
 	}
 
 	public void updateContent(Product product) {
-		maxBottles = Controllers.BatchArea.calculateMaxNumBottles(product);
+		onlyReadyCheckBox.setSelected(true);
+		calculateMaxBottles(product);
 		batchID.setText(Batch.getBatchIDglobalCount() + "");
-		numMaxBottles.setText(maxBottles + "");
 		this.product = product;
+	}
+	public void calculateMaxBottles(Product product){
+		maxBottles = Controllers.BatchArea.calculateMaxNumBottles(product, onlyReadyCheckBox.isSelected(), null);
+		numMaxBottles.setText(maxBottles + "");
 	}
 
 	// Initialize the content of the window
 	private void initContent(GridPane mainPane) {
 		// Main GridPane setup
-		mainPane.setPadding(new Insets(50));
-		mainPane.setHgap(10);
+		mainPane.setPadding(new Insets(50)); mainPane.setHgap(10);
 		mainPane.setVgap(10);
 		mainPane.setAlignment(Pos.CENTER);
 		mainPane.setGridLinesVisible(false);
@@ -70,7 +75,7 @@ public class BatchCRUD {
 		batchID.setFocusTraversable(false);
 		batchID.setEditable(false);
 		batchID.setMouseTransparent(true);
-		batchID.setMaxWidth(30);
+		batchID.setMaxWidth(100);
 		batchID.setText(String.valueOf(Batch.getBatchIDglobalCount()));
 		batchID.setDisable(true);
 
@@ -80,6 +85,13 @@ public class BatchCRUD {
 		numMaxBottles.setMaxWidth(100);
 		numMaxBottles.setDisable(true);
 
+		// Checkbox for only ready casks
+		onlyReadyCheckBox = new CheckBox("Only use ready casks (3 years age)");
+		onlyReadyCheckBox.setSelected(true);
+		onlyReadyCheckBox.setFocusTraversable(false);
+		onlyReadyCheckBox.setNodeOrientation(javafx.geometry.NodeOrientation.RIGHT_TO_LEFT);
+		onlyReadyCheckBox.setOnAction(e -> calculateMaxBottles(product));
+
 		// Number of Expected Bottles
 		numExpectedBottles.setFocusTraversable(false);
 		numExpectedBottles.setMaxWidth(100);
@@ -88,8 +100,9 @@ public class BatchCRUD {
 		mainPane.add(batchID, 1, 0);
 		mainPane.add(new Label("Max Number of Bottles: "), 0, 1);
 		mainPane.add(numMaxBottles, 1, 1);
-		mainPane.add(new Label("Number of Bottles to produce: "), 0, 2);
-		mainPane.add(numExpectedBottles, 1, 2);
+		mainPane.add(onlyReadyCheckBox, 0, 2, 2, 1);
+		mainPane.add(new Label("Number of Bottles to produce: "), 0, 3);
+		mainPane.add(numExpectedBottles, 1, 3);
 
 		// Buttons
 		Button cancelButton = new Button("Cancel");
@@ -110,10 +123,10 @@ public class BatchCRUD {
 	}
 
 	// Create a new Batch
-	private void create(String bottleSize) {
-		int bottleSizeInt = bottleSize.isEmpty() ? 0 : Integer.parseInt(bottleSize);
-		if (bottleSizeInt <= 0) {
-			errorWindow.showError("Please enter a valid Bottle Size.");
+	private void create(String numBottles) {
+		int numBottlesParsed = numBottles.isEmpty() ? 0 : Integer.parseInt(numBottles);
+		if (numBottlesParsed <= 0) {
+			errorWindow.showError("Please input a valid number > 0.");
 			return;
 		}
 		if (numExpectedBottles.getText().isEmpty()) {
@@ -122,12 +135,11 @@ public class BatchCRUD {
 		}
 		// check if the number of bottles to produce is a valid integer
 		try {
-			int numBottles = Integer.parseInt(numExpectedBottles.getText());
-			if (numBottles <= 0) {
+			if (numBottlesParsed <= 0) {
 				errorWindow.showError("Please input a valid number of bottles to produce.");
 				return;
 			}
-			if (numBottles > Integer.parseInt(numMaxBottles.getText())) {
+			if (numBottlesParsed > Integer.parseInt(numMaxBottles.getText())) {
 				errorWindow.showError(
 						"Number of bottles to produce exceeds the maximum number of bottles possible to produce given the current warehouse status.");
 				return;
@@ -136,7 +148,7 @@ public class BatchCRUD {
 			errorWindow.showError("Please input a valid number of bottles to produce.");
 			return;
 		}
-		batch = Controllers.BatchArea.createNewBatch(product, bottleSizeInt);
+		batch = Controllers.BatchArea.createNewBatch(product, numBottlesParsed, onlyReadyCheckBox.isSelected());
 		clearFields();
 		batchCrudStage.close();
 	}

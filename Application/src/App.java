@@ -12,7 +12,7 @@ public class App {
 		Controllers.Common.setStorage(storage);
 		Controllers.BatchArea.setStorage(storage);
 		initStorage.loadProduction();
-		initStorage.loadWarehousing();
+	    initStorage.loadWarehousing();
 
 		initStorage.loadBatchArea();
 		// TestProduction.firstTest();
