@@ -30,7 +30,6 @@ public abstract class Warehousing {
 	}
 
 	/**
-	 *
 	 * @param name
 	 * @param address
 	 * @param description
@@ -44,7 +43,6 @@ public abstract class Warehousing {
 	}
 
 	/**
-	 *
 	 * @param caskID
 	 * @param maxQuantity
 	 * @param unit
@@ -58,7 +56,7 @@ public abstract class Warehousing {
 	}
 
 	public static Ingredient createIngredient(String name, String description, int batchNo, LocalDate productionDate,
-			LocalDate expirationDate, double quantity, Supplier supplier, Unit unit, IngredientType ingredientType) {
+											  LocalDate expirationDate, double quantity, Supplier supplier, Unit unit, IngredientType ingredientType) {
 
 		Ingredient ingredient = new Ingredient(name, description, batchNo, productionDate, expirationDate, quantity,
 				supplier, unit, ingredientType);
@@ -68,21 +66,22 @@ public abstract class Warehousing {
 	}
 
 	/**
+	 * Retrieves a list of all available casks.
+	 * A cask is considered available if its remaining quantity is greater than zero.
 	 *
-	 * @param distillate
-	 * @return
+	 * @return a list of available casks
 	 */
-	public static List<Item> getCaskFitToDistillate(Distillate distillate) {
-		// TODO
-		// Only cask fit for distillates should be returned.
-
-		List<Item> casks = new ArrayList<>();
-
-		for (Item i : storage.getCasks()) {
-			if (i.getRemainingQuantity() > 0) {
-				casks.add(i);
+	public static List<Cask> getCasksFitToDistillate(Distillate distillate) {
+		List<Cask> casks = new ArrayList<>();
+		for (Warehouse warehouse : storage.getWarehouses()) {
+			for (StorageRack storageRack : warehouse.getRacks().values()) {
+				for (Item item : storageRack.getList()) {
+					if (item instanceof Cask) {
+						Cask cask = (Cask) item;
+						casks.add(cask);
+					}
+				}
 			}
-
 		}
 		return casks;
 	}
