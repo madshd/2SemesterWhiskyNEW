@@ -376,7 +376,7 @@ public abstract class BatchArea {
 	 */
 	public static HashMap<TasteProfile, Double> calculateProductionVolume(int numBottlesToProduce, Batch batch) {
 		double totalProductionVolumeML = batch.getProduct().getBottleSize() * numBottlesToProduce;
-		double totalProductionVolumeLITER = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS, totalProductionVolumeML);
+		double totalProductionVolumeLITER = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS,totalProductionVolumeML);
 		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
 		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
 		for (TasteProfile tasteProfile : blueprint.keySet()) {
