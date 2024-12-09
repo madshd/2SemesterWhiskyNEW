@@ -76,11 +76,6 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 
 	public void setQuantity(double quantity) {
 		this.quantity = quantity;
-		this.quantityChanged();
-	}
-
-	public void quantityChanged() {
-
 	}
 
 	public Supplier getSupplier() {

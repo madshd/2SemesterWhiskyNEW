@@ -28,7 +28,6 @@ public abstract class Warehousing {
 	}
 
 	/**
-	 *
 	 * @param name
 	 * @param address
 	 * @param description
@@ -42,7 +41,6 @@ public abstract class Warehousing {
 	}
 
 	/**
-	 *
 	 * @param caskID
 	 * @param maxQuantity
 	 * @param unit
@@ -56,7 +54,7 @@ public abstract class Warehousing {
 	}
 
 	public static Ingredient createIngredient(String name, String description, int batchNo, LocalDate productionDate,
-			LocalDate expirationDate, double quantity, Supplier supplier, Unit unit, IngredientType ingredientType) {
+											  LocalDate expirationDate, double quantity, Supplier supplier, Unit unit, IngredientType ingredientType) {
 
 		Ingredient ingredient = new Ingredient(name, description, batchNo, productionDate, expirationDate, quantity,
 				supplier, unit, ingredientType);
@@ -66,25 +64,25 @@ public abstract class Warehousing {
 	}
 
 	/**
+	 * Retrieves a list of all available casks.
+	 * A cask is considered available if its remaining quantity is greater than zero.
 	 *
-	 * @param distillate can be null
-	 * @return
+	 * @return a list of available casks
 	 */
-	public static List<Item> getCasksMinQuantity(Double minRemainingQuantity) {
-		List<Item> casks = new ArrayList<>();
-
-		if (minRemainingQuantity != null){
-			for (Item i : storage.getCasks()) {
-				if (i.getRemainingQuantity() > minRemainingQuantity) {
-					casks.add(i);
+	public static List<Cask> getCasksMinQuantity(Double minRemainingQuantity) {
+		List<Cask> casks = new ArrayList<>();
+		for (Warehouse warehouse : storage.getWarehouses()) {
+			for (StorageRack storageRack : warehouse.getRacks().values()) {
+				for (Item item : storageRack.getList()) {
+					if (item instanceof Cask) {
+						Cask cask = (Cask) item;
+						if (minRemainingQuantity == null || cask.getRemainingQuantity() > minRemainingQuantity) {
+							casks.add(cask);
+						}
+					}
 				}
 			}
-		}else {
-			for (Item i : storage.getCasks()) {
-					casks.add(i);
-			}
 		}
-
 		return casks;
 	}
 
@@ -393,6 +391,17 @@ public static Ingredient createIngredientAndAdd(
 				}
 			}
 		}
+
+	public static void updateIngredient(Ingredient ingredient, double quantity, Warehouse selectedWarehouse, StorageRack selectedStorageRack) {
+		ingredient.setQuantity(quantity);
+		if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
+			if (selectedWarehouse != null && selectedStorageRack != null) {
+				int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
+				int toIndex = selectedStorageRack.getFreeShelf();
+				moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+			}
+		}
+	}
 
 /**
  * Retrieves a list of unused storage racks.

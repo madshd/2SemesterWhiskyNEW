@@ -220,6 +220,16 @@ public class WarehousingArea {
 				throw new RuntimeException(ex);
 			}
 			dialogStage.setOnHiding(event -> updateLists());
+		} else
+		if (selectedItem != null && selectedItem instanceof Ingredient) {
+			UpdateIngredientDialog updateIngredientDialog = new UpdateIngredientDialog((Ingredient) selectedItem);
+			Stage dialogStage = new Stage();
+			try {
+				updateIngredientDialog.start(dialogStage);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			dialogStage.setOnHiding(event -> updateLists());
 		}
 	}
 
