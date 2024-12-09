@@ -13,6 +13,7 @@ import java.util.*;
 import BatchArea.Batch;
 import BatchArea.TasteProfile;
 import Interfaces.Stack;
+import Production.Distillate;
 import Production.FillDistillate;
 
 public class Cask implements OberverQuantitySubject, Item, Serializable {
@@ -404,19 +405,6 @@ public void spendReservation(Batch batch, double amount) {
 		return casks;
 	}
 
-	public void makeReservation(Batch batch, double amount) {
-		reservedBatchesAmount.put(batch, amount);
-	}
-
-	public void spendReservation(Batch batch, double amount) {
-		double reservedAmount = reservedBatchesAmount.get(batch);
-		if (reservedAmount - amount == 0) {
-			reservedBatchesAmount.remove(batch);
-		} else {
-			reservedBatchesAmount.put(batch, reservedAmount - amount);
-		}
-
-	}
 
 	@Override
 	public int compareTo(Item o) {
