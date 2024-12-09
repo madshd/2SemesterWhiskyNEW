@@ -3,9 +3,11 @@ package Controllers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import BatchArea.*;
 import Enumerations.TastingNote;
@@ -99,6 +101,18 @@ public abstract class BatchArea {
 
 	public static ArrayList<Formula> getAllFormulae() {
 		return (ArrayList<Formula>) storage.getFormulae();
+	}
+
+	public static Set<Cask> searchCasks(Formula formula){
+		Set<Cask> casks = new HashSet<>();
+		for (Cask cask : storage.getCasks()) {
+			for(TasteProfile tp : formula.getBlueprint().keySet()){
+				if(cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)){
+					casks.add(cask);
+				}
+			}
+		}
+		return casks;
 	}
 
 	// ===================== TASTE PROFILE =================== //

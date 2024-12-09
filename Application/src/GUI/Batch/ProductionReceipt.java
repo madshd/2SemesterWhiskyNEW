@@ -1,4 +1,3 @@
-
 package GUI.Batch;
 
 import java.util.Map;
