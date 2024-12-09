@@ -21,15 +21,25 @@ import java.time.LocalDate;
 import java.util.Map;
 
 public class CreateIngredientDialog extends Application {
+
     private TextField nameField = new TextField();
+    private Label nameLabel = new Label("Name");
     private TextField descriptionField = new TextField();
+    private Label descriptionLabel = new Label("Description");
     private TextField batchNumberField = new TextField();
+    private Label batchNumberLabel = new Label("Batch number");
     private TextField quantityField = new TextField();
+    private Label quantityLabel = new Label("Quantity");
     private DatePicker productionDatePicker = new DatePicker();
+    private Label productionDateLabel = new Label("Production date");
     private DatePicker expirationDatePicker = new DatePicker();
+    private Label expirationDateLabel = new Label("Expiration date");
     private ComboBox<Supplier> supplierComboBox = new ComboBox<>();
+    private Label supplierLabel = new Label("Supplier");
     private ComboBox<Unit> unitTypeComboBox = new ComboBox<>();
+    private Label unitTypeLabel = new Label("Unit type");
     private ComboBox<IngredientType> ingredientTypeComboBox = new ComboBox<>();
+    private Label ingredientTypeLabel = new Label("Ingredient type");
     private ListView<Warehouse> warehouseListView = new ListView<>();
     private ListView<StorageRack> storageRackListView = new ListView<>();
     private Label storageRackLabel = new Label("Storage Racks:");
@@ -51,43 +61,14 @@ public class CreateIngredientDialog extends Application {
         grid.setHgap(10);
         grid.setVgap(10);
 
-        // Tilføj komponenter til layoutet
-        nameField.setPromptText("Name");
-        grid.add(nameField, 0, 0);
-
-
-        descriptionField.setPromptText("Description");
-        grid.add(descriptionField, 0, 1);
-
-
-        batchNumberField.setPromptText("Batch number");
-        grid.add(batchNumberField, 0, 2);
-
-
-        productionDatePicker.setPromptText("Production date");
-        grid.add(productionDatePicker, 0, 3);
-
-
-        expirationDatePicker.setPromptText("Expiration date");
-        grid.add(expirationDatePicker, 0, 4);
-
-
-        supplierComboBox.setPromptText("Supplier");
-        grid.add(supplierComboBox, 0, 5);
-
-
-        quantityField.setPromptText("Quantity");
-        unitTypeComboBox.setPromptText("Unit type");
-
-
+        VBox inputFields = new VBox(5); // Smaller spacing between Label and TextField
         HBox quantityBox = new HBox(10, quantityField, unitTypeComboBox);
-        grid.add(quantityBox, 0, 6);
 
+        inputFields.getChildren().addAll(nameLabel, nameField, descriptionLabel, descriptionField, batchNumberLabel, batchNumberField, productionDateLabel, productionDatePicker,
+                expirationDateLabel, expirationDatePicker, supplierLabel, supplierComboBox, quantityLabel, quantityBox, ingredientTypeLabel, ingredientTypeComboBox);
 
-        ingredientTypeComboBox.setPromptText("Ingredient type");
-
-
-        grid.add(ingredientTypeComboBox, 0, 7);
+        // Tilføj komponenter til layoutet
+        grid.add(inputFields, 0, 0);
 
         HBox buttonBox = new HBox(10, cancelButton, btnCreate);
 

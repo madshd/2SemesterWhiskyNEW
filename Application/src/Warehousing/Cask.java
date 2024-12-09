@@ -44,28 +44,24 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return unit;
 	}
 
-	/**
-	 * Will return count of month from the latest end date to LocalDate.now from a distillate in curent lifecycle.
-	 *
-	 * @return
-	 */
-	public int getMaturityMonths() {
-		List<Filling> fillings = getFillingStack();
+public int getMaturityMonths() {
+    List<Filling> fillings = getFillingStack();
 
-		if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings availble");
+    try {
+        if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings available");
 
-		fillings.forEach(filling -> {
-			if (((FillDistillate) filling).getLifeCycle() != lifeCycle) {
-				fillings.remove(filling);
-			}
-		});
+        fillings.removeIf(filling -> ((FillDistillate) filling).getLifeCycle() != lifeCycle);
 
-		fillings.sort((f1, f2) ->
-				((FillDistillate) f1).getDistillate().getEndDate().compareTo(((FillDistillate) f2).getDistillate().getEndDate()));
+        fillings.sort((f1, f2) ->
+                ((FillDistillate) f1).getDistillate().getEndDate().compareTo(((FillDistillate) f2).getDistillate().getEndDate()));
 
-		LocalDate lastEndDate = ((FillDistillate) fillings.getLast()).getDistillate().getEndDate();
-		return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
-	}
+        LocalDate lastEndDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
+        return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
+    } catch (Exception e) {
+        System.err.println("Error calculating maturity months: " + e.getMessage());
+        return 0;
+    }
+}
 
 	public String getCaskType() {
 		return caskType;
@@ -274,6 +270,58 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return quantity;
 	}
 
+/**
+ * Calculates the total reserved amount from all batches.
+ *
+ * @return the total reserved amount.
+ */
+public double getTotalReservedAmount() {
+    double totalReservedAmount = 0;
+    for (double reservedAmount : reservedBatchesAmount.values()) {
+        totalReservedAmount += reservedAmount;
+    }
+    return totalReservedAmount;
+}
+
+/**
+ * Calculates the legal quantity by subtracting the total reserved amount from the quantity status.
+ *
+ * @return the legal quantity.
+ */
+public double getLegalQuantity() {
+    return getQuantityStatus() - getTotalReservedAmount();
+}
+
+/**
+ * Makes a reservation for a specified batch with a given amount.
+ *
+ * @param batch the batch to reserve.
+ * @param amount the amount to reserve.
+ */
+public void makeReservation(Batch batch, double amount) {
+		System.out.println("Reservation in batch" + batch);
+    reservedBatchesAmount.put(batch, amount);
+		System.out.println(reservedBatchesAmount);
+}
+
+/**
+ * Spends a reservation for a specified batch with a given amount.
+ * If the reserved amount becomes zero, the batch is completely removed from the reservations.
+ *
+ * @param batch the batch to spend the reservation from.
+ * @param amount the amount to spend.
+ */
+public void spendReservation(Batch batch, double amount) {
+
+		System.out.println(reservedBatchesAmount);
+			
+    double reservedAmount = reservedBatchesAmount.get(batch);
+    if (reservedAmount - amount == 0) {
+        reservedBatchesAmount.remove(batch);
+    } else {
+        reservedBatchesAmount.put(batch, reservedAmount - amount);
+    }
+}
 	public double getQuantityStatusByDistillate(Distillate distillate, int lifeCycle){
 		double quantity = 0;
 
@@ -357,19 +405,6 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return casks;
 	}
 
-	public void makeReservation(Batch batch, double amount) {
-		reservedBatchesAmount.put(batch, amount);
-	}
-
-	public void spendReservation(Batch batch, double amount) {
-		double reservedAmount = reservedBatchesAmount.get(batch);
-		if (reservedAmount - amount == 0) {
-			reservedBatchesAmount.remove(batch);
-		} else {
-			reservedBatchesAmount.put(batch, reservedAmount - amount);
-		}
-
-	}
 
 	@Override
 	public int compareTo(Item o) {
@@ -382,6 +417,10 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 				getRemainingQuantity());
 	}
 
+	public double getReservedAmountPerBatch(Batch batch){
+		return reservedBatchesAmount.get(batch);
+	}
+
 	public TasteProfile getTasteProfile() {
 		return this.tasteProfile;
 	}
@@ -390,14 +429,13 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		this.tasteProfile = tasteProfile;
 	}
 
-
-	// FAKE METHOD FOR INJECTING FAKE DATA
-	public double getFakeQuantity() {
-		return 1000;
-	}
-
 	public int getCaskID() {
 		return caskID;
+	}
+
+	
+	public String getCaskIDString() {
+		return String.valueOf(caskID);
 	}
 
 	public double getMaxQuantity() {
