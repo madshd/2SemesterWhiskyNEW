@@ -66,8 +66,8 @@ public abstract class Warehousing {
 	}
 
 	/**
-	 *
-	 * @param distillate can be null
+	 * Is nullable. If null than all existing cask will be returned.
+	 * @param minRemainingQuantity
 	 * @return
 	 */
 	public static List<Item> getCasksMinQuantity(Double minRemainingQuantity) {

@@ -341,7 +341,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	/**
-	 * Returns alle fillings related to a given cask life cycle.
+	 * Returns all fillings related to a given cask life cycle.
 	 * @param LifeCycle
 	 * @return
 	 */
