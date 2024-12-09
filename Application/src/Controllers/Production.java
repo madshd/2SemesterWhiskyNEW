@@ -1,5 +1,6 @@
 package Controllers;
 
+import Enumerations.FillType;
 import Enumerations.Unit;
 import Interfaces.Filling;
 import Interfaces.Item;
@@ -10,7 +11,6 @@ import Production.FillDistillate;
 import Production.StoryLine;
 import Production.ProductCutInformation;
 import Production.AlcoholPercentage;
-import Storage.Storage;
 import Warehousing.Cask;
 import Warehousing.Ingredient;
 import Warehousing.FillIngredient;
@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /*
  * Methods that is mainly used within the production area
@@ -150,15 +151,74 @@ public abstract class Production {
 	 */
 	public static double fillDistillateIntoCask(Distillate distillate, Cask cask, double quantity ,LocalDate date)
 			throws IllegalStateException{
-		Filling filling = new FillDistillate(date,quantity,cask,distillate,null);
+		Filling fillingInCrease = new FillDistillate(date,quantity,cask,distillate,null,
+				false,FillType.FILLING);
+		Filling fillingDeCrease = new FillDistillate(date,quantity,cask,distillate,null,
+				true,FillType.FILLING);
 		try {
-			distillate.updateQuantity(filling);
-			return cask.updateQuantity(filling);
-		}catch (IllegalStateException e){
-			throw new IllegalStateException("Provided quantity does not fit this distillate");
+			distillate.updateQuantity(fillingDeCrease);
+			return cask.updateQuantity(fillingInCrease);
+		}catch (IllegalArgumentException e){
+			throw new IllegalArgumentException("Provided quantity does not fit this distillate");
 		}
 	}
 
+	/**
+	 *Tranfers quantity from one cask to another
+	 * @param caskFrom
+	 * @param caskTo
+	 * @param quantity
+	 * @param date
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public static boolean caskToCaskTransfer(Item caskFrom, Item caskTo, double quantity, LocalDate date)
+			throws IllegalArgumentException{
+		double caskFromQuantity = caskFrom.getQuantityStatus();
+		double caskToRemainingQuantity = caskTo.getRemainingQuantity();
+
+		if (caskFromQuantity < quantity){
+			throw new IllegalArgumentException("Quantity exeeds what remaining in 'From Cask': " + caskFrom.getName());
+		}
+
+		if (caskToRemainingQuantity < quantity){
+			throw new IllegalArgumentException("Quantity exeeds the capacity of 'To Cask': " + caskTo.getName());
+		}
+
+		if (((Cask)caskTo).getFillingsStackByLifeCycle(((Cask) caskTo).getLifeCycle()).isEmpty()){
+			Distillate distillate = null;
+
+			for (Distillate d : storage.getDistillates()){
+				if (d.getName().equalsIgnoreCase("caskIsEmpty")){
+					distillate = d;
+				}
+			}
+			Filling f = new FillDistillate(date,0,((Cask) caskTo),distillate,null,true,FillType.CASKHISTORY);
+			caskTo.updateQuantity(f);
+		}
+
+		double fillStackSum = 0;
+		for (Filling f : ((Cask)caskFrom).getFillingsStackByLifeCycle(((Cask) caskFrom).getLifeCycle())){
+			fillStackSum += Math.abs(f.getQuantity());
+		}
+
+		double calculationFactor = quantity/fillStackSum;
+
+		((Cask) caskFrom).getFillingsStackByLifeCycle(((Cask) caskFrom).getLifeCycle()).forEach(filling -> {
+//			if (!filling.isDecrease()){
+				double changeQauntity = Math.abs(filling.getQuantity()) * calculationFactor;
+				Distillate distillate = ((FillDistillate) filling).getDistillate();
+				Filling encreaseQuantity = new FillDistillate(date,changeQauntity, ((Cask) caskTo), distillate,
+						((FillDistillate) filling),false,FillType.TRANSFER);
+				Filling decreaseQuantity = new FillDistillate(date,changeQauntity, ((Cask) caskFrom), distillate,
+						((FillDistillate) filling),true,FillType.TRANSFER);
+
+				caskFrom.updateQuantity(decreaseQuantity);
+				caskTo.updateQuantity(encreaseQuantity);
+//			}
+		});
+		return true;
+	}
 
 	public static List<Item> getDistillates(){
 		List<Item> distillates = new ArrayList<>();
@@ -192,20 +252,22 @@ public abstract class Production {
 	 * @param date
 	 */
 	public static void caskBottling(Cask cask, double quantity, LocalDate date){
-		//TODO by leander
 		double caskQauntity = cask.getQuantityStatus();
 		int caskLifeCycle = cask.getLifeCycle();
 		double calculationFactor = quantity/caskQauntity;
 
 		if (quantity > caskQauntity) throw new IllegalArgumentException("Bottling quantity is higher than cask quantity");
 
-		List<Filling> fillings = cask.getFillingsStackByLifeCycle(caskLifeCycle);
+		List<Filling> fillings = cask.getFillingsStackHavingLifeCycleGroupedByDistillate(caskLifeCycle, date);
 
 		for (Filling f : fillings){
-			Distillate distillate = ((FillDistillate) f).getDistillate();
-			double decrease = f.getQuantity() * calculationFactor * -1;
-			Filling newFilling = new FillDistillate(date,decrease,cask,distillate,null);
-			cask.updateQuantity(newFilling);
+			if (!f.isDecrease()){
+				Distillate distillate = ((FillDistillate) f).getDistillate();
+				double decreaseQuantity = f.getQuantity() * calculationFactor;
+				Filling newFilling = new FillDistillate(date,decreaseQuantity,cask,distillate,null,
+						true, FillType.BOTTLING);
+				cask.updateQuantity(newFilling);
+			}
 		}
 
 	}

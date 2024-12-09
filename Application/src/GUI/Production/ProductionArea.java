@@ -42,6 +42,9 @@ public class ProductionArea {
 	protected CreateAndUpdateDistillate.Basics distillateBasics;
 	protected CreateAndUpdateDistillate.IngredientDetails ditillateIngredient;
 	protected CreateAndUpdateDistillate.ProductionDetails distillateProductionDetails;
+	protected CaskToCaskTransfer.CasksFrom transferCasksFrom;
+	protected CaskToCaskTransfer.CasksTo transferCasksTo;
+	protected CaskToCaskTransfer.InputElement transferInputElement;
 
 	public ProductionArea() {
 		stage = new Stage();
@@ -66,6 +69,9 @@ public class ProductionArea {
 		distillateBasics = new CreateAndUpdateDistillate.Basics(this);
 		ditillateIngredient = new CreateAndUpdateDistillate.IngredientDetails(this);
 		distillateProductionDetails = new CreateAndUpdateDistillate.ProductionDetails(this);
+		transferCasksFrom = new CaskToCaskTransfer.CasksFrom(this);
+		transferCasksTo = new CaskToCaskTransfer.CasksTo(this);
+		transferInputElement = new CaskToCaskTransfer.InputElement(this);
 		initContent(mainPane);
 
 		scene = new Scene(mainPane, screenBounds.getWidth() - 300, screenBounds.getHeight());
@@ -144,7 +150,6 @@ public class ProductionArea {
 			txaDistillateDetails.setEditable(false);
 			txaDistillateDetails.setPrefHeight(lvwHeightCol0Top);
 			txaDistillateDetails.setPrefWidth(areaWidth - lvwWithCol0);
-			txaDistillateDetails.setMouseTransparent(true);
 			txaDistillateDetails.setWrapText(true);
 			this.add(txaDistillateDetails, 2, 2, 2, 1);
 
@@ -311,7 +316,6 @@ public class ProductionArea {
 			txaCaskDetails.setEditable(false);
 			txaCaskDetails.setPrefHeight(lvwHeightCol0Top);
 			txaCaskDetails.setPrefWidth(areaWidth - lvwWithCol0);
-			txaCaskDetails.setMouseTransparent(true);
 			txaCaskDetails.setWrapText(true);
 			this.add(txaCaskDetails, 2, 2, 2, 1);
 
@@ -342,12 +346,29 @@ public class ProductionArea {
 		}
 
 		private void buttionAction(Button button) {
+			switch ((String) button.getUserData()){
+				case "transfer" -> {
+					mainPane.getChildren().clear();
+					openCaskToCaskTransfer();
+				}
+			}
+		}
 
+		private void openCaskToCaskTransfer() {
+			Label headerLabel = new Label("Cask To Cask Transfer");
+			GridPane.setHalignment(headerLabel, HPos.CENTER);
+			headerLabel.setId("LabelHeader");
+			headerLabel.setPrefWidth(screenBounds.getWidth() - 300);
+			headerLabel.setAlignment(Pos.CENTER);
+			mainPane.add(headerLabel, 0, 0);
+			mainPane.add(transferCasksFrom,0,1);
+			mainPane.add(transferCasksTo,0,2);
+			mainPane.add(transferInputElement,0,3);
 		}
 
 		public void updatelist(Distillate distillate) {
 			if (distillate != null) {
-				List<Item> casks = new ArrayList<>(getCaskFitToDistillate(distillate));
+				List<Item> casks = new ArrayList<>(getCasksMinQuantity(0.0));
 				lvwCasks.getItems().setAll(casks);
 
 				Common.useSpecifiedListView(lvwCasks);
