@@ -108,7 +108,7 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 		double quantity = 0;
 
 		for (Filling f : fillIngredients) {
-			quantity += (((FillIngredient) f).isDecrease()) ? f.getQuantity() * -1 : f.getQuantity();
+			quantity += f.getQuantity();
 		}
 
 		return quantity;
@@ -116,8 +116,7 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 
 	@Override
 	public double updateQuantity(Filling fillingredient) throws IllegalStateException {
-		double fill = (((FillIngredient) fillingredient).isDecrease()) ? fillingredient.getQuantity() * -1
-				: fillingredient.getQuantity();
+		double fill = fillingredient.getQuantity();
 		double newQuantity = fill + getRemainingQuantity();
 
 		if (newQuantity <= quantity && newQuantity >= 0) {

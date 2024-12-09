@@ -142,6 +142,11 @@ public abstract class initStorage {
 				"Burns & Co. Caramel has served the whisky industry for decades with premium caramel coloring, providing master blenders with an option to create aesthetically striking and consistent batches."
 		);
 
+		Distiller system = Production.createDistiller(
+				"labelTales",
+				"EAA",
+				"Must only be used for testing and internal use.");
+
 		Distiller distiller_01 = Production.createDistiller(
 				"Ewan MacGregor",
 				"EMG",
@@ -187,6 +192,14 @@ public abstract class initStorage {
 		Cask cask_08 = Warehousing.createCaskAndAdd(8, 180, Unit.LITERS, sub_03, "Peated Oak Cask", warehouse, rack1); // Peated Oak cask from Peat & Smolder
 		Cask cask_09 = Warehousing.createCaskAndAdd(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask", warehouse, rack1); // Spanish Oak cask from Sherry Bliss Co.
 		Cask cask_10 = Warehousing.createCaskAndAdd(10, 600, Unit.LITERS, sub_03, "Large Blending Cask", warehouse, rack1); // Large blending cask from Oak Master
+
+		Distillate caskIsEmpty = Production.createDistillate(
+				"caskIsEmpty",
+				LocalDate.parse("2000-01-01"),
+				LocalDate.parse("2100-01-01"),
+				0,
+				distiller_01,
+				Unit.LITERS);
 
 		Distillate distillate_01 = Production.createDistillate(
 				"Highland Essence",
@@ -284,6 +297,8 @@ public abstract class initStorage {
 			distiller_05,
 			Unit.LITERS);
 
+		addDescriotionToDistillate(caskIsEmpty,
+				"A Cast To Cask transfer has been made to an empty cask, this distillate i used to link filling history together.");
 		addDescriotionToDistillate(distillate_01,
 				"A rich and complex distillate characterized by honeyed sweetness and notes of dried fruits.");
 		addDescriotionToDistillate(distillate_02,

@@ -27,7 +27,7 @@ public class FillIngredient implements Filling {
 
     @Override
     public double getQuantity() {
-        return quantity;
+        return (decrease) ? quantity * -1 : quantity;
     }
 
     public Distillate getDistillate() {

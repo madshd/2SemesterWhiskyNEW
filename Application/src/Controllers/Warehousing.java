@@ -4,7 +4,6 @@ import Enumerations.IngredientType;
 import Enumerations.Unit;
 import Interfaces.Item;
 import Interfaces.StorageInterface;
-import Production.Distillate;
 import Warehousing.Cask;
 import Warehousing.Supplier;
 import Warehousing.Warehouse;
@@ -16,7 +15,6 @@ import Production.FillDistillate;
 import java.time.LocalDate;
 import java.util.List;
 
-import BatchArea.TasteProfile;
 import java.util.ArrayList;
 
 /*
@@ -69,21 +67,24 @@ public abstract class Warehousing {
 
 	/**
 	 *
-	 * @param distillate
+	 * @param distillate can be null
 	 * @return
 	 */
-	public static List<Item> getCaskFitToDistillate(Distillate distillate) {
-		// TODO
-		// Only cask fit for distillates should be returned.
-
+	public static List<Item> getCasksMinQuantity(Double minRemainingQuantity) {
 		List<Item> casks = new ArrayList<>();
 
-		for (Item i : storage.getCasks()) {
-			if (i.getRemainingQuantity() > 0) {
-				casks.add(i);
+		if (minRemainingQuantity != null){
+			for (Item i : storage.getCasks()) {
+				if (i.getRemainingQuantity() > minRemainingQuantity) {
+					casks.add(i);
+				}
 			}
-
+		}else {
+			for (Item i : storage.getCasks()) {
+					casks.add(i);
+			}
 		}
+
 		return casks;
 	}
 
