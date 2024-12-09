@@ -82,11 +82,9 @@ public class CreateIngredientDialog extends Application {
 
         // Opret og vis scene
 
-        Scene scene = new Scene(grid, 600, 400);
+        Scene scene = new Scene(grid, 600, 800);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setTitle("Create Ingredient");
-        stage.setX(300);
-        stage.setY(0);
         stage.setScene(scene);
         stage.show();
     }

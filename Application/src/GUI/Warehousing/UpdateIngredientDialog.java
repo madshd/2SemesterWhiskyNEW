@@ -89,13 +89,9 @@ public class UpdateIngredientDialog extends Application {
         cancelButton.setOnAction(e -> stage.close());
         buttonBox.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(grid, 600, 400);
+        Scene scene = new Scene(grid, 600, 800);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setTitle("Update Ingredient");
-        stage.setX(300);
-        stage.setY(0);
-        stage.setMinHeight(600);
-        stage.setMinWidth(300);
         stage.setScene(scene);
         stage.show();
     }
@@ -123,8 +119,16 @@ public class UpdateIngredientDialog extends Application {
         cbxUnitType.setValue(ingredient.getUnit());
         cbxIngredientType.setValue(ingredient.getIngredientType());
         lvwWarehouse.getItems().setAll(Warehousing.getAllWarehouses());
+
+        // Select the warehouse and storage rack associated with the ingredient
+        Warehouse associatedWarehouse = ingredient.getStorageRack().getWarehouse();
+        lvwWarehouse.getSelectionModel().select(associatedWarehouse);
+        lvwStorageRack.getItems().setAll(associatedWarehouse.getRacks().values());
+        lvwStorageRack.getSelectionModel().select(ingredient.getStorageRack());
+
         lvwWarehouse.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             lvwStorageRack.getItems().clear();
             lvwStorageRack.getItems().addAll(newValue.getRacks().values());
-        });    }
+        });
+    }
 }

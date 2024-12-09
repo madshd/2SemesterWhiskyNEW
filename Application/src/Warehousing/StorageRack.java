@@ -4,10 +4,7 @@ import Controllers.Warehousing;
 import Interfaces.Item;
 import Interfaces.WarehousingObserver;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class StorageRack {
     private String id;
@@ -22,9 +19,7 @@ public class StorageRack {
     public StorageRack(String id, int shelves) {
         this.id = id;
         this.shelves = shelves;
-        for (int i = 0; i < shelves; i++) {
-            list.add(null);
-        }
+        this.list = new LinkedList<>(Collections.nCopies(shelves, null));
     }
 
     public Warehouse getWarehouse() {

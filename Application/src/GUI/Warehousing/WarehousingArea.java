@@ -93,6 +93,7 @@ public class WarehousingArea {
 	}
 
 	public void initContent(GridPane gridPane) {
+		updateLists();
 		Label headerLabel = new Label("Warehousing Area");
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
@@ -132,7 +133,6 @@ public class WarehousingArea {
 		inventoryCRUDButtons.setAlignment(Pos.CENTER);
 		gridPane.add(inventorySection, 2, 1);
 
-//		Common.useSpecifiedListView(inventoryList);
 
 		// Button actions
 		btnCreateIngredient.setOnAction(e -> btnCreateIngredientAction());
@@ -147,14 +147,14 @@ public class WarehousingArea {
 
 
 		btnDeleteInventory.setOnAction(e -> deleteInventoryItem());
-
-
 		btnUpdateInventory.setOnAction(e -> updateItem());
 
 
 		// Nederste sektion (Warehouse Movements)
 		gridPane.add(warehouseMovementsList, 0, 4, 3, 1); // Spænd over alle kolonner
 		gridPane.add(warehouseMovementsLabel, 0, 3);
+		warehouseMovementsList.setSelectionModel(null);
+
 
 	}
 
@@ -165,10 +165,10 @@ public class WarehousingArea {
 			Stage dialogStage = new Stage();
 			try {
 				storageRackCreate.start(dialogStage);
+				dialogStage.setOnHiding(event -> updateLists());
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			dialogStage.setOnHiding(event -> updateLists());
 		}
 	}
 
@@ -179,10 +179,10 @@ public class WarehousingArea {
 			Stage dialogStage = new Stage();
 			try {
 				warehouseUpdate.start(dialogStage);
+				dialogStage.setOnHiding(event -> updateLists());
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			dialogStage.setOnHiding(event -> updateLists());
 		}
 	}
 
@@ -191,10 +191,10 @@ public class WarehousingArea {
 		Stage dialogStage = new Stage();
 		try {
 			warehouseCreate.start(dialogStage);
+			dialogStage.setOnHiding(event -> updateLists());
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
-		dialogStage.setOnHiding(event -> updateLists());
 	}
 
 	private void deleteInventoryItem() {
@@ -304,11 +304,26 @@ public class WarehousingArea {
 		// Populate warehouse list
 		warehouseList.getItems().addAll(Warehousing.getAllWarehouses());
 
+		// Select the first item in the warehouse list if available
+		if (!warehouseList.getItems().isEmpty()) {
+			warehouseList.getSelectionModel().selectFirst();
+		}
+
 		// Add listeners to update storage racks and inventory based on selections
 		warehouseList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				storageRacksList.getItems().clear();
 				storageRacksList.getItems().addAll(newValue.getRacks().values());
+
+				// Select the first item in the storage racks list if available
+				if (!storageRacksList.getItems().isEmpty()) {
+					storageRacksList.getSelectionModel().selectFirst();
+				} else {
+					inventoryList.getItems().clear();
+				}
+			} else {
+				storageRacksList.getItems().clear();
+				inventoryList.getItems().clear();
 			}
 		});
 
@@ -317,6 +332,13 @@ public class WarehousingArea {
 				inventoryList.getItems().clear();
 				List<Item> items = newValue.getList();
 				inventoryList.getItems().addAll(Warehousing.getItemsByRack(newValue));
+
+				// Select the first item in the inventory list if available
+				if (!inventoryList.getItems().isEmpty()) {
+					inventoryList.getSelectionModel().selectFirst();
+				}
+			} else {
+				inventoryList.getItems().clear();
 			}
 		});
 

@@ -68,8 +68,8 @@ public class CreateCaskDialog extends Application {
         Scene scene = new Scene(grid, 600, 400);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setTitle("Create cask");
-        stage.setX(300);
-        stage.setY(0);
+//        stage.setMinHeight(600);
+//        stage.setMinWidth(300);
         stage.setScene(scene);
         stage.show();
     }
