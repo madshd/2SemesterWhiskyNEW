@@ -90,6 +90,10 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 		return ingredientType;
 	}
 
+	public Unit getUnit() {
+		return unit;
+	}
+
 	public void measurementsChanged() {
 		this.notifyObservers();
 	}
@@ -173,8 +177,8 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 
 	@Override
 	public String toString() {
-		return name + " " + description +
-				" " + getRemainingQuantity() + " " + unit;
+		return String.format("#: %-4d | %s | %,.2f | %s",
+				batchNo, name, getRemainingQuantity(), getUnit());
 	}
 
 	public String getListInfo() {

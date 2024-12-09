@@ -30,7 +30,7 @@ public class UpdateIngredientDialog extends Application {
     private TextField txfBatchNumber = new TextField() {{ setDisable(true); }};
     private Label lblBatchNumber = new Label("Batch number");
     private TextField txfQuantity = new TextField();
-    private Label lblQuantity = new Label("Quantity");
+    private Label lblQuantity = new Label("Add quantity");
     private DatePicker dpProductionDate = new DatePicker();
     private Label lblProductionDate = new Label("Production date");
     private DatePicker dpExpirationDate = new DatePicker();
@@ -120,8 +120,7 @@ public class UpdateIngredientDialog extends Application {
         dpProductionDate.setValue(ingredient.getProductionDate());
         dpExpirationDate.setValue(ingredient.getExpirationDate());
         cbxSupplier.setValue(ingredient.getSupplier());
-        txfQuantity.setText(String.valueOf(ingredient.getRemainingQuantity()));
-        cbxUnitType.getItems().addAll(Unit.values());
+        cbxUnitType.setValue(ingredient.getUnit());
         cbxIngredientType.setValue(ingredient.getIngredientType());
         lvwWarehouse.getItems().setAll(Warehousing.getAllWarehouses());
         lvwWarehouse.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
