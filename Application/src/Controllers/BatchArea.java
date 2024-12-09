@@ -451,6 +451,21 @@ public abstract class BatchArea {
 	}
 
 	/**
+	 * Checks if the production has started for the given batch.
+		* BUT reverses the logic for certain mathods in GUI that needs reversed
+	 *
+	 * @param b the batch to check
+	 * @return true if production has started, false otherwise
+	 */
+	public static boolean isProductionStartedReversed(Batch b) {
+		if (b.getNumProducedBottles() > 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
 	 * Checks if the production is complete for the given batch.
 	 *
 	 * @param b the batch to check

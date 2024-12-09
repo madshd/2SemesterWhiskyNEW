@@ -395,7 +395,7 @@ public class BatchArea {
 				showLabels.setDisable(true);
 			} else {
 				produceBatchButton.setDisable(Controllers.BatchArea.isProductionComplete(newValue));
-				deleteBatchButton.setDisable(!Controllers.BatchArea.isProductionStarted(newValue));
+				deleteBatchButton.setDisable(!Controllers.BatchArea.isProductionStartedReversed(newValue));
 				generateLabels.setDisable(!Controllers.BatchArea.isProductionComplete(newValue)
 						|| Controllers.BatchArea.isLabelGenerate(newValue));
 				showLabels.setDisable(!Controllers.BatchArea.isLabelGenerate(newValue));
