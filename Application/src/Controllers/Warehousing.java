@@ -69,7 +69,7 @@ public abstract class Warehousing {
 	 *
 	 * @return a list of available casks
 	 */
-	public static List<Cask> getCasksFitToDistillate(Double minRemainingQuantity) {
+	public static List<Cask> getCasksMinQuantity(Double minRemainingQuantity) {
 		List<Cask> casks = new ArrayList<>();
 		for (Warehouse warehouse : storage.getWarehouses()) {
 			for (StorageRack storageRack : warehouse.getRacks().values()) {
