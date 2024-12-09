@@ -54,11 +54,14 @@ public class BatchArea {
 	private static TableView<Batch> batchTable = new TableView<>();
 	private static TableView<Product> productTable = new TableView<>();
 	private static Button createBatchButton = new Button("Create New Batch");
+	private static Button searchCasksButton = new Button("Search Casks");
 	private static ProductCRUD productCRUD = new ProductCRUD();
 	private static BatchCRUD batchCRUD = new BatchCRUD();
 	private static ProduceBatchWindow produceBatchWindow = new ProduceBatchWindow();
 	private static ShowLabel showLabel = new ShowLabel();
 	private static Product selectedProduct;
+	private static SearchCaskWindow searchCasksWindow = new SearchCaskWindow();
+	private static Formula selectedFormula;
 
 	public BatchArea() {
 		stage = new Stage();
@@ -240,7 +243,8 @@ public class BatchArea {
 		Button createProductButton = new Button("Create New Product");
 		Button defineFormulaButton = new Button("Define Formula");
 		Button deleteProductButton = new Button("Delete Product");
-		HBox productButtons = new HBox(25, createProductButton, defineFormulaButton, deleteProductButton, searchBar);
+		HBox productButtons = new HBox(25, createProductButton, defineFormulaButton, deleteProductButton,
+				searchCasksButton, searchBar);
 		productButtons.setAlignment(Pos.CENTER);
 
 		createProductButton.setFocusTraversable(false);
@@ -248,6 +252,8 @@ public class BatchArea {
 		defineFormulaButton.setDisable(true);
 		deleteProductButton.setFocusTraversable(false);
 		deleteProductButton.setDisable(true);
+		searchCasksButton.setFocusTraversable(false);
+		searchCasksButton.setDisable(true);
 
 		createProductButton.setOnAction(e -> {
 			productCRUD.show();
@@ -275,12 +281,27 @@ public class BatchArea {
 			}
 		});
 
+		searchCasksButton.setOnAction(e -> {
+			if (selectedProduct != null && selectedFormula != null) {
+				errorWindow.showError("Please select either a Product or a Formula - not both.");
+				return;
+			}
+			if (selectedProduct != null && selectedFormula == null) {
+				searchCasksWindow.show(null, selectedProduct);
+			} else if (selectedProduct == null && selectedFormula != null) {
+				searchCasksWindow.show(selectedFormula, null);
+			} else {
+				errorWindow.showError("Please select a Product or a Formula.");
+			}
+		});
+
 		// Add components to Product GridPane
 		productGrid.add(new Label("Products"), 0, 0);
 		productGrid.add(productTable, 0, 2);
 		productGrid.add(productButtons, 0, 3);
 
 		productTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			searchCasksButton.setDisable(newValue == null);
 			createBatchButton.setDisable(newValue == null); // Disable if no item is selected
 			defineFormulaButton.setDisable(newValue == null); // Disable if no item is selected
 			deleteProductButton.setDisable(newValue == null); // Disable if no item is selected
@@ -469,6 +490,15 @@ public class BatchArea {
 		formulaList.setFocusTraversable(false);
 		formulaList.setEditable(false);
 
+
+		formulaList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				selectedFormula = newValue;
+			} else {
+				selectedFormula = null;
+			}
+		});
+
 		// Open Formula Manager Button
 		Button openFormulaManagerButton = new Button("Open Formula Manager");
 		openFormulaManagerButton.setFocusTraversable(false);
@@ -485,6 +515,10 @@ public class BatchArea {
 		formulaGrid.add(formulaList, 0, 1, 1, 3); // Column 0, Row 1 (spanning 3 rows)
 		formulaGrid.add(openFormulaManagerButton, 0, 4); // Column 0, Row 4
 		GridPane.setHalignment(openFormulaManagerButton, HPos.CENTER);
+
+		formulaList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			searchCasksButton.setDisable(newValue == null);
+		});
 
 		return formulaGrid;
 	}
