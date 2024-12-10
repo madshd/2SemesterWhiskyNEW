@@ -29,7 +29,7 @@ public class WarehouseCreate extends Application {
     private Stage stage;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         this.stage = stage; // Initialize the stage instance variable
         stage.show();
         initialize();
