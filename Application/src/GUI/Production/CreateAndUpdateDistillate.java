@@ -178,9 +178,19 @@ public abstract class CreateAndUpdateDistillate {
 
                 double quantity = Double.parseDouble(txfQuantity.getText().trim());
 
+                if (quantity <= 0){
+                    errorWindow.showError("Quantity must be greater than zero.");
+                    return false;
+                }
+
                 String name = txfName.getText().trim();
                 Distiller distiller = cmbDistiller.getValue();
                 String description = txaDescription.getText().trim();
+
+                if (distiller == null){
+                    errorWindow.showError("Please select a distiller.");
+                    return false;
+                }
 
                 Distillate newDistillate = Production.createDistillate(name,dpStartDate.getValue(),dpEndDate.getValue(),quantity,distiller, Unit.LITERS);
                 Production.addDescriotionToDistillate(newDistillate,description);
@@ -344,6 +354,10 @@ public abstract class CreateAndUpdateDistillate {
             }
 
             double quantity = Double.parseDouble(txfQuantity.getText().trim());
+            if (quantity <= 0){
+                errorWindow.showError("Quantity must be greater than zero.");
+                return;
+            }
             Ingredient ingredient = ((Ingredient) cmbIngredients.getSelectionModel().getSelectedItem());
             Production.addIngredientToDistillate(distillate,ingredient,quantity,dpfillDate.getValue());
             txaNewIngrediantDetail.clear();
@@ -559,6 +573,11 @@ public abstract class CreateAndUpdateDistillate {
                             return;
                         }
                         double percentage = Double.parseDouble(value);
+                        if (percentage <= 0){
+                            errorWindow.showError("Percentage must be greater than zero.");
+                            return;
+                        }
+
                         Production.addAlcoholPercentage(tmp,percentage,date);
                         pa.distillates.setWindowSetings(tmp);
                     }

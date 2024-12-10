@@ -261,6 +261,11 @@ public abstract class FillDistillateIntoCask {
 
             double liters = Double.parseDouble(txfInputLiters.getText().trim());
 
+            if (liters <= 0){
+                errorWindow.showError("Liters must be greater than zero.");
+                return;
+            }
+
             try {
                 Controllers.Production.fillDistillateIntoCask(selectedDistillate,selectedCask,liters,date);
                 pa.fillCaskElement.updateFillingList(pa);
