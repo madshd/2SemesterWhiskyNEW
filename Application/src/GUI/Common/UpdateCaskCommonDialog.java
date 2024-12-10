@@ -128,4 +128,12 @@ public class UpdateCaskCommonDialog extends Application {
                 lvwWarehouses.getSelectionModel().getSelectedItem() != null &&
                 lvwStorageRacks.getSelectionModel().getSelectedItem() != null;
     }
+
+    public void setCask(Cask cask) {
+        this.cask = cask;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 }

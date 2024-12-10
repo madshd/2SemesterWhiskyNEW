@@ -1,6 +1,7 @@
 package Warehousing;
 
 import Common.CommonMethods;
+import Controllers.Warehousing;
 import Enumerations.FillType;
 import Enumerations.Unit;
 import Interfaces.*;
@@ -126,6 +127,7 @@ public int getMaturityMonths() {
 
 	public String getDetails() {
 		Set<Item> tranferCasks = getCasksAddedByTransfer(lifeCycle);
+		String tasteprofile = (tasteProfile != null) ? tasteProfile.getProfileName() : "";
 		StringBuilder sbCask = new StringBuilder();
 		for (Item i : tranferCasks){
 			sbCask.append(String.format("""
@@ -143,8 +145,35 @@ public int getMaturityMonths() {
 					""",distillate.getNewMakeID(),distillate.getName(), getQuantityStatusByDistillate(distillate,lifeCycle)));
 		}
 
+		StringBuilder sbAlcohol = new StringBuilder();
+		for (Filling f : fillings){
+			Distillate distillate = ((FillDistillate)f).getDistillate();
+			distillate.getAlcoholPercentages().forEach(a ->{
+				sbAlcohol.append(String.format("%s | %s\n",distillate.getName(),a.toString()));
+			});
+		}
+
+		StringBuilder sbCutInfo = new StringBuilder();
+		for (Filling f : fillings){
+			Distillate distillate = ((FillDistillate)f).getDistillate();
+			distillate.getProductCutInformations().forEach(p ->{
+				sbCutInfo.append(String.format("%s | %s\n",distillate.getName(),p.toString()));
+			});
+		}
+
+		StringBuilder sbStory = new StringBuilder();
+		for (Filling f : fillings){
+			Distillate distillate = ((FillDistillate)f).getDistillate();
+			distillate.getStoryLines().forEach(s ->{
+				sbStory.append(String.format("%s | %s\n",distillate.getName(),s.toString()));
+			});
+		}
+
 		return String.format("""
 				*****\t Supplier description \t *****
+				%s
+				
+				*****\t Taste profile \t *****
 				%s
 				
 				****\t Cask life cycle \t *****
@@ -155,10 +184,26 @@ public int getMaturityMonths() {
 				****\t Distillate list \t *****
 				%s
 				Total quantity: %,-6.2f
+				Reserved quantity: %,-6.2f
 				
+				****\t Warehouse \t ****
+				Warehouse: %s
+				Storage rack: %s
+				Location: %d 
+				
+				****\t Alcohol percentage \t *****
+				%s
+				****\t Story lines \t *****
+				%s
+				****\t Production cut information \t *****
+				%s
 				*****\t Filling details \t *****
 				%s
-				""", supplier.getDescription(), lifeCycle,sbCask.toString(),sbFill.toString(), getQuantityStatus() ,getFillingTextLines());
+				""", supplier.getDescription(), tasteprofile ,lifeCycle,sbCask.toString(),
+				sbFill.toString(),getQuantityStatus(),getTotalReservedAmount(), getStorageRack().getWarehouse().toString(),
+				getStorageRack().toString(), Warehousing.getLocationByRack(getStorageRack(),this),
+				sbAlcohol.toString(),sbStory.toString(),
+				sbCutInfo.toString(),getFillingTextLines());
 	}
 
 	/**
@@ -389,7 +434,7 @@ public void spendReservation(Batch batch, double amount) {
 	}
 
 	/**
-	 * Returns alle fillings related to a given cask life cycle.
+	 * Returns all fillings related to a given cask life cycle.
 	 * @param LifeCycle
 	 * @return
 	 */

@@ -70,6 +70,9 @@ public abstract class Warehousing {
 	 * A cask is considered available if its remaining quantity is greater than zero.
 	 *
 	 * @return a list of available casks
+	 * Is nullable. If null than all existing cask will be returned.
+	 * @param minRemainingQuantity
+	 * @return
 	 */
 	public static List<Cask> getCasksMinQuantity(Double minRemainingQuantity) {
 		List<Cask> casks = new ArrayList<>();

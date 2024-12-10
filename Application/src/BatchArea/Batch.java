@@ -71,7 +71,7 @@ public class Batch {
 			sb.append("\n");
 			sb.append("Cask type: " + cask.getCaskType());
 			sb.append("\n");
-			sb.append("Cask story: " + Controllers.Production.getCaskStory(cask, completionDate));
+			sb.append("Cask story: " + Controllers.Production.getCaskStory(cask, completionDate,false));
 			// TODO: getCaskInfo check how it look when Leander finishes it
 		}
 		label = sb.toString();
