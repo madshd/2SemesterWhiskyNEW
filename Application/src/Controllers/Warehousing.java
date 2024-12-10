@@ -413,21 +413,21 @@ public static Ingredient createIngredientAndAdd(
 		}
 	}
 
-/**
- * Retrieves a list of unused storage racks.
- * A storage rack is considered unused if it is not assigned to any warehouse.
- *
- * @return A list of unused storage racks.
- */
-public static List<StorageRack> getUnusedStorageRacks() {
-	List<StorageRack> unusedStorageRacks = new ArrayList<>();
-	for (StorageRack sr : storage.getStorageRacks()) {
-		if (sr.getWarehouse() == null) {
-			unusedStorageRacks.add(sr);
+	/**
+	 * Retrieves a list of unused storage racks.
+	 * A storage rack is considered unused if it is not assigned to any warehouse.
+	 *
+	 * @return A list of unused storage racks.
+	 */
+	public static List<StorageRack> getUnusedStorageRacks() {
+		List<StorageRack> unusedStorageRacks = new ArrayList<>();
+		for (StorageRack sr : storage.getStorageRacks()) {
+			if (sr.getWarehouse() == null) {
+				unusedStorageRacks.add(sr);
+			}
 		}
+		return unusedStorageRacks;
 	}
-	return unusedStorageRacks;
-}
 
 	/**
 	 * Moves a storage rack to a specified warehouse.
