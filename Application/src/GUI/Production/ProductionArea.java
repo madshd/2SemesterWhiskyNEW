@@ -3,6 +3,8 @@ package GUI.Production;
 import Controllers.Production;
 import GUI.Common.Common;
 import GUI.Common.ConfirmationDialog;
+import GUI.Common.ErrorWindow;
+import GUI.Common.UpdateCaskCommonDialog;
 import Interfaces.Item;
 import Interfaces.OberverQuantitySubject;
 import Interfaces.ObserverQuantityObserver;
@@ -17,10 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
+import javafx.stage.*;
 import Production.Distillate;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +92,6 @@ public class ProductionArea {
 
 	public void initContent(GridPane gridPane) {
 		Label headerLabel = new Label("Production Area");
-		// headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
 		headerLabel.setId("LabelHeader");
 		headerLabel.setPrefWidth(screenBounds.getWidth() - 300);
@@ -272,9 +270,12 @@ public class ProductionArea {
 		}
 	}
 
-	private class Casks extends GridPane {
+	private class Casks extends GridPane implements ObserverQuantityObserver {
 		private final ListView<Item> lvwCasks = new ListView<>();
 		private final TextArea txaCaskDetails = new TextArea();
+		private final UpdateCaskCommonDialog updateCaskCommonDialog = new UpdateCaskCommonDialog(null);
+		private final ErrorWindow errorWindow = new ErrorWindow();
+		private final Stage updateCaskStage = new Stage();
 
 		public Casks(ProductionArea pa) {
 			// Generel settings
@@ -302,7 +303,7 @@ public class ProductionArea {
 
 			// Lists
 			double lvwWithCol0 = areaWidth * 0.6;
-			double lvwHeightCol0Top = areaHeight * 0.3;
+			double lvwHeightCol0Top = areaHeight * 0.45;
 
 			lvwCasks.setEditable(false);
 			lvwCasks.setPrefWidth(lvwWithCol0);
@@ -343,6 +344,10 @@ public class ProductionArea {
 			btnClose.setOnAction(actionEvent -> close());
 			this.add(btnClose, 3, 3);
 
+			// Prepare update cask dialogue
+			updateCaskStage.initModality(Modality.APPLICATION_MODAL);
+
+
 		}
 
 		private void buttionAction(Button button) {
@@ -351,6 +356,7 @@ public class ProductionArea {
 					mainPane.getChildren().clear();
 					openCaskToCaskTransfer();
 				}
+				case "update" -> openUpdateCask();
 			}
 		}
 
@@ -366,10 +372,31 @@ public class ProductionArea {
 			mainPane.add(transferInputElement,0,3);
 		}
 
+		private void openUpdateCask(){
+			Item item = lvwCasks.getSelectionModel().getSelectedItem();
+
+			if (item != null){
+				Cask cask = (Cask) item;
+
+				updateCaskCommonDialog.setCask(cask);
+                try {
+                    updateCaskCommonDialog.start(updateCaskStage);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to open 'Update cask details' window");
+                }
+            }else {
+				errorWindow.showError("Please select a cask.");
+			}
+		}
+
 		public void updatelist(Distillate distillate) {
 			if (distillate != null) {
 				List<Item> casks = new ArrayList<>(getCasksMinQuantity(0.0));
 				lvwCasks.getItems().setAll(casks);
+
+				casks.forEach(cask -> {
+					cask.addObserver(this);
+				});
 
 				Common.useSpecifiedListView(lvwCasks);
 			} else {
@@ -387,6 +414,10 @@ public class ProductionArea {
 			}
 		}
 
+		@Override
+		public void update(OberverQuantitySubject o) {
+			updatelist(null);
+		}
 	}
 
 	public void show() {

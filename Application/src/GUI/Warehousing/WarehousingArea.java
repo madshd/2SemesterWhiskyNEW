@@ -7,6 +7,7 @@ import GUI.Common.ErrorWindow;
 import GUI.Common.UpdateCaskCommonDialog;
 import Interfaces.Item;
 import Warehousing.Warehouse;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -27,6 +28,8 @@ import Warehousing.StorageRack;
 import Warehousing.LoggerObserver;
 import Warehousing.Cask;
 import Warehousing.Ingredient;
+
+import java.util.List;
 
 public class WarehousingArea {
 
@@ -129,7 +132,7 @@ public class WarehousingArea {
 		inventoryCRUDButtons.setAlignment(Pos.CENTER);
 		gridPane.add(inventorySection, 2, 1);
 
-		Common.useSpecifiedListView(inventoryList);
+//		Common.useSpecifiedListView(inventoryList);
 
 		// Button actions
 		btnCreateIngredient.setOnAction(e -> btnCreateIngredientAction());
@@ -312,7 +315,8 @@ public class WarehousingArea {
 		storageRacksList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				inventoryList.getItems().clear();
-				inventoryList.getItems().addAll(newValue.getList());
+				List<Item> items = newValue.getList();
+				inventoryList.getItems().addAll(Warehousing.getItemsByRack(newValue));
 			}
 		});
 

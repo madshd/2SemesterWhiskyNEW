@@ -3,9 +3,11 @@ package Controllers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import BatchArea.*;
 import Enumerations.TastingNote;
@@ -99,6 +101,18 @@ public abstract class BatchArea {
 
 	public static ArrayList<Formula> getAllFormulae() {
 		return (ArrayList<Formula>) storage.getFormulae();
+	}
+
+	public static Set<Cask> searchCasks(Formula formula){
+		Set<Cask> casks = new HashSet<>();
+		for (Cask cask : storage.getCasks()) {
+			for(TasteProfile tp : formula.getBlueprint().keySet()){
+				if(cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)){
+					casks.add(cask);
+				}
+			}
+		}
+		return casks;
 	}
 
 	// ===================== TASTE PROFILE =================== //
@@ -202,14 +216,14 @@ public abstract class BatchArea {
 	 * @return a map of casks used and their respective volumes
 	 */
 	public static Map<Cask, Double> produceBatch(Batch batch, int numBottlesToProduce) {
+		Map<Cask, Double> casksToUse = new HashMap<>();
+
 		validateProductionRequest(batch, numBottlesToProduce);
 
-		Map<Cask, Double> casksToUse = new HashMap<>();
 		Map<TasteProfile, Double> productionVolumeTP = calculateProductionVolume(numBottlesToProduce, batch);
-		Map<TasteProfile, List<Cask>> matchingCasks = getMatchingCasks(batch, productionVolumeTP, true);
 
-		for (TasteProfile tp : matchingCasks.keySet()) {
-			processCasksForTasteProfile(batch, tp, productionVolumeTP.get(tp), matchingCasks.get(tp), casksToUse);
+		for (TasteProfile tp : productionVolumeTP.keySet()) {
+			processCasksForTasteProfile(batch, tp, productionVolumeTP.get(tp), batch.getReservedCasks().keySet(), casksToUse);
 		}
 
 		batch.incNumProducedBottles(numBottlesToProduce);
@@ -242,13 +256,13 @@ public abstract class BatchArea {
 	 * @param batch          the batch for which the casks are being processed
 	 * @param tp             the taste profile
 	 * @param requiredVolume the volume required to be processed
-	 * @param casks          the list of casks to be processed
+	 * @param set          the list of casks to be processed
 	 * @param casksToUse     a map of casks used and their respective volumes
 	 */
 	private static void processCasksForTasteProfile(Batch batch, TasteProfile tp, double requiredVolume,
-			List<Cask> casks, Map<Cask, Double> casksToUse) {
+			Set<Cask> set, Map<Cask, Double> casksToUse) {
 		double remainingVolume = requiredVolume;
-		Iterator<Cask> iterator = casks.iterator();
+		Iterator<Cask> iterator = set.iterator();
 		while (iterator.hasNext() && remainingVolume > 0) {
 			Cask cask = iterator.next();
 			double reservedAmount = batch.getReservedCasks().get(cask);

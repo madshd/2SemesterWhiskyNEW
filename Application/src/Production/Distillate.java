@@ -18,7 +18,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	private double quantity;
 	private Distiller distiller;
 	private final Unit unit;
-	private String description;
+	private String description = "";
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
 	private final Set<ObserverQuantityObserver> observers = new HashSet<>();
 	private final List<StoryLine> storyLines = new ArrayList<>();

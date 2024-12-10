@@ -17,10 +17,13 @@ public class ErrorWindow extends Application {
 		alert.setTitle("Error");
 		alert.setHeaderText(null); // No header text
 		alert.setContentText(message); // Set the message
+		alert.getDialogPane().getScene().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
 		// Show the alert and wait for user to close it
 		alert.showAndWait();
 	}
+
+
 
 	public static void main(String[] args) {
 		launch(args);

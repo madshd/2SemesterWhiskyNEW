@@ -2,6 +2,7 @@ package Controllers;
 
 import Enumerations.IngredientType;
 import Enumerations.Unit;
+import Interfaces.Filling;
 import Interfaces.Item;
 import Interfaces.StorageInterface;
 import Warehousing.Cask;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import java.util.ArrayList;
+import Warehousing.FillIngredient;
 
 /*
 Methods that is mainly used within the Warehousing area
@@ -372,7 +374,7 @@ public static Ingredient createIngredientAndAdd(
 
 	/**
 	 * Updates the taste profile of a cask and moves it to a different storage rack if necessary.
-	 *
+	 * If the cask is moved to a different warehouse, it is removed from the current warehouse and added to the new one.
 	 * @param cask The cask to be updated.
 	 * @param value The new taste profile to be set for the cask.
 	 * @param selectedWarehouse The warehouse where the cask is currently stored.
@@ -396,12 +398,17 @@ public static Ingredient createIngredientAndAdd(
 		}
 
 	public static void updateIngredient(Ingredient ingredient, double quantity, Warehouse selectedWarehouse, StorageRack selectedStorageRack) {
-		ingredient.setQuantity(quantity);
-		if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
-			if (selectedWarehouse != null && selectedStorageRack != null) {
-				int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
-				int toIndex = selectedStorageRack.getFreeShelf();
-				moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+		if (quantity < 0) {
+			throw new IllegalArgumentException("Quantity cannot be negative.");
+		} else {
+			FillIngredient fill = new FillIngredient(LocalDate.now(), quantity, null, ingredient, false);
+			ingredient.updateQuantity(fill);
+			if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
+				if (selectedWarehouse != null && selectedStorageRack != null) {
+					int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
+					int toIndex = selectedStorageRack.getFreeShelf();
+					moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+				}
 			}
 		}
 	}
@@ -523,5 +530,15 @@ public static List<StorageRack> getUnusedStorageRacks() {
 	 */
 	public static int getLocationByRack(StorageRack storageRack, Item item) {
 		return storageRack.getItemLocation(item);
+	}
+
+	public static List<Item> getItemsByRack(StorageRack storageRack) {
+		List<Item> items = new ArrayList<>();
+		for (int i = 0; i < storageRack.getList().size(); i++) {
+			if (storageRack.getList().get(i) != null) {
+				items.add(storageRack.getList().get(i));
+			}
+		}
+		return items;
 	}
 }
