@@ -259,6 +259,11 @@ public abstract class CaskToCaskTransfer {
 
             double liters = Double.parseDouble(txfInputLiters.getText().trim());
 
+            if (liters <= 0){
+                errorWindow.showError("Liters must be greater than zero.");
+                return;
+            }
+
             try {
                 Production.caskToCaskTransfer(selectedCaskFrom,selectedCaskTo,liters,date);
             }catch (IllegalArgumentException e){
