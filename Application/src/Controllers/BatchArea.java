@@ -197,13 +197,13 @@ public abstract class BatchArea {
 				double caskVolume = cask.getLegalQuantity();
 				double reservedAmount = Math.min(remainingVolume, caskVolume);
 
-				makeCaskReservation(batch, cask, reservedAmount);
+				performCaskReservation(batch, cask, reservedAmount);
 				remainingVolume -= reservedAmount;
 			}
 		}
 	}
 
-	private static void makeCaskReservation(Batch batch, Cask cask, double reservedAmount) {
+	private static void performCaskReservation(Batch batch, Cask cask, double reservedAmount) {
 		cask.makeReservation(batch, reservedAmount);
 		batch.addReservedCask(cask, reservedAmount);
 	}

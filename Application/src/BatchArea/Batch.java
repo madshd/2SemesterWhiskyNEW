@@ -20,7 +20,7 @@ public class Batch {
 	private int numProducedBottles;
 	private String labelSimple = null;
 	private String labelFull = null;
-	private final List<Cask> usedCask = new ArrayList<>();
+	private final List<Cask> usedCasks = new ArrayList<>();
 
 	private boolean productionComplete;
 
@@ -69,10 +69,10 @@ public class Batch {
 		sb.append("\n");
 		sb.append("Batch Size: " + numProducedBottles + " bottles");
 		sb.append("\n");
-		sb.append("Tasting Notes: " + weightedTastingNotes() + "\n");
+		sb.append("Tasting Notes: " + getWeightedTastingNotes() + "\n");
 		sb.append("-------------------------\n");
 		sb.append("Casks used in the production of this batch: \n");
-		for (Cask cask : usedCask) {
+		for (Cask cask : usedCasks) {
 			sb.append("\n    *** Cask ID: " + cask.getCaskID() + " ***");
 			sb.append("\n");
 			sb.append("Cask type: " + cask.getCaskType());
@@ -90,10 +90,10 @@ public class Batch {
 		sb.append("\n");
 		sb.append("Batch Size: " + numProducedBottles + " bottles");
 		sb.append("\n");
-		sb.append("Tasting Notes: " + weightedTastingNotes() + "\n");
+		sb.append("Tasting Notes: " + getWeightedTastingNotes() + "\n");
 		sb.append("-------------------------\n");
 		sb.append("Casks used in the production of this batch: \n");
-		for (Cask cask : usedCask) {
+		for (Cask cask : usedCasks) {
 			sb.append("\n    *** Cask ID: " + cask.getCaskID() + " ***");
 			sb.append("\n");
 			sb.append("Cask type: " + cask.getCaskType());
@@ -103,7 +103,8 @@ public class Batch {
 		labelSimple = sb.toString();
 	}
 
-	private String weightedTastingNotes() {
+	private String getWeightedTastingNotes(
+	) {
 		int numNotes = 3;
 		StringBuilder sb = new StringBuilder();
 		List<TastingNote> tastingNotesSortedByPercentage = new ArrayList<>(
@@ -116,7 +117,7 @@ public class Batch {
 	}
 
 	public void addUsedCask(Cask cask) {
-		usedCask.add(cask);
+		usedCasks.add(cask);
 	}
 
 	// ---------------------------GENERIC-GETTERS----------------------------//

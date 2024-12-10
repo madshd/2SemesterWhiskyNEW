@@ -1,10 +1,12 @@
 package BatchArea;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,21 +58,30 @@ public class Formula implements Serializable {
 		this.blueprint = blueprint;
 	}
 
+	/**
+	 * Retrieves a set of weighted tasting notes based on the taste profiles and
+	 * their percentage quantities in the Formulas blueprint.
+	 * The taste profiles are sorted in descending order of their weights before
+	 * extracting the tasting notes.
+	 *
+	 * @return a set of weighted tasting notes
+	 */
 	public Set<TastingNote> getWeightedTastingNotes() {
-		Map<TasteProfile, Double> sortedTasteProfiles = blueprint.entrySet().stream()
-				.sorted(Map.Entry.<TasteProfile, Double>comparingByValue(Comparator.reverseOrder()))
-				.collect(Collectors.toMap(
-						Map.Entry::getKey,
-						Map.Entry::getValue,
-						(e1, e2) -> {
-							return e1;
-						},
-						LinkedHashMap::new));
+		List<Map.Entry<TasteProfile, Double>> entries = new ArrayList<>(blueprint.entrySet());
+
+		entries.sort((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()));
+
+		Map<TasteProfile, Double> sortedTasteProfiles = new LinkedHashMap<>();
+		for (Map.Entry<TasteProfile, Double> entry : entries) {
+			sortedTasteProfiles.put(entry.getKey(), entry.getValue());
+		}
 
 		Set<TastingNote> weightedTastingNotes = new HashSet<>();
 		for (TasteProfile tp : sortedTasteProfiles.keySet()) {
 			weightedTastingNotes.addAll(tp.getTastingNotes());
 		}
+
 		return weightedTastingNotes;
 	}
+
 }
