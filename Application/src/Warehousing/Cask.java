@@ -106,6 +106,14 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return maxQuantity - getQuantityStatus();
 	}
 
+	/**
+	 * Returns difference between max quantity and getLegalQuntity, this takes reserved amount into account.
+	 * @return
+	 */
+	public double getRemainingLegalQuantity(){
+		return maxQuantity - getLegalQuantity();
+	}
+
 	public int getLifeCycle() {
 		return lifeCycle;
 	}
