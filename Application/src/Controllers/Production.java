@@ -16,10 +16,7 @@ import Warehousing.Ingredient;
 import Warehousing.FillIngredient;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /*
  * Methods that is mainly used within the production area
@@ -241,9 +238,118 @@ public abstract class Production {
 	 * @return
 	 */
 	public static String getCaskStory(Cask cask, LocalDate date, boolean storyIsSimple){
-		//TODO by leander
+		StringBuilder sb = new StringBuilder();
+		StringBuilder sbCaskHistory = new StringBuilder();
+		StringBuilder sbDistillates = new StringBuilder();
+		StringBuilder sbIngredients = new StringBuilder();
+		List<Filling> filllings = cask.getFillingsStackHavingLifeCycleGroupedByDistillate(cask.getLifeCycle(),date);
+		Set<Ingredient> ingredients = new HashSet<>();
 
-		return "To be implemented";
+		for (Item i : cask.getCasksAddedByTransfer(cask.getLifeCycle())){
+			sbCaskHistory.append(String.format("""
+					,%s """,((Cask) i).getSupplier().getName()));
+		}
+
+		for (Filling f : filllings){
+			Distillate distillate = ((FillDistillate)f).getDistillate();
+
+			sbDistillates.append(String.format("""
+					,%s """,distillate.getName()));
+
+			for (Filling ingredient : distillate.getFillIngredients()){
+				ingredients.add(((FillIngredient) ingredient).getIngredient());
+			}
+		}
+
+		for (Ingredient ingredient : ingredients){
+			sbIngredients.append(String.format("""
+					,%s """,ingredient.getName()));
+		}
+
+
+		if (storyIsSimple){
+			sb.append(String.format("""
+					This whisky has been created on cask(s) from %s.
+					
+					Distillate(s) used in this whisky are %s.
+					
+					Ingredients used in this whisky are %s.
+					""",sbCaskHistory.toString(),sbDistillates.toString(),sbIngredients.toString()));
+		}else {
+			StringBuilder sbDistillerInfo = new StringBuilder();
+			StringBuilder sbDistillateInfo = new StringBuilder();
+			StringBuilder sbStoryLines = new StringBuilder();
+			Set<Distiller> distillers = new HashSet<>();
+			Set<Distillate> distillates = new HashSet<>();
+
+			for (Filling f : filllings){
+				Distillate distillate = ((FillDistillate)f).getDistillate();
+				Distiller distiller = distillate.getDistiller();
+				distillates.add(distillate);
+				distillers.add(distiller);
+			}
+
+			for (Distillate d : distillates){
+				sbDistillateInfo.append(String.format("""
+						,%s""", d.getDescription()));
+
+				for (StoryLine s : d.getStoryLines()){
+					sbStoryLines.append(String.format("""
+							,%s""",s.getStoryLine()));
+				}
+			}
+
+			for (Distiller d : distillers){
+				sbDistillerInfo.append(String.format("""
+						,%s""",d.getStory()));
+			}
+
+			sb.append(String.format("""
+					*** Start LLM PROMPT ***
+							Task:
+							Your task is to create a descriptive and marketing-oriented whisky label text based on the following data. The text should highlight the craftsmanship, ingredients, flavor profile, and characteristics of the whisky in an engaging and persuasive way, suitable for whisky enthusiasts. Keep the text concise and inspiring, as it would appear on a bottle label.
+							     
+							Data for the label:
+							     
+							Craftsmanship vision:
+							A distilling veteran known for creating rich and complex whiskies with deep character.
+							Cask type:
+							Oak Master Barrels.
+							Distillate used:
+							Bourbon Blend.
+							Flavor and aroma description:
+							A light distillate with green apple freshness and subtle nutty undertones from American oak aging.
+							Details on Bourbon Blend:
+							Bourbon Blend pays homage to the whiskey traditions of America. Combining the creamy richness of bourbon influence, this whisky seeks to capture the warm, sweet oak notes loved by bourbon enthusiasts while retaining a uniquely Scottish character.
+							Ingredients:
+							Brewer's Yeast, Pure Spring Water, Islay Peat Moss, Fermentation Sugar, Barley - Evergreen.
+							Format:
+							Generate a cohesive text that can be used as a whisky bottle label. The text should emphasize:
+							     
+							Craftsmanship vision.
+							The type of cask and distillate used.
+							Flavor profile and aroma.
+							Ingredients.
+							Style:
+							Elegant, authentic, and persuasive, speaking directly to whisky enthusiasts.
+					*** END LLM PROMPT ***
+				
+					The people behind this put these phrases towards their craftsmanship. %s
+					
+					This whisky has been created on cask(s) from %s.
+					
+					Distillate(s) used in this whisky are %s.
+					
+					We would like to descripe the distallate(s) in this whisky like this. %s
+					
+					While we have worked on this whisky we have noted these details: %s
+					
+					Ingredients used in this whisky are %s.
+					""",sbDistillerInfo.toString(),sbCaskHistory.toString(),sbDistillates.toString(),
+					sbDistillateInfo.toString(),sbStoryLines.toString(), sbIngredients.toString()));
+		}
+
+		return sb.toString();
 	}
 
 	/**

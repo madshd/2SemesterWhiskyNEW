@@ -39,7 +39,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	// Functions regarding filling type distillate
 
 	/**
-	 *
+	 * Used for decreasing quantity.
 	 * @param fillDistillate
 	 * @return
 	 * @throws IllegalStateException
@@ -66,6 +66,10 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 		return quantity;
 	}
 
+	/**
+	 * Returns what is left of produced quantity.
+	 * @return
+	 */
 	@Override
 	public double getRemainingQuantity() {
 		return this.quantity + getQuantityStatus();
@@ -90,17 +94,28 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	}
 
 
-	// Functions regarding filling type ingredient
+	/**
+	 * Adds a quantity of ingedient to distillate.
+	 * @param filling
+	 */
 	public void addIngredientFilling(Filling filling){
 		notifyObservers();
 		fillIngredients.add(filling);
 	}
 
+	/**
+	 * Removes a quantity of ingedient to distillate.
+	 * @param filling
+	 */
 	public boolean removeIngredientFilling(Filling filling){
 		notifyObservers();
 		return fillIngredients.remove(filling);
 	}
 
+	/**
+	 * A distinct list of ingredients based on fillings.
+	 * @return
+	 */
 	public List<Item> getIngredientsInDistillate(){
 		List<Item> items = new ArrayList<>();
 
@@ -126,6 +141,11 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 				""",getIngredientAddDates(ingredient), getIngredientUsedQuantity(ingredient),ingredient.getDescription());
 	}
 
+	/**
+	 * Total quntity based on fillings.
+	 * @param ingredient
+	 * @return
+	 */
 	public double getIngredientUsedQuantity(Ingredient ingredient){
 		double quantity = 0;
 
@@ -139,7 +159,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 		return quantity;
 	}
 
-	public String getIngredientAddDates(Ingredient ingredient){
+	private String getIngredientAddDates(Ingredient ingredient){
 		StringBuilder sb = new StringBuilder();
 
 		for (Filling f : fillIngredients){
