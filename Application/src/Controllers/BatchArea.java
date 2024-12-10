@@ -353,7 +353,6 @@ public abstract class BatchArea {
 		for (TasteProfile tp : blueprint.keySet()) {
 			double percentage = blueprint.get(tp) / 100.0;
 			double totalVolumePerTP = 0;
-
 			for (Cask cask : casksToCheck) {
 				double reservedAmount = 0;
 				if (batch != null) {
@@ -364,17 +363,14 @@ public abstract class BatchArea {
 						}
 					}
 				}
-
 				// Only add volume for casks with the matching taste profile
 				if (cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)) {
 					totalVolumePerTP += cask.getLegalQuantity() + reservedAmount;
 				}
 			}
-
 			double amountBottlesPossiblePerTP = (totalVolumePerTP / bottleSizeLITERS) * percentage;
 			maxNumBottles = Math.min(maxNumBottles, (int) amountBottlesPossiblePerTP);
 		}
-
 		return maxNumBottles;
 	}
 
@@ -393,6 +389,7 @@ public abstract class BatchArea {
 		double totalProductionVolumeLITER = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS,totalProductionVolumeML);
 		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
 		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
+
 		for (TasteProfile tasteProfile : blueprint.keySet()) {
 			double percentage = blueprint.get(tasteProfile) / 100.0;
 			double volume = totalProductionVolumeLITER * percentage;
