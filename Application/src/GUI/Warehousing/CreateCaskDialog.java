@@ -2,6 +2,7 @@ package GUI.Warehousing;
 
 import Controllers.Warehousing;
 import Enumerations.Unit;
+import GUI.Common.ConfirmationDialog;
 import GUI.Common.ErrorWindow;
 import Interfaces.Item;
 import Warehousing.Supplier;
@@ -39,7 +40,7 @@ public class CreateCaskDialog extends Application {
     private Stage stage;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         updateLists();
         this.stage = stage;
         // Opret hovedlayoutet
@@ -74,20 +75,26 @@ public class CreateCaskDialog extends Application {
         stage.show();
     }
 
-    private void btnCreateAction() {
-        if (isFormValid() == true) {
-            Warehousing.createCaskAndAdd(
-                    Integer.parseInt(txfCaskId.getText()),
-                    Double.parseDouble(txfMaxQuantity.getText()),
-                    Unit.LITERS,
-                    cbxSupplier.getValue(),
-                    txfCaskType.getText(),
-                    lvwWarehouses.getSelectionModel().getSelectedItem(),
-                    lvwStorageRacks.getSelectionModel().getSelectedItem());
-            stage.close();
+private void btnCreateAction() {
+    ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+    confirmationDialog.show("Are you sure you want to create this cask?", confirmed -> {
+        if (confirmed) {
+            if (isFormValid()) {
+                Warehousing.createCaskAndAdd(
+                        Integer.parseInt(txfCaskId.getText()),
+                        Double.parseDouble(txfMaxQuantity.getText()),
+                        Unit.LITERS,
+                        cbxSupplier.getValue(),
+                        txfCaskType.getText(),
+                        lvwWarehouses.getSelectionModel().getSelectedItem(),
+                        lvwStorageRacks.getSelectionModel().getSelectedItem());
+                stage.close();
+            } else {
+                errorWindow.showError("Please fill out all fields correctly.");
+            }
         }
-        errorWindow.showError("Please fill out all fields correctly.");
-    }
+    });
+}
 
     private boolean isFormValid() {
         return !txfCaskId.getText().isEmpty() &&

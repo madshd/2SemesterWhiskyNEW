@@ -3,6 +3,7 @@ package GUI.Warehousing;
 import Controllers.Warehousing;
 import Enumerations.IngredientType;
 import Enumerations.Unit;
+import GUI.Common.ConfirmationDialog;
 import GUI.Common.ErrorWindow;
 import Storage.Storage;
 import Warehousing.Ingredient;
@@ -55,7 +56,7 @@ public class UpdateIngredientDialog extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         // Opret hovedlayoutet
         stage.show();
         populateFields();
@@ -97,16 +98,30 @@ public class UpdateIngredientDialog extends Application {
     }
 
     private void btnUpdateAction() {
-        if (!txfQuantity.getText().isEmpty() && Double.parseDouble(txfQuantity.getText()) > 0) {
-            Warehousing.updateIngredient(
-                    ingredient,
-                    Double.parseDouble(txfQuantity.getText().trim()),
-                    lvwWarehouse.getSelectionModel().getSelectedItem(),
-                    lvwStorageRack.getSelectionModel().getSelectedItem()
-            );
-            stage.close();
-        } else
-            errorWindow.showError("Quantity is not filled out correctly.");
+        ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+        confirmationDialog.show("Are you sure you want to update?", confirmed -> {
+            if (confirmed) {
+                if (!txfQuantity.getText().isEmpty() && Double.parseDouble(txfQuantity.getText()) > 0) {
+                    Warehousing.updateIngredient(
+                            ingredient,
+                            Double.parseDouble(txfQuantity.getText().trim()),
+                            lvwWarehouse.getSelectionModel().getSelectedItem(),
+                            lvwStorageRack.getSelectionModel().getSelectedItem()
+                    );
+                    stage.close();
+                } else if (txfQuantity.getText().isEmpty()) {
+                    Warehousing.updateIngredient(
+                            ingredient,
+                            0,
+                            lvwWarehouse.getSelectionModel().getSelectedItem(),
+                            lvwStorageRack.getSelectionModel().getSelectedItem()
+                    );
+                    stage.close();
+                } else {
+                    errorWindow.showError("Quantity is not filled out correctly.");
+                }
+            }
+        });
     }
 
     private void populateFields() {

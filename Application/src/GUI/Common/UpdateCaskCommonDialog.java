@@ -43,7 +43,7 @@ public class UpdateCaskCommonDialog extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         populateFields();
         this.stage = stage;
         // Create the main layout
@@ -105,19 +105,24 @@ public class UpdateCaskCommonDialog extends Application {
         }
     }
 
-    public void btnUpdateAction() {
-        if (isFormValid()) {
-            Warehousing.updateCask(
-                    cask,
-                    cbxTasteProfile.getValue(),
-                    lvwWarehouses.getSelectionModel().getSelectedItem(),
-                    lvwStorageRacks.getSelectionModel().getSelectedItem()
-            );
-            stage.close();
-        } else {
-            new ErrorWindow().showError("Please fill out all fields correctly.");
+public void btnUpdateAction() {
+    ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+    confirmationDialog.show("Are you sure you want to update?", confirmed -> {
+        if (confirmed) {
+            if (isFormValid()) {
+                Warehousing.updateCask(
+                        cask,
+                        cbxTasteProfile.getValue(),
+                        lvwWarehouses.getSelectionModel().getSelectedItem(),
+                        lvwStorageRacks.getSelectionModel().getSelectedItem()
+                );
+                stage.close();
+            } else {
+                new ErrorWindow().showError("Please fill out all fields correctly.");
+            }
         }
-    }
+    });
+}
 
     private boolean isFormValid() {
         return !txfCaskId.getText().isEmpty() &&

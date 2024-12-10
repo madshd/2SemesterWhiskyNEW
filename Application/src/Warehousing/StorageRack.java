@@ -50,7 +50,6 @@ public class StorageRack {
         if (shelfNo >= 0 && shelfNo < shelves && list.get(shelfNo) == null) {
             item.setStorageRack(this);
             list.set(shelfNo, item);
-            notifyWarehousingObservers( item + " added to shelf " + shelfNo + ": " + item.getListInfo());
         } else {
             throw new IllegalStateException("Shelf is occupied or invalid");
         }
@@ -62,7 +61,7 @@ public class StorageRack {
         }
         item.setStorageRack(null);
         list.remove(item);
-        notifyWarehousingObservers( item + " removed at shelf " + shelfNo);
+//        notifyWarehousingObservers( item + " removed at shelf " + shelfNo);
     }
 
     public void moveItem(Item item, int atIndex, int toIndex) {

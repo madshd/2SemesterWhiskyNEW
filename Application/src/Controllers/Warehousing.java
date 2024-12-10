@@ -174,7 +174,7 @@ public static Ingredient createIngredientAndAdd(
 				if (storageRack.getList().get(i) == null) {
 					storageRack.addItem(i, cask);
 					storageRack.getWarehouse().notifyWarehousingObserversWithDetails(
-							"Cask added: " + cask.getName() + " to Rack: " + storageRack.getId() +
+							"Cask added: ID " + cask.getName() + " to Rack: " + storageRack.getId() +
 									", Shelf: " + i + " in Warehouse: " + storageRack.getWarehouse().getName());
 					return cask;
 				}
@@ -228,13 +228,13 @@ public static Ingredient createIngredientAndAdd(
 
 		fromStorageRack.removeItem(item, fromIndex);
 		fromWarehouse.notifyWarehousingObserversWithDetails(
-				"Item removed from Rack: " + fromStorageRack.getId() +
+				  item.getName() + " removed from Rack: " + fromStorageRack.getId() +
 						", Shelf: " + fromIndex +
 						" in Warehouse: " + fromWarehouse.getName());
 
 		toStorageRack.addItem(toIndex, item);
 		toWarehouse.notifyWarehousingObserversWithDetails(
-				"Item added to Rack: " + toStorageRack.getId() +
+				 item.getName() + " added to Rack: " + toStorageRack.getId() +
 						", Shelf: " + toIndex +
 						" in Warehouse: " + toWarehouse.getName());
 	}
@@ -263,20 +263,20 @@ public static Ingredient createIngredientAndAdd(
 		}
 
 		fromStorageRack.removeItem(item, fromIndex);
-//		if (fromStorageRack.getWarehouse() != null) {
-//			fromStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
-//					"Item removed from Rack: " + fromStorageRack.getId() +
-//							", Shelf: " + fromIndex +
-//							" in Warehouse: " + fromStorageRack.getWarehouse().getName());
-//		}
+		if (fromStorageRack.getWarehouse() != null) {
+			fromStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
+					item.getName() + " removed from Rack: " + fromStorageRack.getId() +
+							", Shelf: " + fromIndex +
+							" in Warehouse: " + fromStorageRack.getWarehouse().getName());
+		}
 
 		toStorageRack.addItem(toIndex, item);
-//		if (toStorageRack.getWarehouse() != null) {
-//			toStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
-//					"Item added to Rack: " + toStorageRack.getId() +
-//							", Shelf: " + toIndex +
-//							" in Warehouse: " + toStorageRack.getWarehouse().getName());
-//		}
+		if (toStorageRack.getWarehouse() != null) {
+			toStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
+					item.getName() + " added to Rack: " + toStorageRack.getId() +
+							", Shelf: " + toIndex +
+							" in Warehouse: " + toStorageRack.getWarehouse().getName());
+		}
 
 		System.out.println("Item moved from " + fromStorageRack.getId() + " shelf " + fromIndex + " to "
 				+ toStorageRack.getId() + " shelf " + toIndex);
@@ -405,13 +405,22 @@ public static Ingredient createIngredientAndAdd(
 		if (quantity < 0) {
 			throw new IllegalArgumentException("Quantity cannot be negative.");
 		} else {
-			FillIngredient fill = new FillIngredient(LocalDate.now(), quantity, null, ingredient, false);
-			ingredient.updateQuantity(fill);
-			if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
-				if (selectedWarehouse != null && selectedStorageRack != null) {
-					int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
-					int toIndex = selectedStorageRack.getFreeShelf();
-					moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+			if (quantity == 0) {
+				if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
+					if (selectedWarehouse != null && selectedStorageRack != null) {
+						int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
+						int toIndex = selectedStorageRack.getFreeShelf();
+						moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+					}
+				}
+				FillIngredient fill = new FillIngredient(LocalDate.now(), quantity, null, ingredient, false);
+				ingredient.updateQuantity(fill);
+				if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
+					if (selectedWarehouse != null && selectedStorageRack != null) {
+						int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
+						int toIndex = selectedStorageRack.getFreeShelf();
+						moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+					}
 				}
 			}
 		}
