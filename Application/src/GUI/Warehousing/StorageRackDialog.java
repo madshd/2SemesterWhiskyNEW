@@ -1,6 +1,5 @@
 package GUI.Warehousing;
 
-import BatchArea.TasteProfile;
 import Controllers.Warehousing;
 import GUI.Common.ErrorWindow;
 import javafx.application.Application;
@@ -11,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -27,9 +25,8 @@ public class StorageRackDialog extends Application {
 
     @Override
     public void start(Stage stage) {
-        this.stage = stage; // Initialize the stage instance variable
+        this.stage = stage;
         stage.show();
-        // Create the main layout
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(20, 20, 20, 20));

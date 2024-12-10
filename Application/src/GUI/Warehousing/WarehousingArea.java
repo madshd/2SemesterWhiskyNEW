@@ -1,13 +1,11 @@
 package GUI.Warehousing;
 
 import Controllers.Warehousing;
-import GUI.Common.Common;
 import GUI.Common.ConfirmationDialog;
 import GUI.Common.ErrorWindow;
 import GUI.Common.UpdateCaskCommonDialog;
 import Interfaces.Item;
 import Warehousing.Warehouse;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;

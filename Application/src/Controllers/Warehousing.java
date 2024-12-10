@@ -2,7 +2,6 @@ package Controllers;
 
 import Enumerations.IngredientType;
 import Enumerations.Unit;
-import Interfaces.Filling;
 import Interfaces.Item;
 import Interfaces.StorageInterface;
 import Warehousing.Cask;
@@ -11,8 +10,6 @@ import Warehousing.Warehouse;
 import Warehousing.StorageRack;
 import Warehousing.Ingredient;
 import BatchArea.TasteProfile;
-import Production.FillDistillate;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -468,6 +465,11 @@ public static Ingredient createIngredientAndAdd(
 		Warehouse warehouse = storageRack.getWarehouse();
 		if (warehouse == null) {
 			throw new IllegalArgumentException("Storage rack is not in a warehouse.");
+		}
+		for (Item item : storageRack.getList()) {
+			if (item != null) {
+				throw new IllegalStateException("Storage rack is not empty.");
+			}
 		}
 		warehouse.removeStorageRack(storageRack);
 		storageRack.setWarehouse(null);
