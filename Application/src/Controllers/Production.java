@@ -241,9 +241,11 @@ public abstract class Production {
 	 * @return
 	 */
 	public static String getCaskStory(Cask cask, LocalDate date, boolean storyIsSimple){
-		//TODO by leander
-
-		return "To be implemented";
+		if (storyIsSimple){
+			return "To be implemented, Simple story";
+		} else {
+			return "To be implemented, Full story";
+		}
 	}
 
 	/**

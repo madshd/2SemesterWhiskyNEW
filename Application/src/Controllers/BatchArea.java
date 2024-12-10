@@ -421,8 +421,8 @@ public abstract class BatchArea {
 	 * @return the label if it has been generated, otherwise a message indicating
 	 *         the label has not been generated
 	 */
-	public static String getLabelForBatch(Batch batch) {
-		String label = batch.getLabel();
+	public static String getLabelForBatch(Batch batch, boolean isSimpleStory) {
+		String label = batch.getLabel(isSimpleStory);
 		if (label != null) {
 			return label;
 		} else {

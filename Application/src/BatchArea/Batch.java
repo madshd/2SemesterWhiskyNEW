@@ -18,7 +18,8 @@ public class Batch {
 	private LocalDate completionDate;
 	private int numExpectedBottles;
 	private int numProducedBottles;
-	private String label = null;
+	private String labelSimple = null;
+	private String labelFull = null;
 	private final List<Cask> usedCask = new ArrayList<>();
 
 	private boolean productionComplete;
@@ -56,6 +57,11 @@ public class Batch {
 	}
 
 	public void generateLabel() {
+		generateLabelSimple();
+		generateLabelFull();
+	}
+
+	public void generateLabelFull() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(product.getProductName());
 		sb.append("\n");
@@ -71,10 +77,30 @@ public class Batch {
 			sb.append("\n");
 			sb.append("Cask type: " + cask.getCaskType());
 			sb.append("\n");
-			sb.append("Cask story: " + Controllers.Production.getCaskStory(cask, completionDate,false));
-			// TODO: getCaskInfo check how it look when Leander finishes it
+			sb.append("Cask story: " + Controllers.Production.getCaskStory(cask, completionDate, false));
 		}
-		label = sb.toString();
+		labelFull = sb.toString();
+	}
+
+	public void generateLabelSimple() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(product.getProductName());
+		sb.append("\n");
+		sb.append("Bottled: " + completionDate);
+		sb.append("\n");
+		sb.append("Batch Size: " + numProducedBottles + " bottles");
+		sb.append("\n");
+		sb.append("Tasting Notes: " + weightedTastingNotes() + "\n");
+		sb.append("-------------------------\n");
+		sb.append("Casks used in the production of this batch: \n");
+		for (Cask cask : usedCask) {
+			sb.append("\n    *** Cask ID: " + cask.getCaskID() + " ***");
+			sb.append("\n");
+			sb.append("Cask type: " + cask.getCaskType());
+			sb.append("\n");
+			sb.append("Cask story: " + Controllers.Production.getCaskStory(cask, completionDate, true));
+		}
+		labelSimple = sb.toString();
 	}
 
 	private String weightedTastingNotes() {
@@ -141,7 +167,7 @@ public class Batch {
 	}
 
 	public boolean isLabelGenerated() {
-		return label != null;
+		return labelSimple != null;
 	}
 
 	public LocalDate getCompletionDate() {
@@ -156,8 +182,12 @@ public class Batch {
 		return batchIDglobalCount;
 	}
 
-	public String getLabel() {
-		return label;
+	public String getLabel(Boolean isSimpleStory) {
+		if (isSimpleStory) {
+			return labelSimple;
+		} else {
+			return labelFull;
+		}
 	}
 
 	public int getNumRemainingBottles() {

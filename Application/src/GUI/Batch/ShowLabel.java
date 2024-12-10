@@ -29,13 +29,13 @@ public class ShowLabel {
 		initContent(gridPane);
 	}
 
-	public void show(Batch batch) {
-		updateContent(batch);
+	public void show(Batch batch, boolean isSimpleStory) {
+		updateContent(batch, isSimpleStory);
 		showLabelStage.showAndWait();
 	}
 
-	private void updateContent(Batch batch) {
-		labelArea.setText(batch.getLabel());
+	private void updateContent(Batch batch, boolean isSimpleStory) {
+		labelArea.setText(batch.getLabel(isSimpleStory));
 		labelArea.setId("labelArea");
 	}
 

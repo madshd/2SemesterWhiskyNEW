@@ -59,7 +59,6 @@ public int getMaturityMonths() {
         LocalDate lastEndDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
         return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
     } catch (Exception e) {
-        System.err.println("Error calculating maturity months: " + e.getMessage());
         return 0;
     }
 }
@@ -344,9 +343,7 @@ public double getLegalQuantity() {
  * @param amount the amount to reserve.
  */
 public void makeReservation(Batch batch, double amount) {
-		System.out.println("Reservation in batch" + batch);
     reservedBatchesAmount.put(batch, amount);
-		System.out.println(reservedBatchesAmount);
 }
 
 /**
@@ -357,9 +354,6 @@ public void makeReservation(Batch batch, double amount) {
  * @param amount the amount to spend.
  */
 public void spendReservation(Batch batch, double amount) {
-
-		System.out.println(reservedBatchesAmount);
-			
     double reservedAmount = reservedBatchesAmount.get(batch);
     if (reservedAmount - amount == 0) {
         reservedBatchesAmount.remove(batch);
