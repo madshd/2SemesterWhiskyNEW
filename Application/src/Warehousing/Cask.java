@@ -45,7 +45,11 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return unit;
 	}
 
-public int getMaturityMonths() {
+	/**
+	 * Returns count of mounth until cask content can be categorised as whisky
+	 * @return
+	 */
+	public int getMaturityMonths() {
     List<Filling> fillings = getFillingStack();
 
     try {
@@ -58,10 +62,12 @@ public int getMaturityMonths() {
 
         LocalDate lastEndDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
         return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
-    } catch (Exception e) {
-        return 0;
-    }
-}
+
+		} catch (Exception e) {
+			System.err.println("Error calculating maturity months: " + e.getMessage());
+			return 0;
+		}
+	}
 
 	public String getCaskType() {
 		return caskType;
@@ -91,15 +97,31 @@ public int getMaturityMonths() {
 			o.update(this);
 	}
 
+	/**
+	 * Returns difference between max quantity and current quantity
+	 * @return
+	 */
 	@Override
 	public double getRemainingQuantity() {
 		return maxQuantity - getQuantityStatus();
+	}
+
+	/**
+	 * Returns difference between max quantity and getLegalQuntity, this takes reserved amount into account.
+	 * @return
+	 */
+	public double getRemainingLegalQuantity(){
+		return maxQuantity - getLegalQuantity();
 	}
 
 	public int getLifeCycle() {
 		return lifeCycle;
 	}
 
+	/**
+	 * Returns info string than is disigned for list views.
+	 * @return
+	 */
 	public String getListInfo() {
 		int maxNameLength = 15;
 		String supplierName = supplier.getName();
@@ -112,6 +134,10 @@ public int getMaturityMonths() {
 				listName, maxQuantity, getRemainingQuantity());
 	}
 
+	/**
+	 * Retruns a string that is designed for presentation of fillings in text areas.
+	 * @return
+	 */
 	public String getFillingTextLines() {
 		StringBuilder sb = new StringBuilder();
 		for (Filling f : fillingStack) {
@@ -124,6 +150,10 @@ public int getMaturityMonths() {
 		return Integer.toString(caskID);
 	}
 
+	/**
+	 * Returns a deatailed desctription of current content that is designed for a text area.
+	 * @return
+	 */
 	public String getDetails() {
 		Set<Item> tranferCasks = getCasksAddedByTransfer(lifeCycle);
 		String tasteprofile = (tasteProfile != null) ? tasteProfile.getProfileName() : "";
@@ -277,7 +307,7 @@ public int getMaturityMonths() {
 		return ((FillDistillate) foundFilling).getLifeCycle();
 	}
 
-	/**
+	/** Used for encrease or decrease quantity in cask.
 	 * @param fillDistillate
 	 * @return
 	 * @throws IllegalStateException
@@ -314,27 +344,27 @@ public int getMaturityMonths() {
 		return quantity;
 	}
 
-/**
- * Calculates the total reserved amount from all batches.
- *
- * @return the total reserved amount.
- */
-public double getTotalReservedAmount() {
-    double totalReservedAmount = 0;
-    for (double reservedAmount : reservedBatchesAmount.values()) {
-        totalReservedAmount += reservedAmount;
-    }
-    return totalReservedAmount;
-}
+	/**
+	 * Calculates the total reserved amount from all batches.
+	 *
+	 * @return the total reserved amount.
+	 */
+	public double getTotalReservedAmount() {
+		double totalReservedAmount = 0;
+		for (double reservedAmount : reservedBatchesAmount.values()) {
+			totalReservedAmount += reservedAmount;
+		}
+		return totalReservedAmount;
+	}
 
-/**
- * Calculates the legal quantity by subtracting the total reserved amount from the quantity status.
- *
- * @return the legal quantity.
- */
-public double getLegalQuantity() {
-    return getQuantityStatus() - getTotalReservedAmount();
-}
+	/**
+	 * Calculates the legal quantity by subtracting the total reserved amount from the quantity status.
+	 *
+	 * @return the legal quantity.
+	 */
+	public double getLegalQuantity() {
+		return getQuantityStatus() - getTotalReservedAmount();
+	}
 
 /**
  * Makes a reservation for a specified batch with a given amount.
@@ -361,17 +391,23 @@ public void spendReservation(Batch batch, double amount) {
         reservedBatchesAmount.put(batch, reservedAmount - amount);
     }
 }
+	/**
+	 *
+	 * @param distillate
+	 * @param lifeCycle
+	 * @return
+	 */
 	public double getQuantityStatusByDistillate(Distillate distillate, int lifeCycle){
-		double quantity = 0;
+	double quantity = 0;
 
-		for (Filling f : getFillingStack()){
-			if (((FillDistillate)f).getLifeCycle() == lifeCycle){
-				if (((FillDistillate)f).getDistillate().equals(distillate)){
-					quantity += f.getQuantity();
-				}
+	for (Filling f : getFillingStack()){
+		if (((FillDistillate)f).getLifeCycle() == lifeCycle){
+			if (((FillDistillate)f).getDistillate().equals(distillate)){
+				quantity += f.getQuantity();
 			}
 		}
-		return quantity;
+	}
+	return quantity;
 	}
 
 	public List<Filling> getFillingStack() {
@@ -384,7 +420,11 @@ public void spendReservation(Batch batch, double amount) {
 		return fillings;
 	}
 
-
+	/**
+	 * Returns fillings haveing a given lifecycle.
+	 * @param lifeCycle
+	 * @return
+	 */
 	public List<Filling> getFillingsStackByLifeCycle(int lifeCycle){
 		List<Filling> fillings = new ArrayList<>();
 
@@ -444,7 +484,6 @@ public void spendReservation(Batch batch, double amount) {
 		return casks;
 	}
 
-
 	@Override
 	public int compareTo(Item o) {
 		return this.getName().compareTo(o.getName());
@@ -472,7 +511,6 @@ public void spendReservation(Batch batch, double amount) {
 		return caskID;
 	}
 
-	
 	public String getCaskIDString() {
 		return String.valueOf(caskID);
 	}
@@ -480,7 +518,6 @@ public void spendReservation(Batch batch, double amount) {
 	public double getMaxQuantity() {
 		return maxQuantity;
 	}
-
 
 	public Supplier getSupplier() {
 		return supplier;

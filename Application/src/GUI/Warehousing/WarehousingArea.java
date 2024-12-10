@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -62,6 +63,8 @@ public class WarehousingArea {
 	private Label inventoryLabel = new Label("Inventory");
 	private Label warehouseMovementsLabel = new Label("Warehouse Movements");
 
+	private static LoggerObserver loggerObserver;
+
 	public WarehousingArea() {
 		updateLists();
 		stage = new Stage();
@@ -76,8 +79,6 @@ public class WarehousingArea {
 		screenBounds = Screen.getPrimary().getVisualBounds();
 		mainPane = new GridPane();
 		mainPane.setAlignment(Pos.CENTER);
-//		Grid lines visibility
-		mainPane.setGridLinesVisible(false);
 		initContent(mainPane);
 		scene = new Scene(mainPane, screenBounds.getWidth() - 300, screenBounds.getHeight());
 		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
@@ -93,6 +94,7 @@ public class WarehousingArea {
 	}
 
 	public void initContent(GridPane gridPane) {
+		updateLists();
 		Label headerLabel = new Label("Warehousing Area");
 		headerLabel.setFont(new Font("Arial", 32));
 		GridPane.setHalignment(headerLabel, HPos.CENTER);
@@ -100,6 +102,8 @@ public class WarehousingArea {
 		// Layoutkonfiguration
 		gridPane.setHgap(10);
 		gridPane.setVgap(10);
+
+		loggerObserver = new LoggerObserver();
 
 		// Knappesektioner
 		HBox warehouseCRUDButtons = new HBox();
@@ -132,7 +136,6 @@ public class WarehousingArea {
 		inventoryCRUDButtons.setAlignment(Pos.CENTER);
 		gridPane.add(inventorySection, 2, 1);
 
-//		Common.useSpecifiedListView(inventoryList);
 
 		// Button actions
 		btnCreateIngredient.setOnAction(e -> btnCreateIngredientAction());
@@ -147,14 +150,14 @@ public class WarehousingArea {
 
 
 		btnDeleteInventory.setOnAction(e -> deleteInventoryItem());
-
-
 		btnUpdateInventory.setOnAction(e -> updateItem());
 
 
 		// Nederste sektion (Warehouse Movements)
-		gridPane.add(warehouseMovementsList, 0, 4, 3, 1); // Spænd over alle kolonner
+		gridPane.add(warehouseMovementsList, 0, 4, 3, 1);
 		gridPane.add(warehouseMovementsLabel, 0, 3);
+		warehouseMovementsList.setSelectionModel(null);
+
 
 	}
 
@@ -165,10 +168,10 @@ public class WarehousingArea {
 			Stage dialogStage = new Stage();
 			try {
 				storageRackCreate.start(dialogStage);
+				dialogStage.setOnHiding(event -> updateLists());
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			dialogStage.setOnHiding(event -> updateLists());
 		}
 	}
 
@@ -179,10 +182,10 @@ public class WarehousingArea {
 			Stage dialogStage = new Stage();
 			try {
 				warehouseUpdate.start(dialogStage);
+				dialogStage.setOnHiding(event -> updateLists());
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			dialogStage.setOnHiding(event -> updateLists());
 		}
 	}
 
@@ -191,24 +194,33 @@ public class WarehousingArea {
 		Stage dialogStage = new Stage();
 		try {
 			warehouseCreate.start(dialogStage);
+			dialogStage.setOnHiding(event -> updateLists());
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
-		dialogStage.setOnHiding(event -> updateLists());
 	}
 
 	private void deleteInventoryItem() {
-		Item selectedItem = inventoryList.getSelectionModel().getSelectedItem();
-		StorageRack selectedStorageRack = storageRacksList.getSelectionModel().getSelectedItem();
-		if (selectedItem.getRemainingQuantity() == 0) {
-			if (selectedItem != null) {
-				Warehousing.deleteItem(selectedStorageRack, selectedItem);
-				updateLists();
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+		confirmationDialog.show("Are you sure you want to delete this item?", confirmed -> {
+			if (confirmed) {
+				try {
+					Item selectedItem = inventoryList.getSelectionModel().getSelectedItem();
+					StorageRack selectedStorageRack = storageRacksList.getSelectionModel().getSelectedItem();
+					if (selectedItem != null && selectedItem.getRemainingQuantity() == 0) {
+						Warehousing.deleteItem(selectedStorageRack, selectedItem);
+						updateLists();
+					} else {
+						ErrorWindow errorWindow = new ErrorWindow();
+						errorWindow.showError("The item isn't empty and can't be deleted.");
+					}
+				} catch (Exception e) {
+					ErrorWindow errorWindow = new ErrorWindow();
+					errorWindow.showError("An error occurred while deleting the item.");
+					e.printStackTrace();
+				}
 			}
-		} else {
-			ErrorWindow errorWindow = new ErrorWindow();
-			errorWindow.showError("The item isn't empty and can't be deleted.");
-		}
+		});
 	}
 
 	public void updateItem() {
@@ -247,33 +259,44 @@ public class WarehousingArea {
 			});
 		}
 	}
-	public void btnDeleteStorageRackAction() {
-		try {
-			Warehouse selectedWarehouse = warehouseList.getSelectionModel().getSelectedItem();
-			StorageRack selectedStorageRack = storageRacksList.getSelectionModel().getSelectedItem();
-			if (selectedWarehouse != null && selectedStorageRack != null) {
-				Warehousing.deleteStorageRack(selectedWarehouse, selectedStorageRack);
-				updateLists();
+
+	private void btnDeleteStorageRackAction() {
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+		confirmationDialog.show("Are you sure you want to delete the storage rack?", confirmed -> {
+			if (confirmed) {
+				try {
+					Warehouse selectedWarehouse = warehouseList.getSelectionModel().getSelectedItem();
+					StorageRack selectedStorageRack = storageRacksList.getSelectionModel().getSelectedItem();
+					if (selectedWarehouse != null && selectedStorageRack != null) {
+						Warehousing.deleteStorageRack(selectedWarehouse, selectedStorageRack);
+						updateLists();
+					}
+				} catch (Exception e) {
+					ErrorWindow errorWindow = new ErrorWindow();
+					errorWindow.showError("Storage rack is in use, and can't be deleted.");
+					e.printStackTrace();
+				}
 			}
-		} catch (Exception e) {
-			ErrorWindow errorWindow = new ErrorWindow();
-			errorWindow.showError("Storage rack is in use, and can't be deleted.");
-			e.printStackTrace();
-		}
+		});
 	}
 
-	public void btnDeleteWarehouseAction() {
-		try {
-			Warehouse selectedWarehouse = warehouseList.getSelectionModel().getSelectedItem();
-			if (selectedWarehouse != null) {
-				Warehousing.deleteWarehouse(selectedWarehouse);
-				updateLists();
+	private void btnDeleteWarehouseAction() {
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+		confirmationDialog.show("Are you sure you want to delete the warehouse?", confirmed -> {
+			if (confirmed) {
+				try {
+					Warehouse selectedWarehouse = warehouseList.getSelectionModel().getSelectedItem();
+					if (selectedWarehouse != null) {
+						Warehousing.deleteWarehouse(selectedWarehouse);
+						updateLists();
+					}
+				} catch (Exception e) {
+					ErrorWindow errorWindow = new ErrorWindow();
+					errorWindow.showError("Warehouse still has storage racks, and can't be deleted.");
+					e.printStackTrace();
+				}
 			}
-		} catch (Exception e) {
-			ErrorWindow errorWindow = new ErrorWindow();
-			errorWindow.showError("Warehouse still has storage racks, and can't be deleted.");
-			e.printStackTrace();
-		}
+		});
 	}
 
 	public void btnCreateCaskAction() {
@@ -295,20 +318,30 @@ public class WarehousingArea {
 	}
 
 	public static void updateLists() {
-		// Clear existing items
 		warehouseList.getItems().clear();
 		storageRacksList.getItems().clear();
 		inventoryList.getItems().clear();
 		warehouseMovementsList.getItems().clear();
 
-		// Populate warehouse list
 		warehouseList.getItems().addAll(Warehousing.getAllWarehouses());
 
-		// Add listeners to update storage racks and inventory based on selections
+		if (!warehouseList.getItems().isEmpty()) {
+			warehouseList.getSelectionModel().selectFirst();
+		}
+
 		warehouseList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				storageRacksList.getItems().clear();
 				storageRacksList.getItems().addAll(newValue.getRacks().values());
+
+				if (!storageRacksList.getItems().isEmpty()) {
+					storageRacksList.getSelectionModel().selectFirst();
+				} else {
+					inventoryList.getItems().clear();
+				}
+			} else {
+				storageRacksList.getItems().clear();
+				inventoryList.getItems().clear();
 			}
 		});
 
@@ -317,21 +350,25 @@ public class WarehousingArea {
 				inventoryList.getItems().clear();
 				List<Item> items = newValue.getList();
 				inventoryList.getItems().addAll(Warehousing.getItemsByRack(newValue));
+
+				if (!inventoryList.getItems().isEmpty()) {
+					inventoryList.getSelectionModel().selectFirst();
+				}
+			} else {
+				inventoryList.getItems().clear();
 			}
 		});
 
-		// Populate warehouse movements list
-		for (Warehouse warehouse : Warehousing.getAllWarehouses()) {
-			if (!warehouse.getWarehousingObservers().isEmpty()) {
-				for (Object observer : warehouse.getWarehousingObservers()) {
-					if (observer instanceof LoggerObserver) {
-						for (String log : ((LoggerObserver) observer).getLogs()) {
-							warehouseMovementsList.getItems().add(log);
-						}
-					}
-				}
+		warehouseList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		warehouseList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				updateLogListView(newValue);
 			}
-		}
+		});
+	}
+
+	private static void updateLogListView(Warehouse warehouse) {
+		warehouseMovementsList.getItems().setAll(loggerObserver.getLogsByWarehouse(warehouse));
 	}
 
 	public Stage getStage() {

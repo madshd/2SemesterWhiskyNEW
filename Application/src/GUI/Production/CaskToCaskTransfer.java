@@ -274,8 +274,8 @@ public abstract class CaskToCaskTransfer {
                 txfInputLiters.setDisable(false);
                 dpDateForFilling.setDisable(false);
                 btnAddFillment.setDisable(false);
-                double remainingCaskFrom = caskFrom.getLegalQuantity();
-                double remainingCaskTo = caskTo.getLegalQuantity();
+                double quantityStatusCaskFrom = caskFrom.getQuantityStatus();
+                double remainingCaskTo = caskTo.getRemainingLegalQuantity();
 
 
                 lblAttentionReserved.setText(String.format("""
@@ -283,11 +283,11 @@ public abstract class CaskToCaskTransfer {
                         """,caskFrom.getName(),caskFrom.getTotalReservedAmount()));
 
 
-                if (remainingCaskFrom > remainingCaskTo){
+                if (quantityStatusCaskFrom > remainingCaskTo){
                     maxLittersToFill = remainingCaskTo;
                     lblInfoMaxLiters.setText(String.format("Max %,-4.2f liters", maxLittersToFill));
                 }else {
-                    maxLittersToFill = remainingCaskFrom;
+                    maxLittersToFill = quantityStatusCaskFrom;
                     lblInfoMaxLiters.setText(String.format("Max %,-4.2f liters", maxLittersToFill));
                 }
             }else {
