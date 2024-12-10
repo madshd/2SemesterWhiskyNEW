@@ -234,12 +234,13 @@ public abstract class Production {
 	}
 
 	/**
-	 * Will return story based on storylines and fillings.
+	 * Function used for generating label text.
 	 * @param cask
 	 * @param date
+	 * @param storyIsSimple
 	 * @return
 	 */
-	public static String getCaskStory(Cask cask, LocalDate date){
+	public static String getCaskStory(Cask cask, LocalDate date, boolean storyIsSimple){
 		//TODO by leander
 
 		return "To be implemented";
