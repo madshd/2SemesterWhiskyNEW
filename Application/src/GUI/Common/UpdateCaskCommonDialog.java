@@ -23,14 +23,14 @@ public class UpdateCaskCommonDialog extends Application {
     private Label lblMaxQuantity = new Label("Max quantity");
     private Label lblCaskType = new Label("Cask type");
     private Label lblSupplier = new Label("Supplier");
-    private TextField txfCaskId = new TextField();
-    private TextField txfMaxQuantity = new TextField();
-    private TextField txfCaskType = new TextField();
+    private TextField txfCaskId = new TextField() {{ setDisable(true); }};
+    private TextField txfMaxQuantity = new TextField() {{ setDisable(true); }};
+    private TextField txfCaskType = new TextField() {{ setDisable(true); }};
     private Label lblWarehouses = new Label("Warehouses");
     private Label lblStorageRacks = new Label("Storage racks");
     private Label lblTasteProfile = new Label("Taste profile");
     private ComboBox<TasteProfile> cbxTasteProfile = new ComboBox();
-    private TextField txfSupplier = new TextField();
+    private TextField txfSupplier = new TextField() {{ setDisable(true); }};
     private ListView<Warehouse> lvwWarehouses = new ListView<>();
     private ListView<StorageRack> lvwStorageRacks = new ListView<>();
     private Button btnUpdate = new Button("Update");
@@ -43,7 +43,7 @@ public class UpdateCaskCommonDialog extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         populateFields();
         this.stage = stage;
         // Create the main layout
@@ -91,6 +91,13 @@ public class UpdateCaskCommonDialog extends Application {
             }
             cbxTasteProfile.getItems().addAll(BatchArea.getAllTasteProfiles());
             lvwWarehouses.getItems().addAll(Warehousing.getAllWarehouses());
+
+            // Select the warehouse and storage rack associated with the cask
+            Warehouse associatedWarehouse = cask.getStorageRack().getWarehouse();
+            lvwWarehouses.getSelectionModel().select(associatedWarehouse);
+            lvwStorageRacks.getItems().setAll(associatedWarehouse.getRacks().values());
+            lvwStorageRacks.getSelectionModel().select(cask.getStorageRack());
+
             lvwWarehouses.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                 lvwStorageRacks.getItems().clear();
                 lvwStorageRacks.getItems().addAll(newValue.getRacks().values());
@@ -98,19 +105,24 @@ public class UpdateCaskCommonDialog extends Application {
         }
     }
 
-    public void btnUpdateAction() {
-        if (isFormValid()) {
-            Warehousing.updateCask(
-                    cask,
-                    cbxTasteProfile.getValue(),
-                    lvwWarehouses.getSelectionModel().getSelectedItem(),
-                    lvwStorageRacks.getSelectionModel().getSelectedItem()
-            );
-            stage.close();
-        } else {
-            new ErrorWindow().showError("Please fill out all fields correctly.");
+public void btnUpdateAction() {
+    ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+    confirmationDialog.show("Are you sure you want to update?", confirmed -> {
+        if (confirmed) {
+            if (isFormValid()) {
+                Warehousing.updateCask(
+                        cask,
+                        cbxTasteProfile.getValue(),
+                        lvwWarehouses.getSelectionModel().getSelectedItem(),
+                        lvwStorageRacks.getSelectionModel().getSelectedItem()
+                );
+                stage.close();
+            } else {
+                new ErrorWindow().showError("Please fill out all fields correctly.");
+            }
         }
-    }
+    });
+}
 
     private boolean isFormValid() {
         return !txfCaskId.getText().isEmpty() &&

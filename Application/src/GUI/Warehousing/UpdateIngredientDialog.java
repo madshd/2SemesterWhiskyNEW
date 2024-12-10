@@ -3,6 +3,7 @@ package GUI.Warehousing;
 import Controllers.Warehousing;
 import Enumerations.IngredientType;
 import Enumerations.Unit;
+import GUI.Common.ConfirmationDialog;
 import GUI.Common.ErrorWindow;
 import Storage.Storage;
 import Warehousing.Ingredient;
@@ -55,7 +56,7 @@ public class UpdateIngredientDialog extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         // Opret hovedlayoutet
         stage.show();
         populateFields();
@@ -89,28 +90,38 @@ public class UpdateIngredientDialog extends Application {
         cancelButton.setOnAction(e -> stage.close());
         buttonBox.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(grid, 600, 400);
+        Scene scene = new Scene(grid, 600, 800);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setTitle("Update Ingredient");
-        stage.setX(300);
-        stage.setY(0);
-        stage.setMinHeight(600);
-        stage.setMinWidth(300);
         stage.setScene(scene);
         stage.show();
     }
 
     private void btnUpdateAction() {
-        if (!txfQuantity.getText().isEmpty() && Double.parseDouble(txfQuantity.getText()) > 0) {
-            Warehousing.updateIngredient(
-                    ingredient,
-                    Double.parseDouble(txfQuantity.getText().trim()),
-                    lvwWarehouse.getSelectionModel().getSelectedItem(),
-                    lvwStorageRack.getSelectionModel().getSelectedItem()
-            );
-            stage.close();
-        } else
-            errorWindow.showError("Quantity is not filled out correctly.");
+        ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+        confirmationDialog.show("Are you sure you want to update?", confirmed -> {
+            if (confirmed) {
+                if (!txfQuantity.getText().isEmpty() && Double.parseDouble(txfQuantity.getText()) > 0) {
+                    Warehousing.updateIngredient(
+                            ingredient,
+                            Double.parseDouble(txfQuantity.getText().trim()),
+                            lvwWarehouse.getSelectionModel().getSelectedItem(),
+                            lvwStorageRack.getSelectionModel().getSelectedItem()
+                    );
+                    stage.close();
+                } else if (txfQuantity.getText().isEmpty()) {
+                    Warehousing.updateIngredient(
+                            ingredient,
+                            0,
+                            lvwWarehouse.getSelectionModel().getSelectedItem(),
+                            lvwStorageRack.getSelectionModel().getSelectedItem()
+                    );
+                    stage.close();
+                } else {
+                    errorWindow.showError("Quantity is not filled out correctly.");
+                }
+            }
+        });
     }
 
     private void populateFields() {
@@ -123,8 +134,16 @@ public class UpdateIngredientDialog extends Application {
         cbxUnitType.setValue(ingredient.getUnit());
         cbxIngredientType.setValue(ingredient.getIngredientType());
         lvwWarehouse.getItems().setAll(Warehousing.getAllWarehouses());
+
+        // Select the warehouse and storage rack associated with the ingredient
+        Warehouse associatedWarehouse = ingredient.getStorageRack().getWarehouse();
+        lvwWarehouse.getSelectionModel().select(associatedWarehouse);
+        lvwStorageRack.getItems().setAll(associatedWarehouse.getRacks().values());
+        lvwStorageRack.getSelectionModel().select(ingredient.getStorageRack());
+
         lvwWarehouse.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             lvwStorageRack.getItems().clear();
             lvwStorageRack.getItems().addAll(newValue.getRacks().values());
-        });    }
+        });
+    }
 }

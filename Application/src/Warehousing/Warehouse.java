@@ -43,7 +43,7 @@ public class Warehouse implements WarehousingSubject {
         racks.put(id, storageRack);
         storageRack.setWarehouse(this); // Bind rack to warehouse
         if (!warehousingObservers.isEmpty()) {
-            notifyWarehousingObserversWithDetails("StorageRack removed: " + storageRack.getId());
+            notifyWarehousingObserversWithDetails("StorageRack added: " + storageRack.getId());
         }
     }
 

@@ -26,7 +26,7 @@ public class StorageRackDialog extends Application {
     private ErrorWindow errorWindow = new ErrorWindow();
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         this.stage = stage; // Initialize the stage instance variable
         stage.show();
         // Create the main layout

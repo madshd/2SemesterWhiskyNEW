@@ -174,7 +174,7 @@ public static Ingredient createIngredientAndAdd(
 				if (storageRack.getList().get(i) == null) {
 					storageRack.addItem(i, cask);
 					storageRack.getWarehouse().notifyWarehousingObserversWithDetails(
-							"Cask added: " + cask.getName() + " to Rack: " + storageRack.getId() +
+							"Cask added: ID " + cask.getName() + " to Rack: " + storageRack.getId() +
 									", Shelf: " + i + " in Warehouse: " + storageRack.getWarehouse().getName());
 					return cask;
 				}
@@ -207,6 +207,7 @@ public static Ingredient createIngredientAndAdd(
 
 	public static void moveItemBetweenWarehouses(Item item, Warehouse fromWarehouse, StorageRack fromStorageRack,
 												 int fromIndex, Warehouse toWarehouse, StorageRack toStorageRack, int toIndex) {
+
 		if (item == null || fromWarehouse == null || fromStorageRack == null || toWarehouse == null || toStorageRack == null) {
 			throw new IllegalArgumentException("None of the parameters can be null.");
 		}
@@ -227,31 +228,28 @@ public static Ingredient createIngredientAndAdd(
 
 		fromStorageRack.removeItem(item, fromIndex);
 		fromWarehouse.notifyWarehousingObserversWithDetails(
-				"Item removed from Rack: " + fromStorageRack.getId() +
+				  item.getName() + " removed from Rack: " + fromStorageRack.getId() +
 						", Shelf: " + fromIndex +
 						" in Warehouse: " + fromWarehouse.getName());
 
 		toStorageRack.addItem(toIndex, item);
 		toWarehouse.notifyWarehousingObserversWithDetails(
-				"Item added to Rack: " + toStorageRack.getId() +
+				 item.getName() + " added to Rack: " + toStorageRack.getId() +
 						", Shelf: " + toIndex +
 						" in Warehouse: " + toWarehouse.getName());
 	}
 
 	/**
-	 * Moves an item from one storage rack to another within the same or different
-	 * warehouses, updating the storage racks and notifying observers.
+	 * Moves an item from one storage rack to another within the same or different warehouses.
+	 * Updates the storage racks and notifies observers if necessary.
 	 *
-	 * @param item            the item to be moved
-	 * @param fromStorageRack the storage rack from which the item is being moved
-	 * @param fromIndex       the index of the item in the source storage rack
-	 * @param toStorageRack   the storage rack to which the item is being moved
-	 * @param toIndex         the index in the destination storage rack where the
-	 *                        item will be placed
-	 * @throws IllegalArgumentException if the item is not found at the specified
-	 *                                  index in the source storage rack
-	 * @throws IllegalStateException    if the target shelf is not empty in the
-	 *                                  destination storage rack
+	 * @param item            The item to be moved.
+	 * @param fromStorageRack The storage rack from which the item is being moved.
+	 * @param fromIndex       The index of the item in the source storage rack.
+	 * @param toStorageRack   The storage rack to which the item is being moved.
+	 * @param toIndex         The index in the destination storage rack where the item will be placed.
+	 * @throws IllegalArgumentException if the item is not found at the specified index in the source storage rack.
+	 * @throws IllegalStateException    if the target shelf is not empty in the destination storage rack.
 	 */
 
 	public static void moveItemBetweenStorageRacks(Item item, StorageRack fromStorageRack, int fromIndex,
@@ -265,20 +263,20 @@ public static Ingredient createIngredientAndAdd(
 		}
 
 		fromStorageRack.removeItem(item, fromIndex);
-//		if (fromStorageRack.getWarehouse() != null) {
-//			fromStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
-//					"Item removed from Rack: " + fromStorageRack.getId() +
-//							", Shelf: " + fromIndex +
-//							" in Warehouse: " + fromStorageRack.getWarehouse().getName());
-//		}
+		if (fromStorageRack.getWarehouse() != null) {
+			fromStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
+					item.getName() + " removed from Rack: " + fromStorageRack.getId() +
+							", Shelf: " + fromIndex +
+							" in Warehouse: " + fromStorageRack.getWarehouse().getName());
+		}
 
 		toStorageRack.addItem(toIndex, item);
-//		if (toStorageRack.getWarehouse() != null) {
-//			toStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
-//					"Item added to Rack: " + toStorageRack.getId() +
-//							", Shelf: " + toIndex +
-//							" in Warehouse: " + toStorageRack.getWarehouse().getName());
-//		}
+		if (toStorageRack.getWarehouse() != null) {
+			toStorageRack.getWarehouse().notifyWarehousingObserversWithDetails(
+					item.getName() + " added to Rack: " + toStorageRack.getId() +
+							", Shelf: " + toIndex +
+							" in Warehouse: " + toStorageRack.getWarehouse().getName());
+		}
 
 		System.out.println("Item moved from " + fromStorageRack.getId() + " shelf " + fromIndex + " to "
 				+ toStorageRack.getId() + " shelf " + toIndex);
@@ -288,6 +286,12 @@ public static Ingredient createIngredientAndAdd(
 		return storage.getWarehouses();
 	}
 
+	/**
+	 * Retrieves a list of casks that are ready for use.
+	 * A cask is considered ready if its maturity period is 36 months or more.
+	 *
+	 * @return A list of casks that have matured for at least 36 months.
+	 */
 	public static List<Cask> getReadyCasks() {
 		List<Cask> readyCasks = new ArrayList<>();
 			for (Warehouse wh : getAllWarehouses()) {
@@ -401,13 +405,22 @@ public static Ingredient createIngredientAndAdd(
 		if (quantity < 0) {
 			throw new IllegalArgumentException("Quantity cannot be negative.");
 		} else {
-			FillIngredient fill = new FillIngredient(LocalDate.now(), quantity, null, ingredient, false);
-			ingredient.updateQuantity(fill);
-			if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
-				if (selectedWarehouse != null && selectedStorageRack != null) {
-					int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
-					int toIndex = selectedStorageRack.getFreeShelf();
-					moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+			if (quantity == 0) {
+				if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
+					if (selectedWarehouse != null && selectedStorageRack != null) {
+						int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
+						int toIndex = selectedStorageRack.getFreeShelf();
+						moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+					}
+				}
+				FillIngredient fill = new FillIngredient(LocalDate.now(), quantity, null, ingredient, false);
+				ingredient.updateQuantity(fill);
+				if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
+					if (selectedWarehouse != null && selectedStorageRack != null) {
+						int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
+						int toIndex = selectedStorageRack.getFreeShelf();
+						moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
+					}
 				}
 			}
 		}
@@ -532,13 +545,20 @@ public static List<StorageRack> getUnusedStorageRacks() {
 		return storageRack.getItemLocation(item);
 	}
 
-	public static List<Item> getItemsByRack(StorageRack storageRack) {
-		List<Item> items = new ArrayList<>();
-		for (int i = 0; i < storageRack.getList().size(); i++) {
-			if (storageRack.getList().get(i) != null) {
-				items.add(storageRack.getList().get(i));
-			}
-		}
-		return items;
-	}
+/**
+ * Retrieves a list of items from the specified storage rack.
+ * Iterates through the storage rack and adds non-null items to the list.
+ *
+ * @param storageRack The storage rack from which to retrieve items.
+ * @return A list of items from the specified storage rack.
+ */
+public static List<Item> getItemsByRack(StorageRack storageRack) {
+    List<Item> items = new ArrayList<>();
+    for (int i = 0; i < storageRack.getList().size(); i++) {
+        if (storageRack.getList().get(i) != null) {
+            items.add(storageRack.getList().get(i));
+        }
+    }
+    return items;
+}
 }
