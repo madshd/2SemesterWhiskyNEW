@@ -1,6 +1,7 @@
 package Warehousing;
 
 import Common.CommonMethods;
+import Controllers.Warehousing;
 import Enumerations.FillType;
 import Enumerations.Unit;
 import Interfaces.*;
@@ -185,6 +186,11 @@ public int getMaturityMonths() {
 				Total quantity: %,-6.2f
 				Reserved quantity: %,-6.2f
 				
+				****\t Warehouse \t ****
+				Warehouse: %s
+				Storage rack: %s
+				Location: %d 
+				
 				****\t Alcohol percentage \t *****
 				%s
 				****\t Story lines \t *****
@@ -194,7 +200,9 @@ public int getMaturityMonths() {
 				*****\t Filling details \t *****
 				%s
 				""", supplier.getDescription(), tasteprofile ,lifeCycle,sbCask.toString(),
-				sbFill.toString(),getQuantityStatus(),getTotalReservedAmount(),sbAlcohol.toString(),sbStory.toString(),
+				sbFill.toString(),getQuantityStatus(),getTotalReservedAmount(), getStorageRack().getWarehouse().toString(),
+				getStorageRack().toString(), Warehousing.getLocationByRack(getStorageRack(),this),
+				sbAlcohol.toString(),sbStory.toString(),
 				sbCutInfo.toString(),getFillingTextLines());
 	}
 
