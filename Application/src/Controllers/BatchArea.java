@@ -44,7 +44,11 @@ public abstract class BatchArea {
 	}
 
 	public static void deleteProduct(Product product) {
-		storage.deleteProduct(product);
+		if (isProductUsedInBatch(product)) {
+			throw new IllegalArgumentException("Product is used in a batch and cannot be deleted.");
+		} else {
+			storage.deleteProduct(product);
+		}
 	}
 
 	public static Product updateProduct(String productName, int bottleSize, Product product) {
@@ -103,11 +107,11 @@ public abstract class BatchArea {
 		return (ArrayList<Formula>) storage.getFormulae();
 	}
 
-	public static Set<Cask> searchCasks(Formula formula){
+	public static Set<Cask> searchCasks(Formula formula) {
 		Set<Cask> casks = new HashSet<>();
 		for (Cask cask : storage.getCasks()) {
-			for(TasteProfile tp : formula.getBlueprint().keySet()){
-				if(cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)){
+			for (TasteProfile tp : formula.getBlueprint().keySet()) {
+				if (cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)) {
 					casks.add(cask);
 				}
 			}
@@ -223,7 +227,12 @@ public abstract class BatchArea {
 		Map<TasteProfile, Double> productionVolumeTP = calculateProductionVolume(numBottlesToProduce, batch);
 
 		for (TasteProfile tp : productionVolumeTP.keySet()) {
-			processCasksForTasteProfile(batch, tp, productionVolumeTP.get(tp), batch.getReservedCasks().keySet(), casksToUse);
+			processCasksForTasteProfile(
+					batch,
+					tp,
+					productionVolumeTP.get(tp),
+					batch.getReservedCasks().keySet(),
+					casksToUse);
 		}
 
 		batch.incNumProducedBottles(numBottlesToProduce);
@@ -256,7 +265,7 @@ public abstract class BatchArea {
 	 * @param batch          the batch for which the casks are being processed
 	 * @param tp             the taste profile
 	 * @param requiredVolume the volume required to be processed
-	 * @param set          the list of casks to be processed
+	 * @param set            the list of casks to be processed
 	 * @param casksToUse     a map of casks used and their respective volumes
 	 */
 	private static void processCasksForTasteProfile(Batch batch, TasteProfile tp, double requiredVolume,
@@ -282,7 +291,7 @@ public abstract class BatchArea {
 
 	private static void finalizeBatchProduction(Batch batch) {
 		if (batch.getNumProducedBottles() == batch.getNumExpectedBottles()) {
-			batch.markProductionComplete();
+			setBatchProductionComplete(batch);
 		}
 	}
 
@@ -319,7 +328,11 @@ public abstract class BatchArea {
 	}
 
 	public static void deleteBatch(Batch selectedBatch) {
-		storage.deleteBatch(selectedBatch);
+		if (isProductionStarted(selectedBatch)) {
+			throw new IllegalArgumentException("Production has started and the batch cannot be deleted.");
+		} else {
+			storage.deleteBatch(selectedBatch);
+		}
 	}
 
 	/**
@@ -386,7 +399,8 @@ public abstract class BatchArea {
 	 */
 	public static HashMap<TasteProfile, Double> calculateProductionVolume(int numBottlesToProduce, Batch batch) {
 		double totalProductionVolumeML = batch.getProduct().getBottleSize() * numBottlesToProduce;
-		double totalProductionVolumeLITER = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS,totalProductionVolumeML);
+		double totalProductionVolumeLITER = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS,
+				totalProductionVolumeML);
 		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
 		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
 
@@ -463,7 +477,7 @@ public abstract class BatchArea {
 
 	/**
 	 * Checks if the production has started for the given batch.
-		* BUT reverses the logic for certain mathods in GUI that needs reversed
+	 * BUT reverses the logic for certain mathods in GUI that needs reversed
 	 *
 	 * @param b the batch to check
 	 * @return true if production has started, false otherwise

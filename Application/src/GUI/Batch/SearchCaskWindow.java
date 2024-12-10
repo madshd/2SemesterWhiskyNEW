@@ -102,7 +102,7 @@ public class SearchCaskWindow {
 
 		// Handles closing the window if user tries to bypass saving the receipt to file
 		// all views and data will update as normally.
-		// this is not the goal, merely a safeguard to prevent data loss.
+		// This is a safeguard to prevent data loss.
 		searchCaskStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
@@ -114,36 +114,27 @@ public class SearchCaskWindow {
 
 	@SuppressWarnings("unchecked")
 	private void configureTableView() {
-		// Clear existing columns
 		casksTable.getColumns().clear();
 
-		// Cask ID Column
 		TableColumn<Cask, String> caskIDColumn = new TableColumn<>("Cask ID");
 		caskIDColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCaskIDString()));
 
-		// Cask Type Column
 		TableColumn<Cask, String> caskTypeColumn = new TableColumn<>("Cask Type");
 		caskTypeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCaskType()));
 
-		// Cask Volume Column
 		TableColumn<Cask, String> caskVolumeColumn = new TableColumn<>("Current Volume");
 		caskVolumeColumn.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getQuantityStatus())));
 
-		// Cask Volume Column
 		TableColumn<Cask, String> caskLegalVolumeColumn = new TableColumn<>("Legal Volume");
 		caskVolumeColumn.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getLegalQuantity())));
 
-		// Add columns to the TableView
 		casksTable.getColumns().addAll(caskIDColumn, caskTypeColumn, caskVolumeColumn, caskLegalVolumeColumn);
 	}
 
 	public void updateContent() { 
-		// Convert the list of casks to an ObservableList
 		var observableCasks = FXCollections.observableArrayList(casksFound);
-
-		// Set the items in the TableView
 		casksTable.setItems(observableCasks);
 	}
 

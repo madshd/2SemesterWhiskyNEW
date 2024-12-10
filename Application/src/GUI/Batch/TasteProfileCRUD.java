@@ -1,4 +1,5 @@
 package GUI.Batch;
+
 import java.util.ArrayList;
 
 import BatchArea.TasteProfile;
@@ -139,27 +140,51 @@ public class TasteProfileCRUD {
 		});
 	}
 
-	// Create a new Taste Profile
+	/**
+	 * Creates a new Taste Profile or updates an existing one.
+	 *
+	 * @param name        the name of the taste profile
+	 * @param description the description of the taste profile
+	 * @param tags        the list of tasting notes associated with the taste
+	 *                    profile
+	 */
 	private void create(String name, String description, ArrayList<TastingNote> tags) {
-		if (name == null || name.isEmpty()) {
-			errorWindow.showError("Name cannot be empty");
+		String errorMessage = validateInputs(name, description, tags);
+		if (errorMessage != null) {
+			errorWindow.showError(errorMessage);
 			return;
 		}
-		if (description == null || description.isEmpty()) {
-			errorWindow.showError("Description cannot be empty");
-			return;
-		}
-		if (tags == null || tags.isEmpty()) {
-			errorWindow.showError("A Taste Profile must contain at least one Tasting Note");
-			return;
-		}
+
 		if (updating) {
 			Controllers.BatchArea.updateTasteProfile(name, description, tags, tp);
 		} else {
 			Controllers.BatchArea.createNewTasteProfile(name, description, tags);
 		}
+
 		clearFields();
 		tasteProfileCrudStage.close();
+	}
+
+	/**
+	 * Validates the inputs for creating or updating a Taste Profile.
+	 *
+	 * @param name        the name of the taste profile
+	 * @param description the description of the taste profile
+	 * @param tags        the list of tasting notes associated with the taste
+	 *                    profile
+	 * @return an error message if validation fails, or null if validation succeeds
+	 */
+	private String validateInputs(String name, String description, ArrayList<TastingNote> tags) {
+		if (name == null || name.isEmpty()) {
+			return "Name cannot be empty.";
+		}
+		if (description == null || description.isEmpty()) {
+			return "Description cannot be empty.";
+		}
+		if (tags == null || tags.isEmpty()) {
+			return "A Taste Profile must contain at least one Tasting Note.";
+		}
+		return null; // No validation errors
 	}
 
 	// Clear all fields

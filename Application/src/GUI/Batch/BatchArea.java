@@ -36,7 +36,6 @@ import BatchArea.Formula;
 import GUI.Common.*;
 
 import java.time.LocalDate;
-import java.util.Observable;
 
 import BatchArea.Batch;
 import BatchArea.Product;
@@ -275,8 +274,12 @@ public class BatchArea {
 
 		deleteProductButton.setOnAction(e -> {
 			Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
-			if (selectedProduct != null && !Controllers.BatchArea.isProductUsedInBatch(selectedProduct)) {
+			if (selectedProduct != null) {
+				try {
 				Controllers.BatchArea.deleteProduct(selectedProduct);
+				} catch (Exception ex) {
+					errorWindow.showError(ex.getMessage());
+				}
 				updateLists();
 			}
 		});
@@ -449,13 +452,12 @@ public class BatchArea {
 		deleteBatchButton.setOnAction(e -> {
 			Batch selectedBatch = batchTable.getSelectionModel().getSelectedItem();
 			if (selectedBatch != null) {
-				if (Controllers.BatchArea.isProductionStarted(selectedBatch)) {
-					errorWindow.showError(
-							"Production has already started for this batch and therefore it cannot be deleted.");
-					return;
-				}
+				try {
 				Controllers.BatchArea.deleteBatch(selectedBatch);
 				updateLists();
+				} catch (Exception ex) {
+					errorWindow.showError(ex.getMessage());
+				}
 			}
 		});
 
