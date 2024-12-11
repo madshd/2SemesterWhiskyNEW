@@ -129,7 +129,7 @@ public abstract class FillDistillateIntoCask {
 
     public static class CasksElement extends GridPane{
         private  final ListView<Item> lvwCasks = new ListView<>();
-        private  final ListView<Filling > lvwCaskFillings = new ListView();
+        private  final ListView<Filling > lvwCaskFillings = new ListView<>();
 
         public CasksElement(ProductionArea pa){
             // Generel settings
@@ -206,7 +206,8 @@ public abstract class FillDistillateIntoCask {
         private Distillate selectedDistillate;
         private ErrorWindow errorWindow = new ErrorWindow();
 
-        public InputElement(ProductionArea pa){
+        @SuppressWarnings("unchecked")
+		public InputElement(ProductionArea pa){
             // Generel settings
             applyCommonSettings(this, pa);
             double areaWidth = pa.screenBounds.getWidth() - 300 * 0.9;

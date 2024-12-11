@@ -31,7 +31,7 @@ public class CreateCaskDialog extends Application {
     private TextField txfCaskType = new TextField();
     private Label lblWarehouses = new Label("Warehouses");
     private Label lblStorageRacks = new Label("Storage racks");
-    private ComboBox<Supplier> cbxSupplier = new ComboBox();
+    private ComboBox<Supplier> cbxSupplier = new ComboBox<>();
     private ListView<Warehouse> lvwWarehouses = new ListView<>();
     private ListView<StorageRack> lvwStorageRacks = new ListView<>();
     private Button btnCreate = new Button("Create");
