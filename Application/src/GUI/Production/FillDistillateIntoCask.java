@@ -82,7 +82,7 @@ public abstract class FillDistillateIntoCask {
             updateLists();
         }
 
-        private void updateLists() {
+        protected void updateLists() {
             List<Item> distilates = new ArrayList<>(Production.getDistillates());
 
             distilates.forEach(item -> {

@@ -378,31 +378,32 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return getQuantityStatus() - getTotalReservedAmount();
 	}
 
-/**
- * Makes a reservation for a specified batch with a given amount.
- *
- * @param batch the batch to reserve.
- * @param amount the amount to reserve.
- */
-public void makeReservation(Batch batch, double amount) {
-    reservedBatchesAmount.put(batch, amount);
-}
+	/**
+	 * Makes a reservation for a specified batch with a given amount.
+	 *
+	 * @param batch the batch to reserve.
+	 * @param amount the amount to reserve.
+	 */
+	public void makeReservation(Batch batch, double amount) {
+		reservedBatchesAmount.put(batch, amount);
+	}
 
-/**
- * Spends a reservation for a specified batch with a given amount.
- * If the reserved amount becomes zero, the batch is completely removed from the reservations.
- *
- * @param batch the batch to spend the reservation from.
- * @param amount the amount to spend.
- */
-public void spendReservation(Batch batch, double amount) {
-    double reservedAmount = reservedBatchesAmount.get(batch);
-    if (reservedAmount - amount == 0) {
-        reservedBatchesAmount.remove(batch);
-    } else {
-        reservedBatchesAmount.put(batch, reservedAmount - amount);
-    }
-}
+	/**
+	 * Spends a reservation for a specified batch with a given amount.
+	 * If the reserved amount becomes zero, the batch is completely removed from the reservations.
+	 *
+	 * @param batch the batch to spend the reservation from.
+	 * @param amount the amount to spend.
+	 */
+	public void spendReservation(Batch batch, double amount) {
+		double reservedAmount = reservedBatchesAmount.get(batch);
+		if (reservedAmount - amount == 0) {
+			reservedBatchesAmount.remove(batch);
+		} else {
+			reservedBatchesAmount.put(batch, reservedAmount - amount);
+		}
+	}
+
 	/**
 	 *
 	 * @param distillate
