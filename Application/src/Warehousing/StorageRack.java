@@ -14,8 +14,6 @@ public class StorageRack {
 
     private LinkedList<Item> list = new LinkedList<>();
 
-    private Set<WarehousingObserver> warehousingObservers = new HashSet<>();
-
     public StorageRack(String id, int shelves) {
         this.id = id;
         this.shelves = shelves;
@@ -36,10 +34,6 @@ public class StorageRack {
 
     public int getShelves() {
         return shelves;
-    }
-
-    public Set<WarehousingObserver> getWarehousingObservers() {
-        return warehousingObservers;
     }
 
     public LinkedList<Item> getList() {

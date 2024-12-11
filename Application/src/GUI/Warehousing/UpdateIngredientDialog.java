@@ -39,7 +39,6 @@ public class UpdateIngredientDialog extends Application {
     private ComboBox<Supplier> cbxSupplier = new ComboBox<>() {{ setDisable(true); }};
     private Label lblSupplier = new Label("Supplier");
     private ComboBox<Unit> cbxUnitType = new ComboBox<>();
-    private Label lblUnitType = new Label("Unit type");
     private ComboBox<IngredientType> cbxIngredientType = new ComboBox<>() {{ setDisable(true); }};
     private Label lblIngredientType = new Label("Ingredient type");
     private ListView<Warehouse> lvwWarehouse = new ListView<>();
@@ -67,15 +66,13 @@ public class UpdateIngredientDialog extends Application {
         grid.setHgap(10);
         grid.setVgap(10);
 
-        VBox inputFields = new VBox(5); // Smaller spacing between Label and TextField
+        VBox inputFields = new VBox(5);
         HBox quantityBox = new HBox(10, txfQuantity, cbxUnitType);
 
         inputFields.getChildren().addAll(lblName, txfName, lblDescription, txfDescription, lblBatchNumber, txfBatchNumber, lblProductionDate, dpProductionDate,
                 lblExpirationDate, dpExpirationDate, lblSupplier, cbxSupplier, lblQuantity, quantityBox, lblIngredientType, cbxIngredientType);
 
-        // Tilføj komponenter til layoutet
         grid.add(inputFields, 0, 0);
-
         dpProductionDate.setDisable(true);
         dpExpirationDate.setDisable(true);
         cbxUnitType.setDisable(true);
@@ -135,7 +132,6 @@ public class UpdateIngredientDialog extends Application {
         cbxIngredientType.setValue(ingredient.getIngredientType());
         lvwWarehouse.getItems().setAll(Warehousing.getAllWarehouses());
 
-        // Select the warehouse and storage rack associated with the ingredient
         Warehouse associatedWarehouse = ingredient.getStorageRack().getWarehouse();
         lvwWarehouse.getSelectionModel().select(associatedWarehouse);
         lvwStorageRack.getItems().setAll(associatedWarehouse.getRacks().values());
