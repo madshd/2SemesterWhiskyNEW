@@ -1,5 +1,7 @@
 package GUI.Production;
 
+import BatchArea.TasteProfile;
+import Controllers.BatchArea;
 import Controllers.Production;
 import GUI.Common.Common;
 import GUI.Common.ErrorWindow;
@@ -15,7 +17,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -205,6 +206,7 @@ public abstract class FillDistillateIntoCask {
         private Cask selectedCask;
         private Distillate selectedDistillate;
         private ErrorWindow errorWindow = new ErrorWindow();
+        private final ComboBox<TasteProfile> cmbTasteProfile = new ComboBox<>();
 
         public InputElement(ProductionArea pa){
             // Generel settings
@@ -227,8 +229,7 @@ public abstract class FillDistillateIntoCask {
             this.add(lblDateForFilling, 0, 2);
 
             this.add(lblInfoMaxLiters,2,1);
-            
-            // Buttons
+
             this.add(btnAddFillment, 0, 3,2,1);
             btnAddFillment.setOnAction(actionEvent -> fillDistillateIntoCask(pa));
 
@@ -241,6 +242,9 @@ public abstract class FillDistillateIntoCask {
             this.add(txfInputLiters,1,1);
             dpDateForFilling.setConverter(Common.datePickerFormat(dpDateForFilling));
             this.add(dpDateForFilling,1,2);
+
+            cmbTasteProfile.setPromptText("Select taste profile");
+            this.add(cmbTasteProfile,2,2);
 
             calculateFilling(null,null);
 
@@ -267,8 +271,14 @@ public abstract class FillDistillateIntoCask {
                 return;
             }
 
+            if (cmbTasteProfile.getSelectionModel().getSelectedItem() == null){
+                errorWindow.showError("Please select a taste profile.");
+                return;
+            }
+
             try {
                 Controllers.Production.fillDistillateIntoCask(selectedDistillate,selectedCask,liters,date);
+                selectedCask.setTasteProfile(cmbTasteProfile.getValue());
                 pa.fillCaskElement.updateFillingList(pa);
             }catch (IllegalArgumentException e){
                 errorWindow.showError(e.getMessage());
@@ -283,8 +293,12 @@ public abstract class FillDistillateIntoCask {
                 txfInputLiters.setDisable(false);
                 dpDateForFilling.setDisable(false);
                 btnAddFillment.setDisable(false);
+                cmbTasteProfile.setDisable(false);
                 double remainingDistillate = distillate.getRemainingQuantity();
                 double remainingCaskQuantity = cask.getRemainingQuantity();
+
+                cmbTasteProfile.getItems().setAll(BatchArea.getAllTasteProfiles());
+                cmbTasteProfile.getSelectionModel().select(selectedCask.getTasteProfile());
 
                 if (remainingDistillate > remainingCaskQuantity){
                     maxLittersToFill = remainingCaskQuantity;
@@ -298,6 +312,7 @@ public abstract class FillDistillateIntoCask {
                 dpDateForFilling.setDisable(true);
                 btnAddFillment.setDisable(true);
                 lblInfoMaxLiters.setText("Please selecet a distillate and a cask.");
+                cmbTasteProfile.setDisable(true);
             }
         }
 
