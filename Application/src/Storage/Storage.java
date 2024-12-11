@@ -26,8 +26,8 @@ public class Storage implements StorageInterface, Serializable {
 	private List<TasteProfile> tasteProfiles = new ArrayList<>();
 	private List<Batch> batches = new ArrayList<>();
 	private List<Supplier> suppliers = new ArrayList<>();
-	private static String filePath = "/Users/leander/IdeaProjects/2SemesterWhiskyNEW/Application/src/Storage/storage.ser";
-
+//	private static String filePath = "/Users/leander/IdeaProjects/2SemesterWhiskyNEW/Application/src/Storage/storage.ser";
+	private static String filePath = System.getProperty("java.io.tmpdir") + "storage.ser";
 	@Override
 	public List<Product> getAllProducts() {
 		return new ArrayList<>(products);
