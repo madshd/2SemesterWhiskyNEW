@@ -2,6 +2,7 @@ package Controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -44,7 +45,11 @@ public abstract class BatchArea {
 	}
 
 	public static void deleteProduct(Product product) {
-		storage.deleteProduct(product);
+		if (isProductUsedInBatch(product)) {
+			throw new IllegalArgumentException("Product is used in a batch and cannot be deleted.");
+		} else {
+			storage.deleteProduct(product);
+		}
 	}
 
 	public static Product updateProduct(String productName, int bottleSize, Product product) {
@@ -103,11 +108,11 @@ public abstract class BatchArea {
 		return (ArrayList<Formula>) storage.getFormulae();
 	}
 
-	public static Set<Cask> searchCasks(Formula formula){
+	public static Set<Cask> searchCasks(Formula formula) {
 		Set<Cask> casks = new HashSet<>();
 		for (Cask cask : storage.getCasks()) {
-			for(TasteProfile tp : formula.getBlueprint().keySet()){
-				if(cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)){
+			for (TasteProfile tp : formula.getBlueprint().keySet()) {
+				if (cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)) {
 					casks.add(cask);
 				}
 			}
@@ -197,13 +202,13 @@ public abstract class BatchArea {
 				double caskVolume = cask.getLegalQuantity();
 				double reservedAmount = Math.min(remainingVolume, caskVolume);
 
-				makeCaskReservation(batch, cask, reservedAmount);
+				performCaskReservation(batch, cask, reservedAmount);
 				remainingVolume -= reservedAmount;
 			}
 		}
 	}
 
-	private static void makeCaskReservation(Batch batch, Cask cask, double reservedAmount) {
+	private static void performCaskReservation(Batch batch, Cask cask, double reservedAmount) {
 		cask.makeReservation(batch, reservedAmount);
 		batch.addReservedCask(cask, reservedAmount);
 	}
@@ -223,7 +228,12 @@ public abstract class BatchArea {
 		Map<TasteProfile, Double> productionVolumeTP = calculateProductionVolume(numBottlesToProduce, batch);
 
 		for (TasteProfile tp : productionVolumeTP.keySet()) {
-			processCasksForTasteProfile(batch, tp, productionVolumeTP.get(tp), batch.getReservedCasks().keySet(), casksToUse);
+			processCasksForTasteProfile(
+					batch,
+					tp,
+					productionVolumeTP.get(tp),
+					batch.getReservedCasks().keySet(),
+					casksToUse);
 		}
 
 		batch.incNumProducedBottles(numBottlesToProduce);
@@ -256,7 +266,7 @@ public abstract class BatchArea {
 	 * @param batch          the batch for which the casks are being processed
 	 * @param tp             the taste profile
 	 * @param requiredVolume the volume required to be processed
-	 * @param set          the list of casks to be processed
+	 * @param set            the list of casks to be processed
 	 * @param casksToUse     a map of casks used and their respective volumes
 	 */
 	private static void processCasksForTasteProfile(Batch batch, TasteProfile tp, double requiredVolume,
@@ -282,7 +292,7 @@ public abstract class BatchArea {
 
 	private static void finalizeBatchProduction(Batch batch) {
 		if (batch.getNumProducedBottles() == batch.getNumExpectedBottles()) {
-			batch.markProductionComplete();
+			setBatchProductionComplete(batch);
 		}
 	}
 
@@ -311,7 +321,24 @@ public abstract class BatchArea {
 				}
 			}
 		}
+
+		if (!onlyReadyCasks) {
+			matchingCasks = sortCasksByMaturity(matchingCasks);
+		}
+
 		return matchingCasks;
+	}
+
+	public static Map<TasteProfile, List<Cask>> sortCasksByMaturity(Map<TasteProfile, List<Cask>> matchingCasks) {
+		Map<TasteProfile, List<Cask>> sortedCasks = new HashMap<>();
+
+		for (Map.Entry<TasteProfile, List<Cask>> entry : matchingCasks.entrySet()) {
+			List<Cask> casks = entry.getValue();
+			casks.sort(Comparator.comparingInt(Cask::getMaturityMonths).reversed());
+			sortedCasks.put(entry.getKey(), casks);
+		}
+
+		return sortedCasks;
 	}
 
 	public static ArrayList<Batch> getAllBatches() {
@@ -319,7 +346,11 @@ public abstract class BatchArea {
 	}
 
 	public static void deleteBatch(Batch selectedBatch) {
-		storage.deleteBatch(selectedBatch);
+		if (isProductionStarted(selectedBatch)) {
+			throw new IllegalArgumentException("Production has started and the batch cannot be deleted.");
+		} else {
+			storage.deleteBatch(selectedBatch);
+		}
 	}
 
 	/**
@@ -353,7 +384,6 @@ public abstract class BatchArea {
 		for (TasteProfile tp : blueprint.keySet()) {
 			double percentage = blueprint.get(tp) / 100.0;
 			double totalVolumePerTP = 0;
-
 			for (Cask cask : casksToCheck) {
 				double reservedAmount = 0;
 				if (batch != null) {
@@ -364,17 +394,14 @@ public abstract class BatchArea {
 						}
 					}
 				}
-
 				// Only add volume for casks with the matching taste profile
 				if (cask.getTasteProfile() != null && cask.getTasteProfile().equals(tp)) {
 					totalVolumePerTP += cask.getLegalQuantity() + reservedAmount;
 				}
 			}
-
 			double amountBottlesPossiblePerTP = (totalVolumePerTP / bottleSizeLITERS) * percentage;
 			maxNumBottles = Math.min(maxNumBottles, (int) amountBottlesPossiblePerTP);
 		}
-
 		return maxNumBottles;
 	}
 
@@ -390,15 +417,21 @@ public abstract class BatchArea {
 	 */
 	public static HashMap<TasteProfile, Double> calculateProductionVolume(int numBottlesToProduce, Batch batch) {
 		double totalProductionVolumeML = batch.getProduct().getBottleSize() * numBottlesToProduce;
-		double totalProductionVolumeLITER = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS,totalProductionVolumeML);
+		double totalProductionVolumeLITER = UnitConverter.convertUnits(Unit.MILLILITERS, Unit.LITERS,
+				totalProductionVolumeML);
 		HashMap<TasteProfile, Double> blueprint = batch.getProduct().getFormula().getBlueprint();
 		HashMap<TasteProfile, Double> productionVolume = new HashMap<>();
+
 		for (TasteProfile tasteProfile : blueprint.keySet()) {
 			double percentage = blueprint.get(tasteProfile) / 100.0;
 			double volume = totalProductionVolumeLITER * percentage;
 			productionVolume.put(tasteProfile, volume);
 		}
 		return productionVolume;
+	}
+
+	public static int calculateReadyBottles(Batch batch) {
+		return calculateMaxNumBottles(batch.getProduct(), true, batch);
 	}
 
 	// ===================== LABELS ========================= //
@@ -424,8 +457,8 @@ public abstract class BatchArea {
 	 * @return the label if it has been generated, otherwise a message indicating
 	 *         the label has not been generated
 	 */
-	public static String getLabelForBatch(Batch batch) {
-		String label = batch.getLabel();
+	public static String getLabelForBatch(Batch batch, boolean isSimpleStory) {
+		String label = batch.getLabel(isSimpleStory);
 		if (label != null) {
 			return label;
 		} else {
@@ -466,7 +499,7 @@ public abstract class BatchArea {
 
 	/**
 	 * Checks if the production has started for the given batch.
-		* BUT reverses the logic for certain mathods in GUI that needs reversed
+	 * BUT reverses the logic for certain mathods in GUI that needs reversed
 	 *
 	 * @param b the batch to check
 	 * @return true if production has started, false otherwise

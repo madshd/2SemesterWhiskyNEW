@@ -36,7 +36,6 @@ import BatchArea.Formula;
 import GUI.Common.*;
 
 import java.time.LocalDate;
-import java.util.Observable;
 
 import BatchArea.Batch;
 import BatchArea.Product;
@@ -275,8 +274,12 @@ public class BatchArea {
 
 		deleteProductButton.setOnAction(e -> {
 			Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
-			if (selectedProduct != null && !Controllers.BatchArea.isProductUsedInBatch(selectedProduct)) {
+			if (selectedProduct != null) {
+				try {
 				Controllers.BatchArea.deleteProduct(selectedProduct);
+				} catch (Exception ex) {
+					errorWindow.showError(ex.getMessage());
+				}
 				updateLists();
 			}
 		});
@@ -387,16 +390,19 @@ public class BatchArea {
 
 		Button produceBatchButton = new Button("Show Reserved Casks / Bottle Batch");
 		Button generateLabels = new Button("Generate Label");
-		Button showLabels = new Button("Show Label");
+		Button showLabelSimple = new Button("Show Simple Label");
+		Button showLabelFull = new Button("Show Full Label");
 
 		produceBatchButton.setFocusTraversable(false);
 		produceBatchButton.setDisable(true);
 		generateLabels.setFocusTraversable(false);
 		generateLabels.setDisable(true);
-		showLabels.setFocusTraversable(false);
-		showLabels.setDisable(true);
+		showLabelSimple.setFocusTraversable(false);
+		showLabelSimple.setDisable(true);
+		showLabelFull.setFocusTraversable(false);
+		showLabelFull.setDisable(true);
 
-		HBox batchButtons2 = new HBox(32, produceBatchButton, generateLabels, showLabels);
+		HBox batchButtons2 = new HBox(32, produceBatchButton, generateLabels, showLabelSimple, showLabelFull);
 		batchButtons2.setAlignment(Pos.CENTER);
 
 		// Add components to Batch GridPane
@@ -406,20 +412,22 @@ public class BatchArea {
 		batchGrid.add(batchButtons2, 0, 3);
 
 		assignBatchButtonActions(createBatchButton, filterBatchButton, deleteBatchButton, produceBatchButton,
-				generateLabels, showLabels);
+				generateLabels, showLabelSimple, showLabelFull);
 
 		batchTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue == null) {
 				produceBatchButton.setDisable(true);
 				deleteBatchButton.setDisable(true);
 				generateLabels.setDisable(true);
-				showLabels.setDisable(true);
+				showLabelSimple.setDisable(true);
+				showLabelFull.setDisable(true);
 			} else {
 				produceBatchButton.setDisable(Controllers.BatchArea.isProductionComplete(newValue));
 				deleteBatchButton.setDisable(!Controllers.BatchArea.isProductionStartedReversed(newValue));
 				generateLabels.setDisable(!Controllers.BatchArea.isProductionComplete(newValue)
 						|| Controllers.BatchArea.isLabelGenerate(newValue));
-				showLabels.setDisable(!Controllers.BatchArea.isLabelGenerate(newValue));
+				showLabelSimple.setDisable(!Controllers.BatchArea.isLabelGenerate(newValue));
+				showLabelFull.setDisable(!Controllers.BatchArea.isLabelGenerate(newValue));
 			}
 		});
 
@@ -427,7 +435,7 @@ public class BatchArea {
 	}
 
 	private static void assignBatchButtonActions(Button createBatchButton, Button filterBatchButton,
-			Button deleteBatchButton, Button produceBatchButton, Button generateLabels, Button showLabels) {
+			Button deleteBatchButton, Button produceBatchButton, Button generateLabels, Button showLabelSimple, Button showLabelFull) {
 		createBatchButton.setOnAction(e -> {
 			if (selectedProduct == null) {
 				errorWindow.showError("Please select a Product from the list below.");
@@ -444,13 +452,12 @@ public class BatchArea {
 		deleteBatchButton.setOnAction(e -> {
 			Batch selectedBatch = batchTable.getSelectionModel().getSelectedItem();
 			if (selectedBatch != null) {
-				if (Controllers.BatchArea.isProductionStarted(selectedBatch)) {
-					errorWindow.showError(
-							"Production has already started for this batch and therefore it cannot be deleted.");
-					return;
-				}
+				try {
 				Controllers.BatchArea.deleteBatch(selectedBatch);
 				updateLists();
+				} catch (Exception ex) {
+					errorWindow.showError(ex.getMessage());
+				}
 			}
 		});
 
@@ -464,15 +471,23 @@ public class BatchArea {
 			if (selectedBatch != null) {
 				Controllers.BatchArea.generateLabelForBatch(selectedBatch);
 				generateLabels.setDisable(true);
-				showLabel.show(selectedBatch);
-				showLabels.setDisable(false);
+				showLabel.show(selectedBatch, true);
+				showLabelSimple.setDisable(false);
+				showLabelFull.setDisable(false);
 			}
 		});
 
-		showLabels.setOnAction(e -> {
+		showLabelSimple.setOnAction(e -> {
 			Batch selectedBatch = batchTable.getSelectionModel().getSelectedItem();
 			if (selectedBatch != null) {
-				showLabel.show(selectedBatch);
+				showLabel.show(selectedBatch, true);
+			}
+		});
+
+		showLabelFull.setOnAction(e -> {
+			Batch selectedBatch = batchTable.getSelectionModel().getSelectedItem();
+			if (selectedBatch != null) {
+				showLabel.show(selectedBatch, false);
 			}
 		});
 	}

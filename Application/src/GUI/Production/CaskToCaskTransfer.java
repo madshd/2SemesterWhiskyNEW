@@ -38,7 +38,7 @@ public abstract class CaskToCaskTransfer {
 
     public static class CasksFrom extends GridPane implements ObserverQuantityObserver {
         private final ListView<Item> lvwCasks = new ListView<>();
-        private final ListView<Filling > lvwCaskFillings = new ListView();
+        private final ListView<Filling > lvwCaskFillings = new ListView<>();
         private final ProductionArea pa;
 
 
@@ -114,7 +114,7 @@ public abstract class CaskToCaskTransfer {
 
     public static class CasksTo extends GridPane{
         private final ListView<Item> lvwCasks = new ListView<>();
-        private final ListView<Filling > lvwCaskFillings = new ListView();
+        private final ListView<Filling > lvwCaskFillings = new ListView<>();
         private Cask caskFrom;
 
         public CasksTo(ProductionArea pa){
@@ -204,7 +204,8 @@ public abstract class CaskToCaskTransfer {
         private ErrorWindow errorWindow = new ErrorWindow();
         private final ComboBox<TasteProfile> cmbTasteProfile = new ComboBox<>();
 
-        public InputElement(ProductionArea pa){
+        @SuppressWarnings("unchecked")
+		public InputElement(ProductionArea pa){
             // Generel settings
             applyCommonSettings(this, pa);
             double areaWidth = pa.screenBounds.getWidth() - 300 * 0.9;

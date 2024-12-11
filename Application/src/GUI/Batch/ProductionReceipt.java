@@ -1,6 +1,8 @@
 package GUI.Batch;
 
 import java.util.Map;
+
+import GUI.Common.ErrorWindow;
 import javafx.stage.FileChooser;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -28,6 +30,7 @@ public class ProductionReceipt {
 	private final Button okButton = new Button("OK");
 	private final Label header = new Label("Casks to use for this production:");
 	private Map<Cask, Double> casks;
+	private ErrorWindow errorWindow = new ErrorWindow();
 
 	public ProductionReceipt() {
 		productionReceiptStage.setTitle("Production Receipt");
@@ -96,7 +99,7 @@ public class ProductionReceipt {
 
 		// Handles closing the window if user tries to bypass saving the receipt to file
 		// all views and data will update as normally.
-		// this is not the goal, merely a safeguard to prevent data loss.
+		// This is a safeguard to prevent data loss.
 		productionReceiptStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
@@ -108,19 +111,15 @@ public class ProductionReceipt {
 
 	@SuppressWarnings("unchecked")
 	private void configureTableView() {
-		// Clear existing columns
 		usedCasks.getColumns().clear();
 
-		// Cask ID Column
 		TableColumn<Map.Entry<Cask, Double>, String> caskIDColumn = new TableColumn<>("Cask ID");
 		caskIDColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getKey().getCaskIDString()));
 
-		// Quantity To Use Column
 		TableColumn<Map.Entry<Cask, Double>, String> quantityToUseColumn = new TableColumn<>("Quantity To Use");
 		quantityToUseColumn.setCellValueFactory(
 				data -> new SimpleStringProperty(String.format("%.2f liter(s)", data.getValue().getValue())));
 
-		// Add columns to the TableView
 		usedCasks.getColumns().addAll(caskIDColumn, quantityToUseColumn);
 	}
 
@@ -152,6 +151,7 @@ public class ProductionReceipt {
 				saveButton.setDisable(true);
 				okButton.setDisable(false);
 			} catch (IOException e) {
+				errorWindow.showError("An error occurred while saving the file. " + e.getMessage());
 			}
 		}
 	}

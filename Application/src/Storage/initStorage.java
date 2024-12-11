@@ -44,6 +44,7 @@ public abstract class initStorage {
 	public static Cask cask_05;
 	public static Cask cask_06;
 
+	@SuppressWarnings("unused")
 	public static void loadProduction() {
 		Warehouse warehouse = Warehousing.createWarehouse("Sherlock Whisky", "Baker Street 221 B");
 
@@ -751,6 +752,7 @@ public abstract class initStorage {
 
 	}
 
+	@SuppressWarnings("unused")
 	public static void loadWarehousing() {
 		Warehouse warehouse = Warehousing.createWarehouse("Lager 1", "Lagervej 1");
 		Warehouse warehouse2 = Warehousing.createWarehouse("Lager 2", "Lagervej 2");

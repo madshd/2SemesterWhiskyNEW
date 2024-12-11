@@ -29,7 +29,7 @@ public class UpdateCaskCommonDialog extends Application {
     private Label lblWarehouses = new Label("Warehouses");
     private Label lblStorageRacks = new Label("Storage racks");
     private Label lblTasteProfile = new Label("Taste profile");
-    private ComboBox<TasteProfile> cbxTasteProfile = new ComboBox();
+    private ComboBox<TasteProfile> cbxTasteProfile = new ComboBox<>();
     private TextField txfSupplier = new TextField() {{ setDisable(true); }};
     private ListView<Warehouse> lvwWarehouses = new ListView<>();
     private ListView<StorageRack> lvwStorageRacks = new ListView<>();

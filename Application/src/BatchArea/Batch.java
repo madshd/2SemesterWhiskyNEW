@@ -1,5 +1,6 @@
 package BatchArea;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,8 @@ import java.util.Map;
 import Enumerations.TastingNote;
 import Warehousing.Cask;
 
-public class Batch {
+public class Batch implements Serializable {
+	
 
 	private static int batchIDglobalCount = 1;
 	private final int batchID;
@@ -18,8 +20,9 @@ public class Batch {
 	private LocalDate completionDate;
 	private int numExpectedBottles;
 	private int numProducedBottles;
-	private String label = null;
-	private final List<Cask> usedCask = new ArrayList<>();
+	private String labelSimple = null;
+	private String labelFull = null;
+	private final List<Cask> usedCasks = new ArrayList<>();
 
 	private boolean productionComplete;
 
@@ -56,6 +59,11 @@ public class Batch {
 	}
 
 	public void generateLabel() {
+		generateLabelSimple();
+		generateLabelFull();
+	}
+
+	public void generateLabelFull() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(product.getProductName());
 		sb.append("\n");
@@ -63,34 +71,60 @@ public class Batch {
 		sb.append("\n");
 		sb.append("Batch Size: " + numProducedBottles + " bottles");
 		sb.append("\n");
-		sb.append("Tasting Notes: " + weightedTastingNotes() + "\n");
+		sb.append("Tasting Notes: " + getWeightedTastingNotes() + "\n");
 		sb.append("-------------------------\n");
 		sb.append("Casks used in the production of this batch: \n");
-		for (Cask cask : usedCask) {
+		for (Cask cask : usedCasks) {
 			sb.append("\n    *** Cask ID: " + cask.getCaskID() + " ***");
 			sb.append("\n");
 			sb.append("Cask type: " + cask.getCaskType());
 			sb.append("\n");
-			sb.append("Cask story: " + Controllers.Production.getCaskStory(cask, completionDate,false));
-			// TODO: getCaskInfo check how it look when Leander finishes it
+			sb.append("Cask story: " + Controllers.Production.getCaskStory(cask, completionDate, false));
 		}
-		label = sb.toString();
+		labelFull = sb.toString();
 	}
 
-	private String weightedTastingNotes() {
+	public void generateLabelSimple() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(product.getProductName());
+		sb.append("\n");
+		sb.append("Bottled: " + completionDate);
+		sb.append("\n");
+		sb.append("Batch Size: " + numProducedBottles + " bottles");
+		sb.append("\n");
+		sb.append("Tasting Notes: " + getWeightedTastingNotes() + "\n");
+		sb.append("-------------------------\n");
+		sb.append("Casks used in the production of this batch: \n");
+		for (Cask cask : usedCasks) {
+			sb.append("\n    *** Cask ID: " + cask.getCaskID() + " ***");
+			sb.append("\n");
+			sb.append("Cask type: " + cask.getCaskType());
+			sb.append("\n");
+			sb.append("Cask story: " + Controllers.Production.getCaskStory(cask, completionDate, true));
+		}
+		labelSimple = sb.toString();
+	}
+
+	/**
+	 * Retrieves the top weighted tasting notes for the product.
+	 *
+	 * @return A string containing the top weighted tasting notes separated by spaces.
+	 */
+	public String getWeightedTastingNotes(
+	) {
 		int numNotes = 3;
 		StringBuilder sb = new StringBuilder();
 		List<TastingNote> tastingNotesSortedByPercentage = new ArrayList<>(
 				product.getFormula().getWeightedTastingNotes());
 		for (int i = 0; i < numNotes && i < tastingNotesSortedByPercentage.size(); i++) {
 			sb.append(tastingNotesSortedByPercentage.get(i));
-			sb.append(" ");
+			sb.append(", ");
 		}
 		return sb.toString();
 	}
 
 	public void addUsedCask(Cask cask) {
-		usedCask.add(cask);
+		usedCasks.add(cask);
 	}
 
 	// ---------------------------GENERIC-GETTERS----------------------------//
@@ -141,7 +175,7 @@ public class Batch {
 	}
 
 	public boolean isLabelGenerated() {
-		return label != null;
+		return labelSimple != null;
 	}
 
 	public LocalDate getCompletionDate() {
@@ -156,8 +190,12 @@ public class Batch {
 		return batchIDglobalCount;
 	}
 
-	public String getLabel() {
-		return label;
+	public String getLabel(Boolean isSimpleStory) {
+		if (isSimpleStory) {
+			return labelSimple;
+		} else {
+			return labelFull;
+		}
 	}
 
 	public int getNumRemainingBottles() {

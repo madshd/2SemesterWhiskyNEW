@@ -122,7 +122,6 @@ public class FormulaCRUD {
 					setText(null);
 					setGraphic(null);
 				} else {
-					// Display the TasteProfile name and set up the percentage field
 					setText(item.getProfileName());
 					TextField percentageField = createPercentageField(item);
 					setGraphic(percentageField);
@@ -132,7 +131,7 @@ public class FormulaCRUD {
 			private TextField createPercentageField(TasteProfile item) {
 				TextField percentageField = new TextField();
 				percentageField.setPromptText("Enter Percentage");
-				percentageField.setMaxWidth(50);
+				percentageField.setMaxWidth(75);
 				percentageField.setFocusTraversable(true);
 
 				// Initialize with the value from the blueprint map
@@ -156,19 +155,17 @@ public class FormulaCRUD {
 			private void handlePercentageInputChange(TasteProfile item, TextField percentageField, String newValue) {
 				try {
 					if (newValue.isEmpty())
-						return; // Don't process empty input
+						return;
 					int percentage = Integer.parseInt(newValue);
 					if (percentage < 0) {
-						// If it's a negative number, mark as invalid
 						percentageField.setStyle("-fx-border-color: red;");
-						return; // Do not update the map or total percentage
+						return;
 					}
 					// Valid input
 					percentageField.setStyle("-fx-border-color: #d4a373;");
 					blueprint.put(item, (double) percentage);
 					updateTotalPercentage();
 				} catch (NumberFormatException e) {
-					// Invalid input (non-numeric)
 					percentageField.setStyle("-fx-border-color: red;");
 				}
 			}
@@ -258,10 +255,10 @@ public class FormulaCRUD {
 	}
 
 	public void updateList() {
-		blueprint.clear(); // Ensure blueprint is completely cleared
-		clearPercentageInputs(); // Reset ListView-related state
-		tasteProfiles.getItems().clear(); // Clear current items in the ListView
-		tasteProfiles.getItems().addAll(Controllers.BatchArea.getAllTasteProfiles()); // Add fresh data
+		blueprint.clear();
+		clearPercentageInputs();
+		tasteProfiles.getItems().clear();
+		tasteProfiles.getItems().addAll(Controllers.BatchArea.getAllTasteProfiles());
 	}
 
 	// Clear all fields

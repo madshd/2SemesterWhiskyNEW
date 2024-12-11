@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 @SuppressWarnings("unused")
 public class ProduceBatchWindow {
 
-	private final ErrorWindow errorWindow = new ErrorWindow();
+	private final ErrorWindow erorWindow = new ErrorWindow();
 	private final Stage produceBatchStage = new Stage();
 	private final TableView<Cask> reservedCasks = new TableView<>();
 	private final TextField bottleNumInput = new TextField();
@@ -33,6 +33,7 @@ public class ProduceBatchWindow {
 	private Button produceButton = new Button("Produce Batch");
 	private Label header = new Label("Reserved Casks for Batch");
 	private LoadingWindow loadingWindow = new LoadingWindow();
+	private ErrorWindow errorWindow = new ErrorWindow();
 
 	public ProduceBatchWindow() {
 		produceBatchStage.setTitle("Produce Batch");
@@ -59,17 +60,7 @@ public class ProduceBatchWindow {
 		remainingBottles.setText(String.valueOf(batch.getNumRemainingBottles()));
 		ObservableList<Cask> caskList = FXCollections.observableArrayList(batch.getReservedCasks().keySet());
 		reservedCasks.setItems(caskList);
-		readyBottles.setText(Integer.toString(calcReadyBottles()));
-	}
-
-	public int calcReadyBottles() {
-		int readyBottles = 0;
-		for (Cask cask : batch.getReservedCasks().keySet()) {
-			if (cask.getMaturityMonths() >= 36) {
-				readyBottles += batch.getReservedCasks().get(cask);
-			}
-		}
-		return readyBottles;
+		readyBottles.setText(Integer.toString(Controllers.BatchArea.calculateReadyBottles(batch)));
 	}
 
 	private void initContent(GridPane mainPane) {
@@ -152,6 +143,10 @@ public class ProduceBatchWindow {
 		// Button Actions
 		produceButton.setOnAction(event -> {
 			int bottleNum = Integer.parseInt(bottleNumInput.getText());
+			if (bottleNum > Integer.parseInt(readyBottles.getText())) {
+				errorWindow.showError("Cannot produce more bottles than ready casks allow.");
+				return;
+			}
 			produce(bottleNum);
 		});
 

@@ -43,7 +43,8 @@ public abstract class CreateAndUpdateDistillate {
         private final ErrorWindow errorWindow = new ErrorWindow();
         private Distillate distillate;
 
-        public Basics(ProductionArea pa){
+        @SuppressWarnings("unchecked")
+		public Basics(ProductionArea pa){
             // Generel settings
             applyCommonSettings(this, pa);
             double areaWidth = pa.screenBounds.getWidth() - 300 * 0.9;
@@ -211,7 +212,8 @@ public abstract class CreateAndUpdateDistillate {
         private Distillate distillate;
         private final ErrorWindow errorWindow = new ErrorWindow();
 
-        public IngredientDetails(ProductionArea pa){
+        @SuppressWarnings("unchecked")
+		public IngredientDetails(ProductionArea pa){
             // Generel settings
             applyCommonSettings(this, pa);
             double areaWidth = pa.screenBounds.getWidth() - 300 * 0.9;
@@ -399,7 +401,8 @@ public abstract class CreateAndUpdateDistillate {
         private Distillate distillate;
         private final ErrorWindow errorWindow = new ErrorWindow();
 
-        public ProductionDetails(ProductionArea pa){
+        @SuppressWarnings("unchecked")
+		public ProductionDetails(ProductionArea pa){
             // Generel settings
             applyCommonSettings(this, pa);
             double areaWidth = pa.screenBounds.getWidth() - 300 * 0.9;

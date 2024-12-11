@@ -67,13 +67,6 @@ public class FormulaManager {
 		GridPane infoPane = new GridPane();
 		infoPaneInit(infoPane);
 
-		// Close Button
-		// Button formulaManagerButton = new Button("Close");
-		// formulaManagerButton.setOnAction(e -> {
-		// mainPane.getScene().getWindow().hide();
-		// });
-		// mainPane.add(formulaManagerButton, 0, 0);
-
 		mainPane.add(formulaPane, 0, 0);
 		mainPane.add(tastePane, 0, 1);
 		mainPane.add(infoPane, 1, 0, 1, 2);
