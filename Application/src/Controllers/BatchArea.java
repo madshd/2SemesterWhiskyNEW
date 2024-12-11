@@ -2,6 +2,7 @@ package Controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -321,16 +322,23 @@ public abstract class BatchArea {
 			}
 		}
 
-		if (onlyReadyCasks) {
+		if (!onlyReadyCasks) {
 			matchingCasks = sortCasksByMaturity(matchingCasks);
 		}
 
 		return matchingCasks;
 	}
 
-	public static Map<TasteProfile, List<Cask>> sortCasksByMaturity(Map<TasteProfile, List<Cask>> matchingCasks){
-		// TODO: Implement sorting by maturity
-		return matchingCasks;
+	public static Map<TasteProfile, List<Cask>> sortCasksByMaturity(Map<TasteProfile, List<Cask>> matchingCasks) {
+		Map<TasteProfile, List<Cask>> sortedCasks = new HashMap<>();
+
+		for (Map.Entry<TasteProfile, List<Cask>> entry : matchingCasks.entrySet()) {
+			List<Cask> casks = entry.getValue();
+			casks.sort(Comparator.comparingInt(Cask::getMaturityMonths).reversed());
+			sortedCasks.put(entry.getKey(), casks);
+		}
+
+		return sortedCasks;
 	}
 
 	public static ArrayList<Batch> getAllBatches() {
@@ -420,6 +428,10 @@ public abstract class BatchArea {
 			productionVolume.put(tasteProfile, volume);
 		}
 		return productionVolume;
+	}
+
+	public static int calculateReadyBottles(Batch batch) {
+		return calculateMaxNumBottles(batch.getProduct(), true, batch);
 	}
 
 	// ===================== LABELS ========================= //

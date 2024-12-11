@@ -1,5 +1,6 @@
 package BatchArea;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,8 @@ import java.util.Map;
 import Enumerations.TastingNote;
 import Warehousing.Cask;
 
-public class Batch {
+public class Batch implements Serializable {
+	
 
 	private static int batchIDglobalCount = 1;
 	private final int batchID;

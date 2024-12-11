@@ -1,11 +1,13 @@
 package BatchArea;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import Enumerations.TastingNote;
 
-public class TasteProfile {
+public class TasteProfile implements Serializable {
+	
 
 	private String profileName;
 	private String description;
