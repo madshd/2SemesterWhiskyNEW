@@ -23,7 +23,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	private final String caskType;
 	private final Unit unit;
 	private final HashMap<Batch, Double> reservedBatchesAmount = new HashMap<>();
-	private final Set<ObserverQuantityObserver> observers = new HashSet<>();
+	private transient Set<ObserverQuantityObserver> observers = new HashSet<>();
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
 	private int lifeCycle = 0;
 	private final Supplier supplier;
@@ -95,6 +95,17 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	public void notifyObservers() {
 		for (ObserverQuantityObserver o : observers)
 			o.update(this);
+	}
+
+	/**
+	 * Restore observers list after deserialization if necessary
+	 * @return
+	 */
+	private Object readResolve() {
+		if (observers == null) {
+			this.observers = new HashSet<>();
+		}
+		return this;
 	}
 
 	/**

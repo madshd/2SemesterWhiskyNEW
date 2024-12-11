@@ -2,13 +2,14 @@ package Warehousing;
 
 import Interfaces.WarehousingObserver;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoggerObserver implements WarehousingObserver {
+public class LoggerObserver implements WarehousingObserver, Serializable {
     private static List<String> logs = new ArrayList<>();
 
     @Override

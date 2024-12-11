@@ -1,8 +1,9 @@
 package Production;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class StoryLine {
+public class StoryLine implements Serializable {
     private final LocalDate date;
     private String storyLine;
 

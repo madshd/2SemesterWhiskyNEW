@@ -7,7 +7,6 @@ import java.util.List;
 import Enumerations.TastingNote;
 
 public class TasteProfile implements Serializable {
-	
 
 	private String profileName;
 	private String description;
