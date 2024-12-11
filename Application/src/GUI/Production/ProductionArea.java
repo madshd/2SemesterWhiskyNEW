@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.*;
 import Production.Distillate;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,15 +38,15 @@ public class ProductionArea {
 	private Scene scene;
 	protected Distillates distillates;
 	private Casks casks;
-	protected FillDistillateIntoCask.DistillateElement fillDistillateElement;
-	protected FillDistillateIntoCask.CasksElement fillCaskElement;
-	protected FillDistillateIntoCask.InputElement fillInputElement;
-	protected CreateAndUpdateDistillate.Basics distillateBasics;
-	protected CreateAndUpdateDistillate.IngredientDetails ditillateIngredient;
-	protected CreateAndUpdateDistillate.ProductionDetails distillateProductionDetails;
-	protected CaskToCaskTransfer.CasksFrom transferCasksFrom;
-	protected CaskToCaskTransfer.CasksTo transferCasksTo;
-	protected CaskToCaskTransfer.InputElement transferInputElement;
+	protected transient FillDistillateIntoCask.DistillateElement fillDistillateElement;
+	protected transient FillDistillateIntoCask.CasksElement fillCaskElement;
+	protected transient FillDistillateIntoCask.InputElement fillInputElement;
+	protected transient CreateAndUpdateDistillate.Basics distillateBasics;
+	protected transient CreateAndUpdateDistillate.IngredientDetails ditillateIngredient;
+	protected transient CreateAndUpdateDistillate.ProductionDetails distillateProductionDetails;
+	protected transient CaskToCaskTransfer.CasksFrom transferCasksFrom;
+	protected transient CaskToCaskTransfer.CasksTo transferCasksTo;
+	protected transient CaskToCaskTransfer.InputElement transferInputElement;
 
 	public ProductionArea() {
 		stage = new Stage();
@@ -105,9 +106,9 @@ public class ProductionArea {
 	}
 
 	protected class Distillates extends GridPane implements ObserverQuantityObserver {
-		private final ListView<Item> lvwDistillates = new ListView<>();
-		private final TextArea txaDistillateDetails = new TextArea();
-		private Button btnCreateOrUpdate;
+		private  final ListView<Item> lvwDistillates = new ListView<>();
+		private  final TextArea txaDistillateDetails = new TextArea();
+		private  Button btnCreateOrUpdate;
 
 		public Distillates(ProductionArea pa) {
 			// Generel settings
@@ -273,11 +274,11 @@ public class ProductionArea {
 	}
 
 	private class Casks extends GridPane implements ObserverQuantityObserver {
-		private final ListView<Item> lvwCasks = new ListView<>();
-		private final TextArea txaCaskDetails = new TextArea();
-		private final UpdateCaskCommonDialog updateCaskCommonDialog = new UpdateCaskCommonDialog(null);
-		private final ErrorWindow errorWindow = new ErrorWindow();
-		private final Stage updateCaskStage = new Stage();
+		private transient final ListView<Item> lvwCasks = new ListView<>();
+		private transient final TextArea txaCaskDetails = new TextArea();
+		private transient final UpdateCaskCommonDialog updateCaskCommonDialog = new UpdateCaskCommonDialog(null);
+		private transient final ErrorWindow errorWindow = new ErrorWindow();
+		private transient final Stage updateCaskStage = new Stage();
 
 		public Casks(ProductionArea pa) {
 			// Generel settings
@@ -349,7 +350,7 @@ public class ProductionArea {
 			// Prepare update cask dialogue
 			updateCaskStage.initModality(Modality.APPLICATION_MODAL);
 
-
+			updatelist(null);
 		}
 
 		private void buttionAction(Button button) {
@@ -402,7 +403,8 @@ public class ProductionArea {
 
 				Common.useSpecifiedListView(lvwCasks);
 			} else {
-				lvwCasks.getItems().clear();
+				List<Item> casks = new ArrayList<>(getCasksMinQuantity(null));
+				lvwCasks.getItems().setAll(casks);
 			}
 		}
 

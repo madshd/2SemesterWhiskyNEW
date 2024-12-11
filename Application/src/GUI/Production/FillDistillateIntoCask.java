@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,10 @@ public abstract class FillDistillateIntoCask {
         pane.setGridLinesVisible(pa.gridLines);
     }
 
-    public static class DistillateElement extends GridPane implements ObserverQuantityObserver {
+    public static class DistillateElement extends GridPane implements ObserverQuantityObserver{
         private final ListView<Item> lvwDistillates = new ListView<>();
         private final TextArea txaDistillateDetails = new TextArea();
-        protected Distillate selectedDistillate;
+        protected transient Distillate selectedDistillate;
 
         public DistillateElement(ProductionArea pa){
             // Generel settings
@@ -127,8 +128,8 @@ public abstract class FillDistillateIntoCask {
     }
 
     public static class CasksElement extends GridPane{
-        private final ListView<Item> lvwCasks = new ListView<>();
-        private final ListView<Filling > lvwCaskFillings = new ListView();
+        private transient final ListView<Item> lvwCasks = new ListView<>();
+        private transient final ListView<Filling > lvwCaskFillings = new ListView();
 
         public CasksElement(ProductionArea pa){
             // Generel settings
@@ -196,14 +197,14 @@ public abstract class FillDistillateIntoCask {
     }
 
     public static class InputElement extends GridPane{
-        private final TextField txfInputLiters = new TextField();
-        private final DatePicker dpDateForFilling = new DatePicker();
-        private final Label lblInfoMaxLiters = new Label();
-        private Button btnAddFillment = new Button("Add filling to cask");
+        private transient final TextField txfInputLiters = new TextField();
+        private transient final DatePicker dpDateForFilling = new DatePicker();
+        private transient final Label lblInfoMaxLiters = new Label();
+        private transient Button btnAddFillment = new Button("Add filling to cask");
         private double maxLittersToFill = 0;
-        private Cask selectedCask;
+        private transient Cask selectedCask;
         private Distillate selectedDistillate;
-        private ErrorWindow errorWindow = new ErrorWindow();
+        private transient ErrorWindow errorWindow = new ErrorWindow();
 
         public InputElement(ProductionArea pa){
             // Generel settings
