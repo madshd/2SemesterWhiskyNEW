@@ -147,7 +147,7 @@ public abstract class Production {
 	 * @return
 	 */
 	public static double fillDistillateIntoCask(Distillate distillate, Cask cask, double quantity ,LocalDate date)
-			throws IllegalStateException{
+			throws IllegalArgumentException{
 		Filling fillingInCrease = new FillDistillate(date,quantity,cask,distillate,null,
 				false,FillType.FILLING);
 		Filling fillingDeCrease = new FillDistillate(date,quantity,cask,distillate,null,
@@ -156,7 +156,7 @@ public abstract class Production {
 			distillate.updateQuantity(fillingDeCrease);
 			return cask.updateQuantity(fillingInCrease);
 		}catch (IllegalArgumentException e){
-			throw new IllegalArgumentException("Provided quantity does not fit this distillate");
+			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
 

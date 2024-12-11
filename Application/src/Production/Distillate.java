@@ -45,7 +45,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	 * @throws IllegalStateException
 	 */
 	@Override
-	public double updateQuantity(Filling fillDistillate) throws IllegalStateException {
+	public double updateQuantity(Filling fillDistillate) throws IllegalArgumentException {
 		double newQuantity = getRemainingQuantity() + fillDistillate.getQuantity();
 
 		if (newQuantity >= 0) {
@@ -53,7 +53,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 			notifyObservers();
 			return newQuantity;
 		} else {
-			throw new IllegalStateException("Provided quantity does not fit this distillate");
+			throw new IllegalArgumentException("Provided quantity does not fit this distillate.");
 		}
 	}
 
