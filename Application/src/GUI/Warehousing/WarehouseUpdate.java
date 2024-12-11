@@ -41,9 +41,8 @@ public class WarehouseUpdate extends Application {
 
     @Override
     public void start(Stage stage) {
-        this.stage = stage; // Initialize the stage instance variable
+        this.stage = stage;
         stage.show();
-        // Create the main layout
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(20, 20, 20, 20));

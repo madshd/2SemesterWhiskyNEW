@@ -4,9 +4,10 @@ import Enumerations.FillType;
 import Interfaces.Filling;
 import Warehousing.Cask;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class FillDistillate implements Filling, Comparable<FillDistillate>{
+public class FillDistillate implements Filling, Comparable<FillDistillate>, Serializable {
     private final LocalDate date;
     private double quantity;
     private final Cask cask;

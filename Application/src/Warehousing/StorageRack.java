@@ -4,17 +4,16 @@ import Controllers.Warehousing;
 import Interfaces.Item;
 import Interfaces.WarehousingObserver;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class StorageRack {
+public class StorageRack implements Serializable {
     private String id;
     private int shelves;
     //    Nullable
     private Warehouse warehouse;
 
     private LinkedList<Item> list = new LinkedList<>();
-
-    private Set<WarehousingObserver> warehousingObservers = new HashSet<>();
 
     public StorageRack(String id, int shelves) {
         this.id = id;
@@ -36,10 +35,6 @@ public class StorageRack {
 
     public int getShelves() {
         return shelves;
-    }
-
-    public Set<WarehousingObserver> getWarehousingObservers() {
-        return warehousingObservers;
     }
 
     public LinkedList<Item> getList() {

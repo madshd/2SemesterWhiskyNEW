@@ -1,6 +1,8 @@
 package Warehousing;
 
-public class Supplier {
+import java.io.Serializable;
+
+public class Supplier implements Serializable {
     private final String name;
     private final String address;
     private final String description;

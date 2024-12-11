@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ingredient implements OberverQuantitySubject, Item, Serializable, WarehousingSubject {
+public class Ingredient implements OberverQuantitySubject, Item, Serializable {
 	private final String name;
 	private String description;
 	private final int batchNo;
@@ -158,21 +158,6 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable, W
 	public void notifyObservers() {
 		for (ObserverQuantityObserver o : observers)
 			o.update(this);
-	}
-
-	@Override
-	public void registerWarehousingObserver(WarehousingObserver o) {
-
-	}
-
-	@Override
-	public void removeWarehousingObserver(WarehousingObserver o) {
-
-	}
-
-	@Override
-	public void notifyWarehousingObservers() {
-
 	}
 
 	@Override

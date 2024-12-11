@@ -51,9 +51,9 @@ public class CreateCaskDialog extends Application {
         grid.setVgap(10);
 
         // Brug HBox til at gruppere label og TextField
-        VBox inputFields = new VBox(5); // Mindre spacing mellem Label og TextField
+        VBox inputFields = new VBox(5);
         inputFields.getChildren().addAll(lblCaskId, txfCaskId, lblMaxQuantity, txfMaxQuantity, lblCaskType, txfCaskType, lblSupplier, cbxSupplier);
-        grid.add(inputFields, 0, 0); // "Cask ID" og textfield i én linje
+        grid.add(inputFields, 0, 0);
         VBox rightBox = new VBox(10, lblWarehouses, lvwWarehouses, lblStorageRacks, lvwStorageRacks);
         grid.add(rightBox, 1, 0);
 
@@ -69,8 +69,6 @@ public class CreateCaskDialog extends Application {
         Scene scene = new Scene(grid, 600, 400);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setTitle("Create cask");
-//        stage.setMinHeight(600);
-//        stage.setMinWidth(300);
         stage.setScene(scene);
         stage.show();
     }
@@ -96,14 +94,19 @@ private void btnCreateAction() {
     });
 }
 
-    private boolean isFormValid() {
-        return !txfCaskId.getText().isEmpty() &&
-                !txfMaxQuantity.getText().isEmpty() &&
-                !txfCaskType.getText().isEmpty() &&
-                cbxSupplier.getValue() != null &&
-                lvwWarehouses.getSelectionModel().getSelectedItem() != null &&
-                lvwStorageRacks.getSelectionModel().getSelectedItem() != null;
-    }
+/**
+ * Validates the form fields to ensure all required fields are filled out.
+ *
+ * @return true if all required fields are filled out correctly, false otherwise.
+ */
+private boolean isFormValid() {
+    return !txfCaskId.getText().isEmpty() && // Check if Cask ID field is not empty
+            !txfMaxQuantity.getText().isEmpty() && // Check if Max Quantity field is not empty
+            !txfCaskType.getText().isEmpty() && // Check if Cask Type field is not empty
+            cbxSupplier.getValue() != null && // Check if a Supplier is selected
+            lvwWarehouses.getSelectionModel().getSelectedItem() != null && // Check if a Warehouse is selected
+            lvwStorageRacks.getSelectionModel().getSelectedItem() != null; // Check if a Storage Rack is selected
+}
 
     private void updateLists() {
         cbxSupplier.getItems().addAll(Warehousing.getSuppliers());

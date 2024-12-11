@@ -30,10 +30,10 @@ public class WarehouseCreate extends Application {
 
     @Override
     public void start(Stage stage) {
-        this.stage = stage; // Initialize the stage instance variable
+        this.stage = stage;
         stage.show();
         initialize();
-        // Create the main layout
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(20, 20, 20, 20));
@@ -48,7 +48,7 @@ public class WarehouseCreate extends Application {
         addressFields.getChildren().addAll(lblAddress, txfAddress);
 
         inputFields.getChildren().addAll(nameFields, addressFields);
-        grid.add(inputFields, 0, 0); // "Name" and text field in one line
+        grid.add(inputFields, 0, 0);
 
         VBox leftSide = new VBox(10, lblStorageRacks, lvwStorageRacks, btnCancel);
         grid.add(leftSide, 0, 1);
@@ -62,7 +62,6 @@ public class WarehouseCreate extends Application {
         grid.add(buttons, 1, 1);
         buttons.setAlignment(Pos.CENTER);
 
-        // Set up the scene and show the stage
         Scene scene = new Scene(grid, 600, 400);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setScene(scene);

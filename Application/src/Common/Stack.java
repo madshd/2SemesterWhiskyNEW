@@ -1,9 +1,10 @@
 package Common;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class Stack<E> implements Interfaces.Stack<E> {
+public class Stack<E> implements Interfaces.Stack<E>, Serializable {
     // Implements a stack using a LinkedList.
     // The top of the stack is at the beginning of the LinkedList.
 
