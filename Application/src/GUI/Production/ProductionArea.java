@@ -349,7 +349,7 @@ public class ProductionArea {
 			// Prepare update cask dialogue
 			updateCaskStage.initModality(Modality.APPLICATION_MODAL);
 
-
+			updatelist(null);
 		}
 
 		private void buttionAction(Button button) {
@@ -402,7 +402,8 @@ public class ProductionArea {
 
 				Common.useSpecifiedListView(lvwCasks);
 			} else {
-				lvwCasks.getItems().clear();
+				List<Item> casks = new ArrayList<>(getCasksMinQuantity(null));
+				lvwCasks.getItems().setAll(casks);
 			}
 		}
 
