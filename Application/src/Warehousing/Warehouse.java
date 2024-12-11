@@ -15,7 +15,7 @@ public class Warehouse implements WarehousingSubject, Serializable {
     private String address;
     private Map<String, StorageRack> racks = new HashMap<>();
 
-    private List<WarehousingObserver> warehousingObservers;
+    private transient final List<WarehousingObserver> warehousingObservers;
 
     public Warehouse(String name, String address) {
         this.name = name;
