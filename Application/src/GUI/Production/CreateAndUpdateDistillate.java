@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import Production.Distillate;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -34,14 +35,14 @@ public abstract class CreateAndUpdateDistillate {
 
     public static class Basics extends GridPane {
 
-        private Label lblNewMakeID = new Label();
-        private final TextField txfName = new TextField();
-        private final TextField txfQuantity = new TextField();
-        private final ComboBox<Distiller> cmbDistiller = new ComboBox<>();
-        private final DatePicker dpStartDate = new DatePicker();
-        private final DatePicker dpEndDate = new DatePicker();
-        private final TextArea txaDescription = new TextArea();
-        private final ErrorWindow errorWindow = new ErrorWindow();
+        private transient Label lblNewMakeID = new Label();
+        private transient final TextField txfName = new TextField();
+        private transient final TextField txfQuantity = new TextField();
+        private transient final ComboBox<Distiller> cmbDistiller = new ComboBox<>();
+        private transient final DatePicker dpStartDate = new DatePicker();
+        private transient final DatePicker dpEndDate = new DatePicker();
+        private transient final TextArea txaDescription = new TextArea();
+        private transient final ErrorWindow errorWindow = new ErrorWindow();
         private Distillate distillate;
 
         public Basics(ProductionArea pa){
@@ -203,14 +204,14 @@ public abstract class CreateAndUpdateDistillate {
 
     public static class IngredientDetails extends GridPane {
 
-        private final DatePicker dpfillDate = new DatePicker();
-        private final ComboBox<Item> cmbIngredients = new ComboBox<>();
-        private final TextField txfQuantity = new TextField();
-        private final ListView<Item> lvwIngrediants = new ListView<>();
-        private final TextArea txaIngrediantDetails = new TextArea();
-        private final TextArea txaNewIngrediantDetail = new TextArea();
+        private transient final DatePicker dpfillDate = new DatePicker();
+        private transient final ComboBox<Item> cmbIngredients = new ComboBox<>();
+        private transient final TextField txfQuantity = new TextField();
+        private transient final ListView<Item> lvwIngrediants = new ListView<>();
+        private transient final TextArea txaIngrediantDetails = new TextArea();
+        private transient final TextArea txaNewIngrediantDetail = new TextArea();
         private Distillate distillate;
-        private final ErrorWindow errorWindow = new ErrorWindow();
+        private transient final ErrorWindow errorWindow = new ErrorWindow();
 
         public IngredientDetails(ProductionArea pa){
             // Generel settings
@@ -387,18 +388,18 @@ public abstract class CreateAndUpdateDistillate {
 
     public static class ProductionDetails extends GridPane {
 
-        private final DatePicker dpDate = new DatePicker();
-        private final TextField txfValue = new TextField();
-        private final TextArea txaText = new TextArea();
-        private final TabPane tabPane = new TabPane();
-        private final ListView<AlcoholPercentage> lvwAlchol = new ListView<>();
-        private final ListView<ProductCutInformation> lvwCutInfo = new ListView<>();
-        private final ListView<StoryLine> lvwStory = new ListView<>();
-        private final Tab alcohol = new Tab("Alcohol %");
-        private final Tab cutInfo = new Tab("Cut info");
-        private final Tab story = new Tab("Story");
+        private transient final DatePicker dpDate = new DatePicker();
+        private transient final TextField txfValue = new TextField();
+        private transient final TextArea txaText = new TextArea();
+        private transient final TabPane tabPane = new TabPane();
+        private transient final ListView<AlcoholPercentage> lvwAlchol = new ListView<>();
+        private transient final ListView<ProductCutInformation> lvwCutInfo = new ListView<>();
+        private transient final ListView<StoryLine> lvwStory = new ListView<>();
+        private transient final Tab alcohol = new Tab("Alcohol %");
+        private transient final Tab cutInfo = new Tab("Cut info");
+        private transient final Tab story = new Tab("Story");
         private Distillate distillate;
-        private final ErrorWindow errorWindow = new ErrorWindow();
+        private transient final ErrorWindow errorWindow = new ErrorWindow();
 
         public ProductionDetails(ProductionArea pa){
             // Generel settings
