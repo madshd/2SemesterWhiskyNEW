@@ -20,7 +20,7 @@ public class Ingredient implements OberverQuantitySubject, Item, Serializable {
 	private IngredientType ingredientType;
 	private final Unit unit;
 	private final List<Filling> fillIngredients = new ArrayList<>();
-	private final List<ObserverQuantityObserver> observers = new ArrayList<>();
+	private transient final List<ObserverQuantityObserver> observers = new ArrayList<>();
 
 	// Nullable
 	private StorageRack storageRack;

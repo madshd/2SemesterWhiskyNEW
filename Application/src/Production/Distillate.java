@@ -20,7 +20,7 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 	private final Unit unit;
 	private String description = "";
 	private final Stack<Filling> fillingStack = new Common.Stack<>();
-	private final Set<ObserverQuantityObserver> observers = new HashSet<>();
+	private transient Set<ObserverQuantityObserver> observers = new HashSet<>();
 	private final List<StoryLine> storyLines = new ArrayList<>();
 	private final List<ProductCutInformation> productCutInformations = new ArrayList<>();
 	private final List<AlcoholPercentage> alcoholPercentages = new ArrayList<>();
@@ -57,6 +57,10 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 		}
 	}
 
+	/**
+	 * Returns current total quantity of fillings done to cask(s).
+	 * @return
+	 */
 	public double getQuantityStatus() {
 		double quantity = 0;
 
@@ -92,7 +96,6 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 		return String.format("Name: %s \t | \t Start capacity: %,-4.2f \t | \t Remaining capacity: %,-4.2f", listName,
 				this.quantity, getRemainingQuantity());
 	}
-
 
 	/**
 	 * Adds a quantity of ingedient to distillate.
@@ -282,12 +285,13 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 		return quantity;
 	}
 
-	// Functions regarding observer pattern
+// Functions regarding observer pattern
 
 	@Override
 	public void addObserver(ObserverQuantityObserver o) {
 		observers.add(o);
 	}
+
 	@Override
 	public void removeObserver(ObserverQuantityObserver o) {
 		observers.remove(o);
@@ -298,6 +302,17 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 		for (ObserverQuantityObserver o : observers) {
 			o.update(this);
 		}
+	}
+
+	/**
+	 * Restore observers list after deserialization if necessary
+	 * @return
+	 */
+	private Object readResolve() {
+		if (observers == null) {
+			this.observers = new HashSet<>();
+		}
+		return this;
 	}
 
 
