@@ -35,7 +35,7 @@ public abstract class FillDistillateIntoCask {
     public static class DistillateElement extends GridPane implements ObserverQuantityObserver{
         private final ListView<Item> lvwDistillates = new ListView<>();
         private final TextArea txaDistillateDetails = new TextArea();
-        protected transient Distillate selectedDistillate;
+        protected Distillate selectedDistillate;
 
         public DistillateElement(ProductionArea pa){
             // Generel settings
@@ -128,8 +128,8 @@ public abstract class FillDistillateIntoCask {
     }
 
     public static class CasksElement extends GridPane{
-        private transient final ListView<Item> lvwCasks = new ListView<>();
-        private transient final ListView<Filling > lvwCaskFillings = new ListView();
+        private  final ListView<Item> lvwCasks = new ListView<>();
+        private  final ListView<Filling > lvwCaskFillings = new ListView();
 
         public CasksElement(ProductionArea pa){
             // Generel settings
@@ -197,14 +197,14 @@ public abstract class FillDistillateIntoCask {
     }
 
     public static class InputElement extends GridPane{
-        private transient final TextField txfInputLiters = new TextField();
-        private transient final DatePicker dpDateForFilling = new DatePicker();
-        private transient final Label lblInfoMaxLiters = new Label();
-        private transient Button btnAddFillment = new Button("Add filling to cask");
+        private final TextField txfInputLiters = new TextField();
+        private final DatePicker dpDateForFilling = new DatePicker();
+        private final Label lblInfoMaxLiters = new Label();
+        private Button btnAddFillment = new Button("Add filling to cask");
         private double maxLittersToFill = 0;
-        private transient Cask selectedCask;
+        private Cask selectedCask;
         private Distillate selectedDistillate;
-        private transient ErrorWindow errorWindow = new ErrorWindow();
+        private ErrorWindow errorWindow = new ErrorWindow();
 
         public InputElement(ProductionArea pa){
             // Generel settings

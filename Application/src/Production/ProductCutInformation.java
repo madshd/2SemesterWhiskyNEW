@@ -1,8 +1,9 @@
 package Production;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class ProductCutInformation {
+public class ProductCutInformation implements Serializable {
     private final LocalDate date;
     private String infoLine;
 

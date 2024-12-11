@@ -4,12 +4,13 @@ import Interfaces.Item;
 import Interfaces.WarehousingObserver;
 import Interfaces.WarehousingSubject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Warehouse implements WarehousingSubject {
+public class Warehouse implements WarehousingSubject, Serializable {
     private String name;
     private String address;
     private Map<String, StorageRack> racks = new HashMap<>();
