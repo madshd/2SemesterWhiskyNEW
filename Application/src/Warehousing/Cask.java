@@ -338,6 +338,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 			// This will start a new life cycle in the cask
 			if (newQuantity == 0 && !((FillDistillate)fillDistillate).getFillType().equals(FillType.CASKHISTORY)) {
 				lifeCycle++;
+				tasteProfile = null;
 			}
 			return newQuantity;
 		} else {
