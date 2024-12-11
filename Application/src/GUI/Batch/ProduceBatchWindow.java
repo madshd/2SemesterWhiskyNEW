@@ -69,6 +69,10 @@ public class ProduceBatchWindow {
 				readyBottles += batch.getReservedCasks().get(cask);
 			}
 		}
+		readyBottles -= batch.getNumProducedBottles();
+		if (readyBottles < 0) {
+			readyBottles = 0;
+		}
 		return readyBottles;
 	}
 

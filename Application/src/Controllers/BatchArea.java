@@ -320,6 +320,16 @@ public abstract class BatchArea {
 				}
 			}
 		}
+
+		if (onlyReadyCasks) {
+			matchingCasks = sortCasksByMaturity(matchingCasks);
+		}
+
+		return matchingCasks;
+	}
+
+	public static Map<TasteProfile, List<Cask>> sortCasksByMaturity(Map<TasteProfile, List<Cask>> matchingCasks){
+		// TODO: Implement sorting by maturity
 		return matchingCasks;
 	}
 
