@@ -3,9 +3,10 @@ package Warehousing;
 import Interfaces.Filling;
 import Production.Distillate;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class FillIngredient implements Filling {
+public class FillIngredient implements Filling, Serializable {
     private final LocalDate date;
     private final double quantity;
     private final Distillate distillate;

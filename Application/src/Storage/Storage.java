@@ -5,7 +5,7 @@ import Production.Distillate;
 import Warehousing.*;
 import Production.Distiller;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +26,7 @@ public class Storage implements StorageInterface, Serializable {
 	private List<TasteProfile> tasteProfiles = new ArrayList<>();
 	private List<Batch> batches = new ArrayList<>();
 	private List<Supplier> suppliers = new ArrayList<>();
+	private static String filePath = "/Users/leander/IdeaProjects/2SemesterWhiskyNEW/Application/src/Storage/storage.ser";
 
 	@Override
 	public List<Product> getAllProducts() {
@@ -190,5 +191,35 @@ public class Storage implements StorageInterface, Serializable {
 	@Override
 	public void deleteSupplier(Supplier supplier) {
 		suppliers.remove(supplier);
+	}
+
+	public static Storage loadStorage() {
+		String fileName = filePath;
+		try (FileInputStream fileIn = new FileInputStream(fileName);
+			 ObjectInputStream objIn = new ObjectInputStream(fileIn)
+		) {
+			Object obj = objIn.readObject();
+			Storage storage = (Storage) obj;
+			System.out.println("Storage loaded from file " + fileName);
+			return storage;
+		} catch (IOException | ClassNotFoundException ex) {
+			System.out.println("Error deserializing storage");
+			System.out.println(ex);
+			return null;
+		}
+	}
+
+	public static void saveStorage(StorageInterface storage) {
+		String fileName = filePath;
+		try (FileOutputStream fileOut = new FileOutputStream(fileName);
+			 ObjectOutputStream objOut = new ObjectOutputStream(fileOut)
+		) {
+			objOut.writeObject(storage);
+			System.out.println("Storage saved in file " + fileName);
+		} catch (IOException ex) {
+			System.out.println("Error serializing storage");
+			System.out.println(ex);
+			throw new RuntimeException();
+		}
 	}
 }

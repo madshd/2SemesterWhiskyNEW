@@ -4,9 +4,10 @@ import Controllers.Warehousing;
 import Interfaces.Item;
 import Interfaces.WarehousingObserver;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class StorageRack {
+public class StorageRack implements Serializable {
     private String id;
     private int shelves;
     //    Nullable

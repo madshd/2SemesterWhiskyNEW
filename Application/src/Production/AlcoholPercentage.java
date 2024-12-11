@@ -1,8 +1,9 @@
 package Production;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class AlcoholPercentage {
+public class AlcoholPercentage implements Serializable {
     private final LocalDate date;
     private double alcoholPercentage;
 
