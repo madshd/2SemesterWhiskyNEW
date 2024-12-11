@@ -105,7 +105,12 @@ public class Batch implements Serializable {
 		labelSimple = sb.toString();
 	}
 
-	private String getWeightedTastingNotes(
+	/**
+	 * Retrieves the top weighted tasting notes for the product.
+	 *
+	 * @return A string containing the top weighted tasting notes separated by spaces.
+	 */
+	public String getWeightedTastingNotes(
 	) {
 		int numNotes = 3;
 		StringBuilder sb = new StringBuilder();
@@ -113,7 +118,7 @@ public class Batch implements Serializable {
 				product.getFormula().getWeightedTastingNotes());
 		for (int i = 0; i < numNotes && i < tastingNotesSortedByPercentage.size(); i++) {
 			sb.append(tastingNotesSortedByPercentage.get(i));
-			sb.append(" ");
+			sb.append(", ");
 		}
 		return sb.toString();
 	}
