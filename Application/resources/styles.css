@@ -148,7 +148,7 @@
 
 #labelArea {
     -fx-font-family: "Georgia", serif; /* Classic serif font for vintage feel */
-    -fx-font-size: 14pt; /* Adjust font size for readability */
+    -fx-font-size: 10pt; /* Adjust font size for readability */
     -fx-background-color: linear-gradient(to bottom, #f5f5dc, #d2b48c); /* Whisky-inspired tones */
     -fx-text-fill: #4a2c2a; /* Dark brown text color for a classic feel */
     -fx-border-color: #4a2c2a; /* Dark border for definition */
