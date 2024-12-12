@@ -82,6 +82,8 @@ public class UpdateCaskCommonDialog extends Application {
 
     public void populateFields() {
         if (cask != null) {
+            lvwStorageRacks.getItems().clear();
+            lvwWarehouses.getItems().clear();
             txfCaskId.setText(String.valueOf(cask.getCaskID()));
             txfMaxQuantity.setText(String.valueOf(cask.getMaxQuantity()));
             txfCaskType.setText(cask.getCaskType());
@@ -100,7 +102,9 @@ public class UpdateCaskCommonDialog extends Application {
 
             lvwWarehouses.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                 lvwStorageRacks.getItems().clear();
-                lvwStorageRacks.getItems().addAll(newValue.getRacks().values());
+                if (newValue != null){
+                    lvwStorageRacks.getItems().addAll(newValue.getRacks().values());
+                }
             });
         }
     }
