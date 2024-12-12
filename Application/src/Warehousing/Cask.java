@@ -47,24 +47,25 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	/**
 	 * Returns count of mounth until cask content can be categorised as whisky
+	 * 
 	 * @return
 	 */
 	public int getMaturityMonths() {
-    List<Filling> fillings = getFillingStack();
+		List<Filling> fillings = getFillingStack();
 
-    try {
-        if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings available");
+		try {
+			if (fillings.isEmpty())
+				throw new IllegalArgumentException("No fillings available");
 
-        fillings.removeIf(filling -> ((FillDistillate) filling).getLifeCycle() != lifeCycle);
+			fillings.removeIf(filling -> ((FillDistillate) filling).getLifeCycle() != lifeCycle);
 
-        fillings.sort((f1, f2) ->
-                ((FillDistillate) f1).getDistillate().getEndDate().compareTo(((FillDistillate) f2).getDistillate().getEndDate()));
+			fillings.sort((f1, f2) -> ((FillDistillate) f1).getDistillate().getEndDate()
+					.compareTo(((FillDistillate) f2).getDistillate().getEndDate()));
 
-        LocalDate lastEndDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
-        return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
+			LocalDate lastEndDate = ((FillDistillate) fillings.get(fillings.size() - 1)).getDistillate().getEndDate();
+			return (int) ChronoUnit.MONTHS.between(lastEndDate, LocalDate.now());
 
 		} catch (Exception e) {
-			System.err.println("Error calculating maturity months: " + e.getMessage());
 			return 0;
 		}
 	}
@@ -99,6 +100,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	/**
 	 * Restore observers list after deserialization if necessary
+	 * 
 	 * @return
 	 */
 	private Object readResolve() {
@@ -110,6 +112,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	/**
 	 * Returns difference between max quantity and current quantity
+	 * 
 	 * @return
 	 */
 	@Override
@@ -118,10 +121,12 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	/**
-	 * Returns difference between max quantity and getLegalQuntity, this takes reserved amount into account.
+	 * Returns difference between max quantity and getLegalQuntity, this takes
+	 * reserved amount into account.
+	 * 
 	 * @return
 	 */
-	public double getRemainingLegalQuantity(){
+	public double getRemainingLegalQuantity() {
 		return maxQuantity - getLegalQuantity();
 	}
 
@@ -131,6 +136,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	/**
 	 * Returns info string than is disigned for list views.
+	 * 
 	 * @return
 	 */
 	public String getListInfo() {
@@ -147,6 +153,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	/**
 	 * Retruns a string that is designed for presentation of fillings in text areas.
+	 * 
 	 * @return
 	 */
 	public String getFillingTextLines() {
@@ -162,75 +169,78 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	/**
-	 * Returns a deatailed desctription of current content that is designed for a text area.
+	 * Returns a deatailed desctription of current content that is designed for a
+	 * text area.
+	 * 
 	 * @return
 	 */
 	public String getDetails() {
 		Set<Item> tranferCasks = getCasksAddedByTransfer(lifeCycle);
 		String tasteprofile = (tasteProfile != null) ? tasteProfile.getProfileName() : "";
 		StringBuilder sbCask = new StringBuilder();
-		for (Item i : tranferCasks){
+		for (Item i : tranferCasks) {
 			sbCask.append(String.format("""
 					ID: %s | Supplier: %s
-					""", i.getName(), ((Cask)i).getSupplier().getName()));
+					""", i.getName(), ((Cask) i).getSupplier().getName()));
 		}
 
-		List<Filling> fillings = getFillingsStackHavingLifeCycleGroupedByDistillate(lifeCycle,LocalDate.now());
+		List<Filling> fillings = getFillingsStackHavingLifeCycleGroupedByDistillate(lifeCycle, LocalDate.now());
 		StringBuilder sbFill = new StringBuilder();
 
-		for (Filling f : fillings){
-			Distillate distillate = ((FillDistillate)f).getDistillate();
+		for (Filling f : fillings) {
+			Distillate distillate = ((FillDistillate) f).getDistillate();
 			sbFill.append(String.format("""
 					ID: %-20s | Name: %-20s | Quantity: %,-6.2f
-					""",distillate.getNewMakeID(),distillate.getName(), getQuantityStatusByDistillate(distillate,lifeCycle)));
+					""", distillate.getNewMakeID(), distillate.getName(),
+					getQuantityStatusByDistillate(distillate, lifeCycle)));
 		}
 
 		StringBuilder sbAlcohol = new StringBuilder();
-		for (Filling f : fillings){
-			Distillate distillate = ((FillDistillate)f).getDistillate();
-			distillate.getAlcoholPercentages().forEach(a ->{
-				sbAlcohol.append(String.format("%s | %s\n",distillate.getName(),a.toString()));
+		for (Filling f : fillings) {
+			Distillate distillate = ((FillDistillate) f).getDistillate();
+			distillate.getAlcoholPercentages().forEach(a -> {
+				sbAlcohol.append(String.format("%s | %s\n", distillate.getName(), a.toString()));
 			});
 		}
 
 		StringBuilder sbCutInfo = new StringBuilder();
-		for (Filling f : fillings){
-			Distillate distillate = ((FillDistillate)f).getDistillate();
-			distillate.getProductCutInformations().forEach(p ->{
-				sbCutInfo.append(String.format("%s | %s\n",distillate.getName(),p.toString()));
+		for (Filling f : fillings) {
+			Distillate distillate = ((FillDistillate) f).getDistillate();
+			distillate.getProductCutInformations().forEach(p -> {
+				sbCutInfo.append(String.format("%s | %s\n", distillate.getName(), p.toString()));
 			});
 		}
 
 		StringBuilder sbStory = new StringBuilder();
-		for (Filling f : fillings){
-			Distillate distillate = ((FillDistillate)f).getDistillate();
-			distillate.getStoryLines().forEach(s ->{
-				sbStory.append(String.format("%s | %s\n",distillate.getName(),s.toString()));
+		for (Filling f : fillings) {
+			Distillate distillate = ((FillDistillate) f).getDistillate();
+			distillate.getStoryLines().forEach(s -> {
+				sbStory.append(String.format("%s | %s\n", distillate.getName(), s.toString()));
 			});
 		}
 
 		return String.format("""
 				*****\t Supplier description \t *****
 				%s
-				
+
 				*****\t Taste profile \t *****
 				%s
-				
+
 				****\t Cask life cycle \t *****
 				Current life cycle: %d
-				
+
 				****\t Content cask(s) list \t *****
 				%s
 				****\t Distillate list \t *****
 				%s
 				Total quantity: %,-6.2f
 				Reserved quantity: %,-6.2f
-				
+
 				****\t Warehouse \t ****
 				Warehouse: %s
 				Storage rack: %s
-				Location: %d 
-				
+				Location: %d
+
 				****\t Alcohol percentage \t *****
 				%s
 				****\t Story lines \t *****
@@ -239,15 +249,16 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 				%s
 				*****\t Filling details \t *****
 				%s
-				""", supplier.getDescription(), tasteprofile ,lifeCycle,sbCask.toString(),
-				sbFill.toString(),getQuantityStatus(),getTotalReservedAmount(), getStorageRack().getWarehouse().toString(),
-				getStorageRack().toString(), Warehousing.getLocationByRack(getStorageRack(),this),
-				sbAlcohol.toString(),sbStory.toString(),
-				sbCutInfo.toString(),getFillingTextLines());
+				""", supplier.getDescription(), tasteprofile, lifeCycle, sbCask.toString(),
+				sbFill.toString(), getQuantityStatus(), getTotalReservedAmount(),
+				getStorageRack().getWarehouse().toString(),
+				getStorageRack().toString(), Warehousing.getLocationByRack(getStorageRack(), this),
+				sbAlcohol.toString(), sbStory.toString(),
+				sbCutInfo.toString(), getFillingTextLines());
 	}
 
 	/**
-	 * Get a start or end  filling date based on provided life cycle
+	 * Get a start or end filling date based on provided life cycle
 	 *
 	 * @param lifeCycle
 	 * @param startDate
@@ -260,7 +271,8 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 		List<Filling> fillings = getFillingStack();
 
-		if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings availble");
+		if (fillings.isEmpty())
+			throw new IllegalArgumentException("No fillings availble");
 
 		fillings.forEach(filling -> {
 			if (((FillDistillate) filling).getLifeCycle() != lifeCycle) {
@@ -268,8 +280,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 			}
 		});
 
-		fillings.sort((f1, f2) ->
-				f1.getDate().compareTo(f2.getDate()));
+		fillings.sort((f1, f2) -> f1.getDate().compareTo(f2.getDate()));
 
 		if (startDate) {
 			return ((FillDistillate) fillings.getFirst()).getDistillate().getEndDate();
@@ -286,10 +297,10 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	 */
 	public int getLifeCycleByDate(LocalDate date) {
 		List<Filling> fillings = getFillingStack();
-		if (fillings.isEmpty()) throw new IllegalArgumentException("No fillings availble");
+		if (fillings.isEmpty())
+			throw new IllegalArgumentException("No fillings availble");
 
-		fillings.sort((f1, f2) ->
-				f1.getDate().compareTo(f2.getDate()));
+		fillings.sort((f1, f2) -> f1.getDate().compareTo(f2.getDate()));
 
 		LocalDate firstDate = ((FillDistillate) fillings.getFirst()).getDistillate().getEndDate();
 		LocalDate lastDate = ((FillDistillate) fillings.getLast()).getDistillate().getEndDate();
@@ -318,7 +329,9 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		return ((FillDistillate) foundFilling).getLifeCycle();
 	}
 
-	/** Used for encrease or decrease quantity in cask.
+	/**
+	 * Used for encrease or decrease quantity in cask.
+	 * 
 	 * @param fillDistillate
 	 * @return
 	 * @throws IllegalStateException
@@ -336,7 +349,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 			fillingStack.push(fillDistillate);
 			notifyObservers();
 			// This will start a new life cycle in the cask
-			if (newQuantity == 0 && !((FillDistillate)fillDistillate).getFillType().equals(FillType.CASKHISTORY)) {
+			if (newQuantity == 0 && !((FillDistillate) fillDistillate).getFillType().equals(FillType.CASKHISTORY)) {
 				lifeCycle++;
 				tasteProfile = null;
 			}
@@ -370,7 +383,8 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	/**
-	 * Calculates the legal quantity by subtracting the total reserved amount from the quantity status.
+	 * Calculates the legal quantity by subtracting the total reserved amount from
+	 * the quantity status.
 	 *
 	 * @return the legal quantity.
 	 */
@@ -390,9 +404,10 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	/**
 	 * Spends a reservation for a specified batch with a given amount.
-	 * If the reserved amount becomes zero, the batch is completely removed from the reservations.
+	 * If the reserved amount becomes zero, the batch is completely removed from the
+	 * reservations.
 	 *
-	 * @param batch the batch to spend the reservation from.
+	 * @param batch  the batch to spend the reservation from.
 	 * @param amount the amount to spend.
 	 */
 	public void spendReservation(Batch batch, double amount) {
@@ -404,23 +419,27 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 		}
 	}
 
+    public void removeReservation(Batch selectedBatch) {
+		reservedBatchesAmount.remove(selectedBatch);
+    }
+
 	/**
 	 *
 	 * @param distillate
 	 * @param lifeCycle
 	 * @return
 	 */
-	public double getQuantityStatusByDistillate(Distillate distillate, int lifeCycle){
-	double quantity = 0;
+	public double getQuantityStatusByDistillate(Distillate distillate, int lifeCycle) {
+		double quantity = 0;
 
-	for (Filling f : getFillingStack()){
-		if (((FillDistillate)f).getLifeCycle() == lifeCycle){
-			if (((FillDistillate)f).getDistillate().equals(distillate)){
-				quantity += f.getQuantity();
+		for (Filling f : getFillingStack()) {
+			if (((FillDistillate) f).getLifeCycle() == lifeCycle) {
+				if (((FillDistillate) f).getDistillate().equals(distillate)) {
+					quantity += f.getQuantity();
+				}
 			}
 		}
-	}
-	return quantity;
+		return quantity;
 	}
 
 	public List<Filling> getFillingStack() {
@@ -435,15 +454,16 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	/**
 	 * Returns fillings haveing a given lifecycle.
+	 * 
 	 * @param lifeCycle
 	 * @return
 	 */
-	public List<Filling> getFillingsStackByLifeCycle(int lifeCycle){
+	public List<Filling> getFillingsStackByLifeCycle(int lifeCycle) {
 		List<Filling> fillings = new ArrayList<>();
 
-		for (Filling f : getFillingStack()){
+		for (Filling f : getFillingStack()) {
 			FillDistillate filling = (FillDistillate) f;
-			if (filling.getLifeCycle() == lifeCycle){
+			if (filling.getLifeCycle() == lifeCycle) {
 				fillings.add(f);
 			}
 		}
@@ -452,28 +472,30 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	}
 
 	/**
-	 * Groups fillings by distillate. This function should not be used in regards to any transfer actions as the history
+	 * Groups fillings by distillate. This function should not be used in regards to
+	 * any transfer actions as the history
 	 * chain might be broken.
+	 * 
 	 * @param lifeCycle
 	 * @param date
 	 * @return
 	 */
 	public List<Filling> getFillingsStackHavingLifeCycleGroupedByDistillate(int lifeCycle, LocalDate date) {
 		List<Filling> fillings = new ArrayList<>();
-		Map<Distillate,Double> groupedFillings = new HashMap<>();
+		Map<Distillate, Double> groupedFillings = new HashMap<>();
 
-		for (Filling f : getFillingStack()){
+		for (Filling f : getFillingStack()) {
 			FillDistillate currentFilling = (FillDistillate) f;
-			if (currentFilling.getLifeCycle() == lifeCycle){
+			if (currentFilling.getLifeCycle() == lifeCycle) {
 				Distillate distillate = currentFilling.getDistillate();
-				groupedFillings.merge(distillate,currentFilling.getQuantity(),Double::sum);
+				groupedFillings.merge(distillate, currentFilling.getQuantity(), Double::sum);
 			}
 		}
 
-		for (Map.Entry<Distillate,Double> entry : groupedFillings.entrySet()){
+		for (Map.Entry<Distillate, Double> entry : groupedFillings.entrySet()) {
 			Distillate distillate = entry.getKey();
 			double quantity = entry.getValue();
-			Filling filling = new FillDistillate(date,quantity,this,distillate,null,
+			Filling filling = new FillDistillate(date, quantity, this, distillate, null,
 					false, FillType.FILLING);
 			fillings.add(filling);
 		}
@@ -482,14 +504,15 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	/**
 	 * Returns all fillings related to a given cask life cycle.
+	 * 
 	 * @param LifeCycle
 	 * @return
 	 */
-	public Set<Item> getCasksAddedByTransfer(int LifeCycle){
+	public Set<Item> getCasksAddedByTransfer(int LifeCycle) {
 		Set<Item> casks = new HashSet<>();
 
-		for (Filling f : getFillingStack()){
-			if (((FillDistillate)f).getLifeCycle() == lifeCycle){
+		for (Filling f : getFillingStack()) {
+			if (((FillDistillate) f).getLifeCycle() == lifeCycle) {
 				FillDistillate filling = (FillDistillate) f;
 				casks.add(filling.getPrevFillingsRecursive().getCask());
 			}
@@ -504,11 +527,12 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("Life cycle: %-2d\t | ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f", lifeCycle, caskID, maxQuantity,
+		return String.format("Life cycle: %-2d\t | ID: %-5d\t| Max capacity: %,.2f\t| Remaining capacity %,.2f",
+				lifeCycle, caskID, maxQuantity,
 				getRemainingQuantity());
 	}
 
-	public double getReservedAmountPerBatch(Batch batch){
+	public double getReservedAmountPerBatch(Batch batch) {
 		return reservedBatchesAmount.get(batch);
 	}
 
@@ -535,4 +559,5 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	public Supplier getSupplier() {
 		return supplier;
 	}
+
 }

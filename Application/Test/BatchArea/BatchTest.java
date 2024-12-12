@@ -19,6 +19,8 @@ public class BatchTest {
 	Formula formula1 = new Formula("formula1", bluePrint1);
 	Map<TasteProfile, Double> bluePrint2 = new HashMap<>();
 	Formula formula2 = new Formula("formula2", bluePrint2);
+	Map<TasteProfile, Double> bluePrint3 = new HashMap<>();
+	Formula formula3 = new Formula("formula3", bluePrint3);
 
 	@BeforeEach
 	public void setUp() {
@@ -26,10 +28,8 @@ public class BatchTest {
 		tasteProfile1.addTastingNote(TastingNote.SMOKEY);
 		tasteProfile1.addTastingNote(TastingNote.APPLE);
 		tasteProfile1.addTastingNote(TastingNote.BLACK_PEPPER);
-		
+
 		tasteProfile2.addTastingNote(TastingNote.COFFEE);
-		tasteProfile2.addTastingNote(TastingNote.CARAMEL);
-		tasteProfile2.addTastingNote(TastingNote.APPLE);
 
 		tasteProfile3.addTastingNote(TastingNote.PEAR);
 		tasteProfile3.addTastingNote(TastingNote.HONEY);
@@ -42,21 +42,31 @@ public class BatchTest {
 		bluePrint2.put(tasteProfile1, 20.0);
 		bluePrint2.put(tasteProfile2, 65.0);
 		bluePrint2.put(tasteProfile3, 15.0);
+
+		bluePrint3.put(tasteProfile1, 100.0);
 	}
 
 	@Test
-    public void testGetWeightedTastingNotes() {
+	public void testGetWeightedTastingNotes() {
 
-		product.defineFormula(formula1);
 		Batch batch = new Batch(product, 100);
 
+		//TC1
+		product.defineFormula(formula1);
 		String actual = batch.getWeightedTastingNotes();
-		String expected = "Black Pepper, Smokey, Apple";
-
-		System.out.println("Actual: " + actual);
-		system.out.println("Expected: " + expected);
-
-
+		String expected = "Pear, Honey, Lemon";
 		assertEquals(expected, actual);
-    }
+
+		//TC2
+		product.defineFormula(formula2);
+		actual = batch.getWeightedTastingNotes();
+		expected = "Coffee, Smokey, Apple";
+		assertEquals(expected, actual);
+
+		//TC3
+		product.defineFormula(formula3);
+		actual = batch.getWeightedTastingNotes();
+		expected = "Smokey, Apple, Black Pepper";
+		assertEquals(expected, actual);
+	}
 }

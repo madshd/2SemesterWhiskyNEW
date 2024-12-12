@@ -175,6 +175,12 @@ public abstract class BatchArea {
 	// ====================== BATCH ========================= //
 
 	public static Batch createNewBatch(Product product, int numExpectedBottles, boolean onlyReady) {
+		if (numExpectedBottles <= 0) {
+			throw new IllegalArgumentException("Number of bottles must be greater than 0.");
+		}
+		if (numExpectedBottles > calculateMaxNumBottles(product, onlyReady, null)) {
+			throw new IllegalArgumentException("Number of bottles exceeds the maximum possible number of bottles.");
+		}
 		Batch batch = new Batch(product, numExpectedBottles);
 		storage.storeBatch(batch);
 		reserveQuantityInCasks(batch, onlyReady);
@@ -349,6 +355,9 @@ public abstract class BatchArea {
 		if (isProductionStarted(selectedBatch)) {
 			throw new IllegalArgumentException("Production has started and the batch cannot be deleted.");
 		} else {
+			for (Cask cask : selectedBatch.getReservedCasks().keySet()) {
+				cask.removeReservation(selectedBatch);
+			}
 			storage.deleteBatch(selectedBatch);
 		}
 	}
