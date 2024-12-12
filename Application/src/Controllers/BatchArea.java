@@ -294,6 +294,10 @@ public abstract class BatchArea {
 		cask.spendReservation(batch, usedAmount);
 		casksToUse.put(cask, usedAmount);
 		batch.addUsedCask(cask);
+
+		double currentAmount = batch.getReservedCasks().getOrDefault(cask, 0.0);
+		double updatedAmount = currentAmount - usedAmount;
+		batch.getReservedCasks().put(cask, updatedAmount);
 	}
 
 	private static void finalizeBatchProduction(Batch batch) {

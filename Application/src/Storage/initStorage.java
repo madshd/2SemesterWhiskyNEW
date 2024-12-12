@@ -1003,7 +1003,8 @@ public abstract class initStorage {
 		
 
 		// *** Bottling ***
-		Production.caskBottling(cask_04,25,LocalDate.parse("2024-12-01"));
+		// MÅ IKKE KALDES DIREKTE PÅ DENNE MEDE UDEN OM BATCHAREA CONTROLLER
+		//Production.caskBottling(cask_04,25,LocalDate.parse("2024-12-01"));
 
 	}
 
