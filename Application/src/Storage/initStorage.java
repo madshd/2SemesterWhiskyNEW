@@ -68,7 +68,7 @@ public abstract class initStorage {
 		LoggerObserver logger = new LoggerObserver();
 
 		// Register the observer
-		warehouse.registerWarehousingObserver(logger);
+//		warehouse.registerWarehousingObserver(logger);
 
 		StorageRack rack1 = Warehousing.createStorageRack("221 B", 100);
 
@@ -610,7 +610,7 @@ public abstract class initStorage {
 		addIngredientToDistillate(distillate_10, sugarFermentation, 12.5, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_10, peatMoss, 18.75, LocalDate.parse("2024-01-20"));
 
-		// MF tilføj ingredienser
+		// MF tilfï¿½j ingredienser
 		// addIngredientToDistillate(distillate_11, barleyEvergreen, 850.0, LocalDate.parse("2024-03-01"));
 		// addIngredientToDistillate(distillate_11, waterSpring, 3750.0, LocalDate.parse("2024-02-15"));
 		// addIngredientToDistillate(distillate_11, yeastBrewers, 11.0, LocalDate.parse("2024-02-01"));
@@ -933,7 +933,7 @@ public abstract class initStorage {
 		// Storyline for distillate 13
 		addStoryToDistillate(
 				distillate_13,
-				"Distillate 13 captures the essence of a winterÕs night, with crisp, clean flavors and a warming finish that evokes the serenity of snow-covered landscapes.",
+				"Distillate 13 captures the essence of a winterï¿½s night, with crisp, clean flavors and a warming finish that evokes the serenity of snow-covered landscapes.",
 				LocalDate.parse("2023-12-20")
 		);
 
@@ -1003,7 +1003,7 @@ public abstract class initStorage {
 		
 
 		// *** Bottling ***
-		// MÅ IKKE KALDES DIREKTE PÅ DENNE MEDE UDEN OM BATCHAREA CONTROLLER
+		// Mï¿½ IKKE KALDES DIREKTE Pï¿½ DENNE MEDE UDEN OM BATCHAREA CONTROLLER
 		//Production.caskBottling(cask_04,25,LocalDate.parse("2024-12-01"));
 
 	}
@@ -1013,10 +1013,10 @@ public abstract class initStorage {
 		Warehouse warehouse = Warehousing.createWarehouse("Lager 1", "Lagervej 1");
 		Warehouse warehouse2 = Warehousing.createWarehouse("Lager 2", "Lagervej 2");
 
-		LoggerObserver logger = new LoggerObserver();
+//		LoggerObserver logger = new LoggerObserver();
 
 		// Register the observer
-		warehouse.registerWarehousingObserver(logger);
+//		warehouse.registerWarehousingObserver(logger);
 
 		StorageRack rack1 = Warehousing.createStorageRack("Rack 1", 10);
 		StorageRack rack2 = Warehousing.createStorageRack("Rack 2", 10);
@@ -1027,7 +1027,7 @@ public abstract class initStorage {
 
 		Supplier supplier1 = new Supplier("Supplier 1", "Address 1", "Phone 1", "Nice story");
 
-		Ingredient ingredient1 = new Ingredient("Lars Tyndskids Grain", "Finest Grain ", 1,
+		Ingredient ingredient1 = new Ingredient("Lars' Grain", "Finest Grain ", 1,
 				LocalDate.of(2024, 11, 27), LocalDate.of(2024, 12, 27), 1, supplier1, Unit.TONNES,
 				IngredientType.GRAIN);
 

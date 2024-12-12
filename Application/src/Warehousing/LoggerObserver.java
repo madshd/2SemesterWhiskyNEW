@@ -18,7 +18,7 @@ public class LoggerObserver implements WarehousingObserver, Serializable {
         logs.add(0, logEntry);
     }
 
-    public List<String> getLogs() {
+    public static List<String> getLogs() {
         return new ArrayList<>(logs);
     }
 
