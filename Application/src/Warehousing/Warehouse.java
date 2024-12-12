@@ -41,28 +41,28 @@ public class Warehouse implements WarehousingSubject, Serializable {
         racks.put(id, storageRack);
         storageRack.setWarehouse(this); // Bind rack to warehouse
         if (!warehousingObservers.isEmpty()) {
-            notifyWarehousingObserversWithDetails("StorageRack added: " + storageRack.getId());
+            notifyWarehousingObserversWithDetails("Storage rack added: " + storageRack.getId());
         }
     }
 
     public void removeStorageRack(StorageRack storageRack) {
-    if (storageRack != null && racks.containsValue(storageRack)) {
-        boolean isEmpty = true;
-        for (Item item : storageRack.getList()) {
-            if (item != null) {
-                isEmpty = false;
-                break;
+        if (storageRack != null && racks.containsValue(storageRack)) {
+            boolean isEmpty = true;
+            for (Item item : storageRack.getList()) {
+                if (item != null) {
+                    isEmpty = false;
+                    break;
+                }
             }
-        }
-        if (isEmpty) {
-            racks.values().remove(storageRack);
-            storageRack.setWarehouse(null);
-            if (!warehousingObservers.isEmpty()) {
-                notifyWarehousingObserversWithDetails("StorageRack removed: " + storageRack.getId());
+            if (isEmpty) {
+                racks.values().remove(storageRack);
+                storageRack.setWarehouse(null);
+                if (!warehousingObservers.isEmpty()) {
+                    notifyWarehousingObserversWithDetails("Storage rack removed: " + storageRack.getId());
+                }
             }
         }
     }
-}
 
     public void notifyWarehousingObserversWithDetails(String details) {
         for (WarehousingObserver observer : warehousingObservers) {
@@ -114,5 +114,10 @@ public class Warehouse implements WarehousingSubject, Serializable {
             this.warehousingObservers = new ArrayList<>();
         }
         return this;
+    }
+
+    public void createAndAddLoggerObserver() {
+        LoggerObserver loggerObserver = new LoggerObserver();
+        registerWarehousingObserver(loggerObserver);
     }
 }

@@ -100,7 +100,7 @@ public class UpdateCaskCommonDialog extends Application {
 
             lvwWarehouses.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                 lvwStorageRacks.getItems().clear();
-                lvwStorageRacks.getItems().addAll(newValue.getRacks().values());
+                lvwStorageRacks.getItems().setAll(newValue.getRacks().values());
             });
         }
     }

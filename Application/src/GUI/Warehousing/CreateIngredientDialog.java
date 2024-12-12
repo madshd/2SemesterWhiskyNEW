@@ -45,7 +45,7 @@ public class CreateIngredientDialog extends Application {
     private ListView<StorageRack> lvwStorageRack = new ListView<>();
     private Label lblStorageRack = new Label("Storage Racks:");
     private Label lblWarehouse = new Label("Warehouses:");
-    private Button btnUpdate = new Button("Update");
+    private Button btnUpdate = new Button("Create");
     private Button cancelButton = new Button("Cancel");
     private ErrorWindow errorWindow = new ErrorWindow();
     private Stage stage;
@@ -90,10 +90,11 @@ public class CreateIngredientDialog extends Application {
         stage.show();
     }
 
-    public void btnCreateAction() {
-        ConfirmationDialog confirmationDialog = new ConfirmationDialog();
-        confirmationDialog.show("Are you sure you want to create this ingredient?", confirmed -> {
-            if (confirmed) {
+public void btnCreateAction() {
+    ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+    confirmationDialog.show("Are you sure you want to create this ingredient?", confirmed -> {
+        if (confirmed) {
+            try {
                 if (isFormValid()) {
                     Warehousing.createIngredientAndAdd(
                             txfName.getText(),
@@ -108,12 +109,13 @@ public class CreateIngredientDialog extends Application {
                             lvwWarehouse.getSelectionModel().getSelectedItem(),
                             lvwStorageRack.getSelectionModel().getSelectedItem());
                     stage.close();
-                } else {
-                    errorWindow.showError("Please fill out all fields correctly.");
                 }
+            } catch (Exception e) {
+                errorWindow.showError("Something went wrong: " + e.getMessage());
             }
-        });
-    }
+        }
+    });
+}
 
     public void updateLists() {
         cbxUnitType.getItems().addAll(Unit.values());
@@ -123,15 +125,7 @@ public class CreateIngredientDialog extends Application {
         lvwWarehouse.getItems().addAll(Warehousing.getAllWarehouses());
         lvwWarehouse.getSelectionModel().selectedItemProperty().addListener((observableValue, warehouse, newValue) -> {
             if (newValue != null) {
-                lvwStorageRack.getItems().clear();
-                for (StorageRack sr : newValue.getRacks().values()) {
-                    for (Item item : sr.getList()) {
-                        if (item == null) {
-                            lvwStorageRack.getItems().add(sr);
-                            break;
-                        }
-                    }
-                }
+                lvwStorageRack.getItems().setAll(newValue.getRacks().values());
             }
         });
     }

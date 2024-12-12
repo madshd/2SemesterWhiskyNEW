@@ -61,8 +61,6 @@ public class WarehousingArea {
 	private Label inventoryLabel = new Label("Inventory");
 	private Label warehouseMovementsLabel = new Label("Warehouse Movements");
 
-	private static LoggerObserver loggerObserver;
-
 	public WarehousingArea() {
 		updateLists();
 		stage = new Stage();
@@ -100,9 +98,6 @@ public class WarehousingArea {
 		// Layoutkonfiguration
 		gridPane.setHgap(10);
 		gridPane.setVgap(10);
-
-		loggerObserver = new LoggerObserver();
-
 		// Knappesektioner
 		HBox warehouseCRUDButtons = new HBox();
 		warehouseCRUDButtons.getChildren().addAll(btnDeleteWarehouse, btnUpdateWarehouse, btnCreateWarehouse);
@@ -322,6 +317,7 @@ public class WarehousingArea {
 		warehouseMovementsList.getItems().clear();
 
 		warehouseList.getItems().addAll(Warehousing.getAllWarehouses());
+//		warehouseMovementsList.getItems().setAll(warehouseList.getSelectionModel().getSelectedItem());
 
 		if (!warehouseList.getItems().isEmpty()) {
 			warehouseList.getSelectionModel().selectFirst();
@@ -358,6 +354,7 @@ public class WarehousingArea {
 		});
 
 		warehouseList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
 		warehouseList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				updateLogListView(newValue);
@@ -366,7 +363,7 @@ public class WarehousingArea {
 	}
 
 	private static void updateLogListView(Warehouse warehouse) {
-		warehouseMovementsList.getItems().setAll(loggerObserver.getLogsByWarehouse(warehouse));
+		warehouseMovementsList.getItems().setAll(Warehousing.getLogsByWarehouse(warehouse));
 	}
 
 	public Stage getStage() {

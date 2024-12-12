@@ -115,15 +115,7 @@ private boolean isFormValid() {
         lvwWarehouses.getItems().addAll(Warehousing.getAllWarehouses());
         lvwWarehouses.getSelectionModel().selectedItemProperty().addListener((observableValue, warehouse, newValue) -> {
             if (newValue != null) {
-                lvwStorageRacks.getItems().clear();
-                for (StorageRack sr : newValue.getRacks().values()) {
-                    for (Item item : sr.getList()) {
-                        if (item == null) {
-                            lvwStorageRacks.getItems().add(sr);
-                            break;
-                        }
-                    }
-                }
+                lvwStorageRacks.getItems().setAll(newValue.getRacks().values());
             }
         });
     }
