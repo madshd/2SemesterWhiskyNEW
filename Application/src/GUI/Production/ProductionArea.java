@@ -201,6 +201,7 @@ public class ProductionArea {
 
 		private void updateDistillateDetails() {
 			Distillate selectedDistillate = (Distillate) lvwDistillates.getSelectionModel().getSelectedItem();
+			fillDistillateElement.updateLists();
 			casks.updatelist(selectedDistillate);
 			distillateBasics.updateBasics(selectedDistillate);
 			ditillateIngredient.updateIngredients(selectedDistillate);

@@ -1,5 +1,7 @@
 package GUI.Production;
 
+import BatchArea.TasteProfile;
+import Controllers.BatchArea;
 import Controllers.Production;
 import GUI.Common.Common;
 import GUI.Common.ErrorWindow;
@@ -200,6 +202,7 @@ public abstract class CaskToCaskTransfer {
         private Cask selectedCaskFrom;
         private Cask selectedCaskTo;
         private ErrorWindow errorWindow = new ErrorWindow();
+        private final ComboBox<TasteProfile> cmbTasteProfile = new ComboBox<>();
 
         @SuppressWarnings("unchecked")
 		public InputElement(ProductionArea pa){
@@ -241,6 +244,9 @@ public abstract class CaskToCaskTransfer {
             dpDateForFilling.setConverter(Common.datePickerFormat(dpDateForFilling));
             this.add(dpDateForFilling,1,3);
 
+            cmbTasteProfile.setPromptText("Select taste profile");
+            this.add(cmbTasteProfile,2,3);
+
             calculateFilling(null,null);
 
         }
@@ -266,8 +272,14 @@ public abstract class CaskToCaskTransfer {
                 return;
             }
 
+            if (cmbTasteProfile.getSelectionModel().getSelectedItem() == null){
+                errorWindow.showError("Please select a taste profile.");
+                return;
+            }
+
             try {
                 Production.caskToCaskTransfer(selectedCaskFrom,selectedCaskTo,liters,date);
+                selectedCaskTo.setTasteProfile(cmbTasteProfile.getValue());
             }catch (IllegalArgumentException e){
                 errorWindow.showError(e.getMessage());
             }
@@ -281,9 +293,12 @@ public abstract class CaskToCaskTransfer {
                 txfInputLiters.setDisable(false);
                 dpDateForFilling.setDisable(false);
                 btnAddFillment.setDisable(false);
+                cmbTasteProfile.setDisable(false);
                 double quantityStatusCaskFrom = caskFrom.getQuantityStatus();
                 double remainingCaskTo = caskTo.getRemainingLegalQuantity();
 
+                cmbTasteProfile.getItems().setAll(BatchArea.getAllTasteProfiles());
+                cmbTasteProfile.getSelectionModel().select(caskTo.getTasteProfile());
 
                 lblAttentionReserved.setText(String.format("""
                          Quantity reservation: Cask: %s reserved quantity: %,.2f
@@ -301,6 +316,7 @@ public abstract class CaskToCaskTransfer {
                 txfInputLiters.setDisable(true);
                 dpDateForFilling.setDisable(true);
                 btnAddFillment.setDisable(true);
+                cmbTasteProfile.setDisable(true);
                 lblInfoMaxLiters.setText("Please selecet a 'From Cask' and a 'Into Cask.");
                 lblAttentionReserved.setText("Quantity reservation:");
             }

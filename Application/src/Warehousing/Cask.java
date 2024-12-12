@@ -351,6 +351,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 			// This will start a new life cycle in the cask
 			if (newQuantity == 0 && !((FillDistillate) fillDistillate).getFillType().equals(FillType.CASKHISTORY)) {
 				lifeCycle++;
+				tasteProfile = null;
 			}
 			return newQuantity;
 		} else {
@@ -394,7 +395,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	/**
 	 * Makes a reservation for a specified batch with a given amount.
 	 *
-	 * @param batch  the batch to reserve.
+	 * @param batch the batch to reserve.
 	 * @param amount the amount to reserve.
 	 */
 	public void makeReservation(Batch batch, double amount) {

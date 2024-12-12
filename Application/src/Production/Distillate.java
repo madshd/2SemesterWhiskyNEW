@@ -315,7 +315,6 @@ public class Distillate implements Item, OberverQuantitySubject, Serializable {
 		return this;
 	}
 
-
 	// Future possibility to add a StorageRack association to a Distillate
 	@Override
 	public void setStorageRack(StorageRack storageRack) {
