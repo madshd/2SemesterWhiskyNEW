@@ -74,6 +74,7 @@ public class ControllerTest {
 		boolean onlyReady = true;
 
 		assertNotNull(Controllers.BatchArea.createNewBatch(product, numExpectedBottles, onlyReady));
+
 		assertTrue(storage.getAllBatches().size() == 1);
 		assertTrue(storage.getAllBatches().get(0).getProduct().equals(product));
 	}
@@ -88,6 +89,7 @@ public class ControllerTest {
 		boolean onlyReady = false;
 
 		assertNotNull(Controllers.BatchArea.createNewBatch(product, numExpectedBottles, onlyReady));
+
 		assertTrue(storage.getAllBatches().size() == 1);
 		assertTrue(storage.getAllBatches().get(0).getProduct().equals(product));
 	}

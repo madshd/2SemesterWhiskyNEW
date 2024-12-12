@@ -250,7 +250,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 				*****\t Filling details \t *****
 				%s
 				""", supplier.getDescription(), tasteprofile, lifeCycle, sbCask.toString(),
-				sbFill.toString(), getQuantityStatus(), getTotalReservedAmount(),
+				sbFill.toString(), getQuantityStatus(), getTotalReservedQuantity(),
 				getStorageRack().getWarehouse().toString(),
 				getStorageRack().toString(), Warehousing.getLocationByRack(getStorageRack(), this),
 				sbAlcohol.toString(), sbStory.toString(),
@@ -374,7 +374,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	 *
 	 * @return the total reserved amount.
 	 */
-	public double getTotalReservedAmount() {
+	public double getTotalReservedQuantity() {
 		double totalReservedAmount = 0;
 		for (double reservedAmount : reservedBatchesAmount.values()) {
 			totalReservedAmount += reservedAmount;
@@ -389,7 +389,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 	 * @return the legal quantity.
 	 */
 	public double getLegalQuantity() {
-		return getQuantityStatus() - getTotalReservedAmount();
+		return getQuantityStatus() - getTotalReservedQuantity();
 	}
 
 	/**
