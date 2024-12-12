@@ -294,7 +294,7 @@ public abstract class CaskToCaskTransfer {
                 dpDateForFilling.setDisable(false);
                 btnAddFillment.setDisable(false);
                 cmbTasteProfile.setDisable(false);
-                double quantityStatusCaskFrom = caskFrom.getQuantityStatus();
+                double quantityStatusCaskFrom = caskFrom.getLegalQuantity();
                 double remainingCaskTo = caskTo.getRemainingLegalQuantity();
 
                 cmbTasteProfile.getItems().setAll(BatchArea.getAllTasteProfiles());
