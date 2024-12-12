@@ -3,8 +3,7 @@ package BatchArea;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,7 @@ public class Formula implements Serializable {
 
 	public Formula(String formulaName, Map<TasteProfile, Double> blueprint) {
 		this.formulaName = formulaName;
-		this.blueprint = new HashMap<>(blueprint);
+		this.blueprint = (HashMap<TasteProfile, Double>) blueprint;
 	}
 
 	// ---------------------------GENERIC-GETTERS----------------------------//
@@ -66,19 +65,13 @@ public class Formula implements Serializable {
 	 */
 	public Set<TastingNote> getWeightedTastingNotes() {
 		List<Map.Entry<TasteProfile, Double>> entries = new ArrayList<>(blueprint.entrySet());
-
 		entries.sort((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()));
 
-		Map<TasteProfile, Double> sortedTasteProfiles = new LinkedHashMap<>();
+		Set<TastingNote> weightedTastingNotes = new LinkedHashSet<>();
 		for (Map.Entry<TasteProfile, Double> entry : entries) {
-			sortedTasteProfiles.put(entry.getKey(), entry.getValue());
-		}
-
-		Set<TastingNote> weightedTastingNotes = new HashSet<>();
-		for (TasteProfile tp : sortedTasteProfiles.keySet()) {
+			TasteProfile tp = entry.getKey();
 			weightedTastingNotes.addAll(tp.getTastingNotes());
 		}
-
 		return weightedTastingNotes;
 	}
 

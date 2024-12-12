@@ -11,7 +11,6 @@ import Enumerations.TastingNote;
 import Warehousing.Cask;
 
 public class Batch implements Serializable {
-	
 
 	private static int batchIDglobalCount = 1;
 	private final int batchID;
@@ -108,23 +107,27 @@ public class Batch implements Serializable {
 	/**
 	 * Retrieves the top weighted tasting notes for the product.
 	 *
-	 * @return A string containing the top weighted tasting notes separated by spaces.
+	 * @return A string containing the top weighted tasting notes separated by
+	 *         spaces.
 	 */
-	public String getWeightedTastingNotes(
-	) {
+	public String getWeightedTastingNotes() {
 		int numNotes = 3;
 		StringBuilder sb = new StringBuilder();
 		List<TastingNote> tastingNotesSortedByPercentage = new ArrayList<>(
 				product.getFormula().getWeightedTastingNotes());
+
+
 		for (int i = 0; i < numNotes && i < tastingNotesSortedByPercentage.size(); i++) {
 			sb.append(tastingNotesSortedByPercentage.get(i));
-			sb.append(", ");
-		}
-		return sb.toString();
-	}
 
-	public void addUsedCask(Cask cask) {
-		usedCasks.add(cask);
+			// add a comma if there are more tasting notes to add
+			if (i < numNotes - 1 && i < tastingNotesSortedByPercentage.size() - 1) {
+				sb.append(", ");
+			}
+		}
+
+		String result = sb.toString();
+		return result;
 	}
 
 	// ---------------------------GENERIC-GETTERS----------------------------//
@@ -200,6 +203,10 @@ public class Batch implements Serializable {
 
 	public int getNumRemainingBottles() {
 		return numExpectedBottles - numProducedBottles;
+	}
+
+	public void addUsedCask(Cask cask) {
+		usedCasks.add(cask);
 	}
 
 }

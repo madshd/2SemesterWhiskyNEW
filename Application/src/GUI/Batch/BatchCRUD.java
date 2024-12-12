@@ -55,7 +55,8 @@ public class BatchCRUD {
 		batchID.setText(Batch.getBatchIDglobalCount() + "");
 		this.product = product;
 	}
-	public void calculateMaxBottles(Product product){
+
+	public void calculateMaxBottles(Product product) {
 		maxBottles = Controllers.BatchArea.calculateMaxNumBottles(product, onlyReadyCheckBox.isSelected(), null);
 		numMaxBottles.setText(maxBottles + "");
 	}
@@ -63,7 +64,8 @@ public class BatchCRUD {
 	// Initialize the content of the window
 	private void initContent(GridPane mainPane) {
 		// Main GridPane setup
-		mainPane.setPadding(new Insets(50)); mainPane.setHgap(10);
+		mainPane.setPadding(new Insets(50));
+		mainPane.setHgap(10);
 		mainPane.setVgap(10);
 		mainPane.setAlignment(Pos.CENTER);
 		mainPane.setGridLinesVisible(false);
@@ -124,33 +126,17 @@ public class BatchCRUD {
 
 	// Create a new Batch
 	private void create(String numBottles) {
-		int numBottlesParsed = numBottles.isEmpty() ? 0 : Integer.parseInt(numBottles);
-		if (numBottlesParsed <= 0) {
-			errorWindow.showError("Please input a valid number > 0.");
-			return;
-		}
-		if (numExpectedBottles.getText().isEmpty()) {
-			errorWindow.showError("Please input number of bottles to produce.");
-			return;
-		}
-		// check if the number of bottles to produce is a valid integer
+		int numBottlesParsed = 0;
 		try {
-			if (numBottlesParsed <= 0) {
-				errorWindow.showError("Please input a valid number of bottles to produce.");
-				return;
-			}
-			if (numBottlesParsed > Integer.parseInt(numMaxBottles.getText())) {
-				errorWindow.showError(
-						"Number of bottles to produce exceeds the maximum number of bottles possible to produce given the current warehouse status.");
-				return;
-			}
+			numBottlesParsed = numBottles.isEmpty() ? 0 : Integer.parseInt(numBottles);
+			batch = Controllers.BatchArea.createNewBatch(product, numBottlesParsed, onlyReadyCheckBox.isSelected());
+			clearFields();
+			batchCrudStage.close();
 		} catch (NumberFormatException e) {
-			errorWindow.showError("Please input a valid number of bottles to produce.");
-			return;
+			errorWindow.showError("Invalid number format: " + numBottles);
+		} catch (Exception e) {
+			errorWindow.showError(e.getMessage());
 		}
-		batch = Controllers.BatchArea.createNewBatch(product, numBottlesParsed, onlyReadyCheckBox.isSelected());
-		clearFields();
-		batchCrudStage.close();
 	}
 
 	// Clear all fields

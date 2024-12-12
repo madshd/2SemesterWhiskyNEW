@@ -94,8 +94,8 @@ public abstract class Warehousing {
 		return warehouse;
 	}
 
-	public static StorageRack createStorageRack(String rackID, int maxCapacity) {
-		StorageRack storageRack = new StorageRack(rackID, maxCapacity);
+	public static StorageRack createStorageRack(String rackID, int i) {
+		StorageRack storageRack = new StorageRack(rackID, i);
 		storage.storeStorageRack(storageRack);
 		return storageRack;
 	}
