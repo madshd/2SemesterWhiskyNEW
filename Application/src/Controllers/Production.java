@@ -171,7 +171,7 @@ public abstract class Production {
 	 */
 	public static boolean caskToCaskTransfer(Item caskFrom, Item caskTo, double quantity, LocalDate date)
 			throws IllegalArgumentException{
-		double caskFromQuantity = caskFrom.getQuantityStatus();
+		double caskFromQuantity = ((Cask)caskFrom).getLegalQuantity();
 		double caskToRemainingQuantity = caskTo.getRemainingQuantity();
 
 		if (caskFromQuantity < quantity){
@@ -202,17 +202,15 @@ public abstract class Production {
 		double calculationFactor = quantity/fillStackSum;
 
 		((Cask) caskFrom).getFillingsStackByLifeCycle(((Cask) caskFrom).getLifeCycle()).forEach(filling -> {
-//			if (!filling.isDecrease()){
-				double changeQauntity = Math.abs(filling.getQuantity()) * calculationFactor;
-				Distillate distillate = ((FillDistillate) filling).getDistillate();
-				Filling encreaseQuantity = new FillDistillate(date,changeQauntity, ((Cask) caskTo), distillate,
-						((FillDistillate) filling),false,FillType.TRANSFER);
-				Filling decreaseQuantity = new FillDistillate(date,changeQauntity, ((Cask) caskFrom), distillate,
-						((FillDistillate) filling),true,FillType.TRANSFER);
+			double changeQauntity = Math.abs(filling.getQuantity()) * calculationFactor;
+			Distillate distillate = ((FillDistillate) filling).getDistillate();
+			Filling encreaseQuantity = new FillDistillate(date,changeQauntity, ((Cask) caskTo), distillate,
+					((FillDistillate) filling),false,FillType.TRANSFER);
+			Filling decreaseQuantity = new FillDistillate(date,changeQauntity, ((Cask) caskFrom), distillate,
+					((FillDistillate) filling),true,FillType.TRANSFER);
 
-				caskFrom.updateQuantity(decreaseQuantity);
-				caskTo.updateQuantity(encreaseQuantity);
-//			}
+			caskFrom.updateQuantity(decreaseQuantity);
+			caskTo.updateQuantity(encreaseQuantity);
 		});
 		return true;
 	}
@@ -355,7 +353,7 @@ public abstract class Production {
 	/**
 	 * Used for bottling and updateing quantity after measuring.
 	 * @param cask
-	 * @param Quantity
+	 * @param quantity
 	 * @param date
 	 */
 	public static void caskBottling(Cask cask, double quantity, LocalDate date){
