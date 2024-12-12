@@ -8,7 +8,7 @@ import Production.TestProduction;
 public class App {
 	public static void main(String[] args) {
 		StorageInterface storage = Storage.loadStorage();
-		if (storage == null){
+		if (storage != null){
 			storage = new Storage();
 			Controllers.Production.setStorage(storage);
 			Controllers.Warehousing.setStorage(storage);
