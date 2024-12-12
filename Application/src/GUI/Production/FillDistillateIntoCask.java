@@ -183,7 +183,7 @@ public abstract class FillDistillateIntoCask {
 
                 while (itemIterator.hasNext()){
                     Cask c = (Cask) itemIterator.next();
-                    if (c.getTotalReservedAmount() > 0){
+                    if (c.getTotalReservedQuantity() > 0){
                         itemIterator.remove();
                     }
                 }
