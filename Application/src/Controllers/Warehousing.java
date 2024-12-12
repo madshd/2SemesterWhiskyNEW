@@ -4,6 +4,7 @@ import Enumerations.IngredientType;
 import Enumerations.Unit;
 import Interfaces.Item;
 import Interfaces.StorageInterface;
+import Interfaces.WarehousingObserver;
 import Storage.Storage;
 import Warehousing.Cask;
 import Warehousing.Supplier;
@@ -92,6 +93,8 @@ public abstract class Warehousing {
 
 	public static Warehouse createWarehouse(String name, String address) {
 		Warehouse warehouse = new Warehouse(name, address);
+		LoggerObserver loggerObserver = new LoggerObserver();
+		warehouse.registerWarehousingObserver(loggerObserver);
 		storage.storeWarehouse(warehouse);
 		return warehouse;
 	}
@@ -589,7 +592,6 @@ public static Ingredient createIngredientAndAdd(
 	}
 
 	public static List<String> getLogsByWarehouse(Warehouse warehouse) {
-		System.out.println(LoggerObserver.getLogsByWarehouse(warehouse));
 		return LoggerObserver.getLogsByWarehouse(warehouse);
 	}
 

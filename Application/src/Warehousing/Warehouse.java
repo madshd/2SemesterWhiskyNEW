@@ -115,9 +115,4 @@ public class Warehouse implements WarehousingSubject, Serializable {
         }
         return this;
     }
-
-    public void createAndAddLoggerObserver() {
-        LoggerObserver loggerObserver = new LoggerObserver();
-        registerWarehousingObserver(loggerObserver);
-    }
 }
