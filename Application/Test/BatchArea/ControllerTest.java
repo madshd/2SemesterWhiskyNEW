@@ -73,9 +73,13 @@ public class ControllerTest {
 		int numExpectedBottles = 100;
 		boolean onlyReady = true;
 
-		assertNotNull(Controllers.BatchArea.createNewBatch(product, numExpectedBottles, onlyReady));
+		Batch batch = Controllers.BatchArea.createNewBatch(product, numExpectedBottles, onlyReady);
+		assertNotNull(batch);
+
 		assertTrue(storage.getAllBatches().size() == 1);
 		assertTrue(storage.getAllBatches().get(0).getProduct().equals(product));
+		assertTrue(batch.getReservedCasks().size() == 1);
+		assertTrue(batch.getReservedCasks().get(cask) == 100);
 	}
 
 	@Test
@@ -87,9 +91,13 @@ public class ControllerTest {
 		int numExpectedBottles = 200;
 		boolean onlyReady = false;
 
-		assertNotNull(Controllers.BatchArea.createNewBatch(product, numExpectedBottles, onlyReady));
+		Batch batch = Controllers.BatchArea.createNewBatch(product, numExpectedBottles, onlyReady);
+		assertNotNull(batch);
+
 		assertTrue(storage.getAllBatches().size() == 1);
 		assertTrue(storage.getAllBatches().get(0).getProduct().equals(product));
+		assertTrue(batch.getReservedCasks().size() == 1);
+		assertTrue(batch.getReservedCasks().get(cask) == 200);
 	}
 
 	@Test
@@ -106,6 +114,7 @@ public class ControllerTest {
 		});
 
 		assertTrue(storage.getAllBatches().isEmpty());
+		assertTrue(cask.getTotalReservedQuantity() == 0);
 	}
 
 	@Test
@@ -122,26 +131,11 @@ public class ControllerTest {
 		});
 
 		assertTrue(storage.getAllBatches().isEmpty());
+		assertTrue(cask.getTotalReservedQuantity() == 0);
 	}
 
 	@Test
-	@DisplayName("TC5: numExpectedBottle = not a number")
-	public void testCreateNewBatch_NumExpectedBottlesNotNumber_ThrowsException() {
-		Controllers.Production.fillDistillateIntoCask(distillateReady, cask, 100, LocalDate.now());
-		Controllers.Production.fillDistillateIntoCask(distillateNotReady, cask, 100, LocalDate.now());
-
-		String numExpectedBottles = "ABC";
-		boolean onlyReady = true;
-
-		assertThrows(IllegalArgumentException.class, () -> {
-			Controllers.BatchArea.createNewBatch(product, Integer.valueOf(numExpectedBottles), onlyReady);
-		});
-
-		assertTrue(storage.getAllBatches().isEmpty());
-	}
-
-	@Test
-	@DisplayName("TC6: numExpectedBottle exceeds max and onlyReady = true")
+	@DisplayName("TC5: numExpectedBottle exceeds max and onlyReady = true")
 	public void testCreateNewBatch_NumExpectedBottlesExceedsMax_OnlyReadyTrue_ThrowsException() {
 		Controllers.Production.fillDistillateIntoCask(distillateReady, cask, 100, LocalDate.now());
 
@@ -153,10 +147,11 @@ public class ControllerTest {
 		});
 
 		assertTrue(storage.getAllBatches().isEmpty());
+		assertTrue(cask.getTotalReservedQuantity() == 0);
 	}
 
 	@Test
-	@DisplayName("TC7: numExpectedBottle exceeds max and onlyReady = false")
+	@DisplayName("TC6: numExpectedBottle exceeds max and onlyReady = false")
 	public void testCreateNewBatch_NumExpectedBottlesExceedsMaxOnlyReadyFalse_ThrowsException() {
 		Controllers.Production.fillDistillateIntoCask(distillateReady, cask, 100, LocalDate.now());
 		Controllers.Production.fillDistillateIntoCask(distillateNotReady, cask, 100, LocalDate.now());
@@ -169,5 +164,6 @@ public class ControllerTest {
 		});
 
 		assertTrue(storage.getAllBatches().isEmpty());
+		assertTrue(cask.getTotalReservedQuantity() == 0);
 	}
 }

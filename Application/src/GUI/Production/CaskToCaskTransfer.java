@@ -167,7 +167,7 @@ public abstract class CaskToCaskTransfer {
 
                 while (itemIterator.hasNext()){
                     Cask c = (Cask) itemIterator.next();
-                    if (c.getTotalReservedAmount() > 0){
+                    if (c.getTotalReservedQuantity() > 0){
                         itemIterator.remove();
                     }
                 }
@@ -302,7 +302,7 @@ public abstract class CaskToCaskTransfer {
 
                 lblAttentionReserved.setText(String.format("""
                          Quantity reservation: Cask: %s reserved quantity: %,.2f
-                        """,caskFrom.getName(),caskFrom.getTotalReservedAmount()));
+                        """,caskFrom.getName(),caskFrom.getTotalReservedQuantity()));
 
 
                 if (quantityStatusCaskFrom > remainingCaskTo){

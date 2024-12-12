@@ -27,7 +27,6 @@ public class BatchTest {
 
 		tasteProfile1.addTastingNote(TastingNote.SMOKEY);
 		tasteProfile1.addTastingNote(TastingNote.APPLE);
-		tasteProfile1.addTastingNote(TastingNote.BLACK_PEPPER);
 
 		tasteProfile2.addTastingNote(TastingNote.COFFEE);
 
@@ -66,7 +65,7 @@ public class BatchTest {
 		//TC3
 		product.defineFormula(formula3);
 		actual = batch.getWeightedTastingNotes();
-		expected = "Smokey, Apple, Black Pepper";
+		expected = "Smokey, Apple";
 		assertEquals(expected, actual);
 	}
 }

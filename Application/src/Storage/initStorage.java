@@ -36,6 +36,14 @@ public abstract class initStorage {
 	public static TasteProfile tasteProfile2;
 	public static TasteProfile tasteProfile3;
 	public static TasteProfile tasteProfile4;
+	public static TasteProfile tasteProfile5;
+	public static TasteProfile tasteProfile6;
+	public static TasteProfile tasteProfile7;
+	public static TasteProfile tasteProfile8;
+	public static TasteProfile tasteProfile9;
+	public static TasteProfile tasteProfile10;
+	public static TasteProfile tasteProfile11;
+	public static TasteProfile tasteProfile12;
 
 	public static Cask cask_01;
 	public static Cask cask_02;
@@ -43,6 +51,15 @@ public abstract class initStorage {
 	public static Cask cask_04;
 	public static Cask cask_05;
 	public static Cask cask_06;
+	public static Cask cask_07;
+	public static Cask cask_08;
+	public static Cask cask_09;
+	public static Cask cask_10;
+	public static Cask cask_11;
+	public static Cask cask_12;
+	public static Cask cask_13;
+	public static Cask cask_14;
+	public static Cask cask_15;
 
 	@SuppressWarnings("unused")
 	public static void loadProduction() {
@@ -189,10 +206,15 @@ public abstract class initStorage {
 		cask_04 = Warehousing.createCaskAndAdd(4, 500, Unit.LITERS, sub_03, "Large European Oak Cask", warehouse, rack1); // Large European Oak cask from Oak Master Barrels
 		cask_05 = Warehousing.createCaskAndAdd(5, 300, Unit.LITERS, sub_05, "Seasoned Sherry Cask", warehouse, rack1); // Seasoned sherry cask from Sherry Bliss Co.
 		cask_06 = Warehousing.createCaskAndAdd(6, 200, Unit.LITERS, sub_03, "Toasted Oak Cask", warehouse, rack1); // Toasted Oak cask from Oak Master Barrels
-		Cask cask_07 = Warehousing.createCaskAndAdd(7, 225, Unit.LITERS, sub_03, "Ex-Port Cask", warehouse, rack1); // Ex-Port cask from Oak Master Barrels
-		Cask cask_08 = Warehousing.createCaskAndAdd(8, 180, Unit.LITERS, sub_03, "Peated Oak Cask", warehouse, rack1); // Peated Oak cask from Peat & Smolder
-		Cask cask_09 = Warehousing.createCaskAndAdd(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask", warehouse, rack1); // Spanish Oak cask from Sherry Bliss Co.
-		Cask cask_10 = Warehousing.createCaskAndAdd(10, 600, Unit.LITERS, sub_03, "Large Blending Cask", warehouse, rack1); // Large blending cask from Oak Master
+		cask_07 = Warehousing.createCaskAndAdd(7, 500, Unit.LITERS, sub_03, "Ex-Port Cask", warehouse, rack1); // Ex-Port cask from Oak Master Barrels
+		cask_08 = Warehousing.createCaskAndAdd(8, 400, Unit.LITERS, sub_03, "Peated Oak Cask", warehouse, rack1); // Peated Oak cask from Peat & Smolder
+		cask_09 = Warehousing.createCaskAndAdd(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask", warehouse, rack1); // Spanish Oak cask from Sherry Bliss Co.
+		cask_10 = Warehousing.createCaskAndAdd(10, 600, Unit.LITERS, sub_03, "Large Blending Cask", warehouse, rack1); // Large blending cask from Oak Master
+		cask_11 = Warehousing.createCaskAndAdd(11, 450, Unit.LITERS, sub_03, "French Oak Cask", warehouse, rack1); // French Oak cask from Oak Master Barrels
+		cask_12 = Warehousing.createCaskAndAdd(12, 675, Unit.LITERS, sub_05, "Rum Cask", warehouse, rack1); // Rum cask from Caribbean Spirits
+		cask_13 = Warehousing.createCaskAndAdd(13, 650, Unit.LITERS, sub_03, "Maple Wood Cask", warehouse, rack1); // Maple Wood cask from Maple Masters
+		cask_14 = Warehousing.createCaskAndAdd(14, 600, Unit.LITERS, sub_05, "Cherry Wood Cask", warehouse, rack1); // Cherry Wood cask from Cherry Bliss Co.
+		cask_15 = Warehousing.createCaskAndAdd(15, 500, Unit.LITERS, sub_03, "Chestnut Cask", warehouse, rack1); // Chestnut cask from Oak Master Barrels
 
 		Distillate caskIsEmpty = Production.createDistillate(
 				"caskIsEmpty",
@@ -275,26 +297,66 @@ public abstract class initStorage {
 				Unit.LITERS);
 
 		Distillate distillate_10 = Production.createDistillate(
-				"Golden Highland",
-				LocalDate.parse("2024-02-20"),
-				LocalDate.parse("2024-03-15"),
-				250,
-				distiller_03,
-				Unit.LITERS);
+			"Golden Highland",
+			LocalDate.parse("2024-02-20"),
+			LocalDate.parse("2024-03-15"),
+			250,
+			distiller_03,
+			Unit.LITERS);
 
 		Distillate distillate_11 = Production.createDistillate(
-			"Speyside Sunset",
-			LocalDate.parse("2020-01-01"),
-			LocalDate.parse("2020-02-01"),
+			"Silver Valley",
+			LocalDate.parse("2023-05-10"),
+			LocalDate.parse("2023-06-10"),
 			300,
 			distiller_04,
 			Unit.LITERS);
 
 		Distillate distillate_12 = Production.createDistillate(
-			"Peaty Promise",
-			LocalDate.parse("2019-12-10"),
-			LocalDate.parse("2020-01-05"),
+			"Bronze Mountain",
+			LocalDate.parse("2022-08-15"),
+			LocalDate.parse("2022-09-15"),
+			275,
+			distiller_05,
+			Unit.LITERS);
+
+		Distillate distillate_13 = Production.createDistillate(
+			"Highland Harmony",
+			LocalDate.parse("2020-03-01"),
+			LocalDate.parse("2020-04-01"),
+			800,
+			distiller_06,
+			Unit.LITERS);
+
+		Distillate distillate_14 = Production.createDistillate(
+			"Island Intrigue",
+			LocalDate.parse("2020-05-01"),
+			LocalDate.parse("2020-06-01"),
+			450,
+			distiller_07,
+			Unit.LITERS);
+
+		Distillate distillate_15 = Production.createDistillate(
+			"Coastal Calm",
+			LocalDate.parse("2020-07-01"),
+			LocalDate.parse("2020-08-01"),
+			500,
+			distiller_03,
+			Unit.LITERS);
+
+		Distillate distillate_16 = Production.createDistillate(
+			"Mountain Mist",
+			LocalDate.parse("2020-09-01"),
+			LocalDate.parse("2020-10-01"),
 			400,
+			distiller_01,
+			Unit.LITERS);
+
+		Distillate distillate_17 = Production.createDistillate(
+			"Valley Vigor",
+			LocalDate.parse("2020-11-01"),
+			LocalDate.parse("2020-12-01"),
+			300,
 			distiller_05,
 			Unit.LITERS);
 
@@ -320,6 +382,20 @@ public abstract class initStorage {
 				"Peaty and robust, this distillate reflects the rugged character of coastal winds and marine influence.");
 		addDescriotionToDistillate(distillate_10,
 				"A harmonious distillate with subtle hints of fresh bread, honey, and a lingering smoky finish.");
+		addDescriotionToDistillate(distillate_11,
+				"A robust distillate with deep oak flavors and a touch of dark chocolate, aged in charred barrels.");
+		addDescriotionToDistillate(distillate_12,
+				"This distillate offers a unique blend of tropical fruit notes and a hint of coconut, perfect for summer.");
+		addDescriotionToDistillate(distillate_13,
+				"Highland Harmony is a balanced distillate with notes of heather, honey, and a subtle smoky finish.");
+		addDescriotionToDistillate(distillate_14,
+				"Island Intrigue features bold maritime flavors with a touch of sea salt and a lingering peat smoke.");
+		addDescriotionToDistillate(distillate_15,
+				"Coastal Calm is a smooth distillate with fresh citrus notes and a gentle briny character.");
+		addDescriotionToDistillate(distillate_16,
+				"Mountain Mist is a crisp distillate with hints of pine, fresh herbs, and a clean, refreshing finish.");
+		addDescriotionToDistillate(distillate_17,
+				"Valley Vigor is a vibrant distillate with rich malt flavors, a touch of spice, and a warm, lingering finish.");
 
 		// *** Ingredients ***
 
@@ -534,6 +610,49 @@ public abstract class initStorage {
 		addIngredientToDistillate(distillate_10, sugarFermentation, 12.5, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_10, peatMoss, 18.75, LocalDate.parse("2024-01-20"));
 
+		// MF tilf�j ingredienser
+		// addIngredientToDistillate(distillate_11, barleyEvergreen, 850.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_11, waterSpring, 3750.0, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_11, yeastBrewers, 11.0, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_11, sugarFermentation, 22.0, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_11, peatMoss, 33.0, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_12, barleyGoldenPromise, 700.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_12, waterSpring, 3062.5, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_12, yeastBrewers, 8.75, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_12, sugarFermentation, 17.5, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_12, peatMoss, 26.25, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_13, barleyEvergreen, 900.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_13, waterSpring, 3937.5, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_13, yeastBrewers, 11.25, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_13, sugarFermentation, 22.5, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_13, peatMoss, 33.75, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_14, barleyStairway, 800.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_14, waterSpring, 3500.0, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_14, yeastBrewers, 10.0, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_14, sugarFermentation, 20.0, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_14, peatMoss, 30.0, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_15, barleyIrna, 750.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_15, waterSpring, 3281.25, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_15, yeastBrewers, 9.375, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_15, sugarFermentation, 18.75, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_15, peatMoss, 28.125, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_16, barleyIrna, 500.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_16, waterSpring, 2187.5, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_16, yeastBrewers, 6.25, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_16, sugarFermentation, 12.5, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_16, peatMoss, 18.75, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_17, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_17, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_17, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_17, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_17, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
+		
 		// Measuring alcohol percentage
 		// Målinger for Highland Essence
 		addAlcoholPercentage(distillate_01, 75.0, LocalDate.parse("2024-11-27")); // Start af produktionen
@@ -584,6 +703,34 @@ public abstract class initStorage {
 		addAlcoholPercentage(distillate_10, 75.0, LocalDate.parse("2024-02-20")); // Start af produktionen
 		addAlcoholPercentage(distillate_10, 73.5, LocalDate.parse("2024-03-01")); // Midt under processen
 		addAlcoholPercentage(distillate_10, 70.5, LocalDate.parse("2024-03-15")); // Færdiggørelse
+
+		addAlcoholPercentage(distillate_11, 74.0, LocalDate.parse("2023-05-10")); // Start af produktionen
+		addAlcoholPercentage(distillate_11, 72.0, LocalDate.parse("2023-05-20")); // Midt under processen
+		addAlcoholPercentage(distillate_11, 70.0, LocalDate.parse("2023-06-10")); // Færdiggørelse
+
+		addAlcoholPercentage(distillate_12, 75.0, LocalDate.parse("2022-08-15")); // Start af produktionen
+		addAlcoholPercentage(distillate_12, 73.0, LocalDate.parse("2022-08-25")); // Midt under processen
+		addAlcoholPercentage(distillate_12, 71.0, LocalDate.parse("2022-09-15")); // Færdiggørelse
+
+		addAlcoholPercentage(distillate_13, 76.0, LocalDate.parse("2020-03-01")); // Start af produktionen
+		addAlcoholPercentage(distillate_13, 74.0, LocalDate.parse("2020-03-15")); // Midt under processen
+		addAlcoholPercentage(distillate_13, 72.0, LocalDate.parse("2020-04-01")); // Færdiggørelse
+
+		addAlcoholPercentage(distillate_14, 73.5, LocalDate.parse("2021-07-01")); // Start af produktionen
+		addAlcoholPercentage(distillate_14, 71.5, LocalDate.parse("2021-07-15")); // Midt under processen
+		addAlcoholPercentage(distillate_14, 69.5, LocalDate.parse("2021-08-01")); // Færdiggørelse
+
+		addAlcoholPercentage(distillate_15, 74.5, LocalDate.parse("2021-09-01")); // Start af produktionen
+		addAlcoholPercentage(distillate_15, 72.5, LocalDate.parse("2021-09-15")); // Midt under processen
+		addAlcoholPercentage(distillate_15, 70.5, LocalDate.parse("2021-10-01")); // Færdiggørelse
+
+		addAlcoholPercentage(distillate_16, 75.5, LocalDate.parse("2021-11-01")); // Start af produktionen
+		addAlcoholPercentage(distillate_16, 73.5, LocalDate.parse("2021-11-15")); // Midt under processen
+		addAlcoholPercentage(distillate_16, 71.5, LocalDate.parse("2021-12-01")); // Færdiggørelse
+
+		addAlcoholPercentage(distillate_17, 76.5, LocalDate.parse("2022-01-01")); // Start af produktionen
+		addAlcoholPercentage(distillate_17, 74.5, LocalDate.parse("2022-01-15")); // Midt under processen
+		addAlcoholPercentage(distillate_17, 72.5, LocalDate.parse("2022-02-01")); // Færdiggørelse
 
 		// Production cut information
 		// Production cut information for Highland Essence
@@ -656,6 +803,48 @@ public abstract class initStorage {
 				LocalDate.parse("2024-02-25")
 		);
 
+		addProductionCutInformation(
+				distillate_11,
+				"Heads sharply removed at 74% ABV. Rich, smoky hearts retained between 72% and 65%. Tails omitted below 60% ABV to enhance smokiness.",
+				LocalDate.parse("2024-02-01")
+		);
+
+		addProductionCutInformation(
+				distillate_12,
+				"Heads cut at 73% ABV for a clean profile. Floral hearts retained between 71% and 64% ABV. Tails discarded below 63% ABV to preserve delicacy.",
+				LocalDate.parse("2024-01-15")
+		);
+
+		addProductionCutInformation(
+				distillate_13,
+				"Heads excluded at 72% ABV. Hearts held between 70% and 63% ABV for a robust flavor. Tails rejected below 60% ABV for crisp winter notes.",
+				LocalDate.parse("2023-12-20")
+		);
+
+		addProductionCutInformation(
+				distillate_14,
+				"Light heads removal at 71% ABV. Bright, grassy hearts retained between 70% and 65% ABV. Minimal tails included for a touch of sweetness.",
+				LocalDate.parse("2023-11-25")
+		);
+
+		addProductionCutInformation(
+				distillate_15,
+				"Heads cut aggressively at 73% ABV to highlight autumnal warmth. Hearts maintained between 72% and 64% ABV. Tails omitted below 61% ABV for clarity.",
+				LocalDate.parse("2023-10-15")
+		);
+
+		addProductionCutInformation(
+				distillate_16,
+				"Heads removed at 74% ABV. Dark, rich hearts preserved between 72% and 65% ABV. Deep tails excluded below 62% ABV to maintain a mysterious profile.",
+				LocalDate.parse("2023-09-05")
+		);
+
+		addProductionCutInformation(
+				distillate_17,
+				"Heads excised at 72% ABV for a refined touch. Smooth hearts kept between 70% and 64% ABV. Light tails (<60%) removed for velvety balance.",
+				LocalDate.parse("2023-08-20")
+		);
+
 		// Story lines
 		// Storyline for Highland Essence
 		addStoryToDistillate(
@@ -726,29 +915,96 @@ public abstract class initStorage {
 				"Golden Highland is a tribute to the golden fields of barley that serve as the foundation of Scottish whisky. With creamy malt flavors and a touch of sweetness, it embodies the beauty of the Highlands.",
 				LocalDate.parse("2024-02-20")
 		);
+
+		// Storyline for distillate 11
+		addStoryToDistillate(
+				distillate_11,
+				"Distillate 11 embodies a bold exploration of smoky richness, crafted to deliver a robust and unforgettable flavor profile that lingers long on the palate.",
+				LocalDate.parse("2024-02-01")
+		);
+
+		// Storyline for distillate 12
+		addStoryToDistillate(
+				distillate_12,
+				"Distillate 12 was designed with elegance in mind, showcasing floral notes and a delicate balance that celebrates the softer side of whisky craftsmanship.",
+				LocalDate.parse("2024-01-15")
+		);
+
+		// Storyline for distillate 13
+		addStoryToDistillate(
+				distillate_13,
+				"Distillate 13 captures the essence of a winter�s night, with crisp, clean flavors and a warming finish that evokes the serenity of snow-covered landscapes.",
+				LocalDate.parse("2023-12-20")
+		);
+
+		// Storyline for distillate 14
+		addStoryToDistillate(
+				distillate_14,
+				"Distillate 14 is inspired by the fresh blooms of spring, offering a vibrant, light profile with hints of grass and subtle sweetness that heralds new beginnings.",
+				LocalDate.parse("2023-11-15")
+		);
+
+		// Storyline for distillate 15
+		addStoryToDistillate(
+				distillate_15,
+				"Distillate 15 is a tribute to traditional techniques, delivering a harmonious combination of smooth malty flavors and subtle oak undertones for a timeless taste.",
+				LocalDate.parse("2023-10-10")
+		);
+
+		// Storyline for distillate 16
+		addStoryToDistillate(
+				distillate_16,
+				"Distillate 16 was crafted to explore uncharted depths of flavor, with a bold profile that combines earthy tones and a touch of spice for an adventurous experience.",
+				LocalDate.parse("2023-09-05")
+		);
+
+		// Storyline for distillate 17
+		addStoryToDistillate(
+				distillate_17,
+				"Distillate 17 reflects the artistry of cask maturation, offering a complex interplay of dried fruits, subtle vanilla, and a rich, long-lasting finish.",
+				LocalDate.parse("2023-08-01")
+		);
+		
+
+
 		// *** Fillings ***
-		// One distallate capacity fully used across casks
+
+		// One distillate capacity fully used across casks
 		Production.fillDistillateIntoCask(distillate_06, cask_01, 100, LocalDate.parse("2024-01-01"));
 		Production.fillDistillateIntoCask(distillate_06, cask_02, 100, LocalDate.parse("2024-01-01"));
 		Production.fillDistillateIntoCask(distillate_06, cask_03, 100, LocalDate.parse("2024-01-01"));
 		Production.fillDistillateIntoCask(distillate_06, cask_04, 150, LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_11, cask_08, 100, LocalDate.parse("2024-01-01"));
+		Production.fillDistillateIntoCask(distillate_11, cask_09, 100, LocalDate.parse("2024-01-01"));
 
 		// Cask holding more than two distillates and fully used
-		Production.fillDistillateIntoCask(distillate_10,cask_02,50,LocalDate.parse("2024-02-01"));
-		Production.fillDistillateIntoCask(distillate_08,cask_02,100,LocalDate.parse("2024-02-01"));
+		Production.fillDistillateIntoCask(distillate_10, cask_02, 50, LocalDate.parse("2024-02-01"));
+		Production.fillDistillateIntoCask(distillate_08, cask_02, 100, LocalDate.parse("2024-02-01"));
+		Production.fillDistillateIntoCask(distillate_12, cask_08, 50, LocalDate.parse("2024-02-01"));
+		Production.fillDistillateIntoCask(distillate_13, cask_08, 100, LocalDate.parse("2024-02-01"));
 
 		// Cask having more than two distillates and having remaining capacity
-		Production.fillDistillateIntoCask(distillate_07,cask_04,50,LocalDate.parse("2024-03-01"));
-		Production.fillDistillateIntoCask(distillate_08,cask_04,25,LocalDate.parse("2024-04-01"));
-		Production.fillDistillateIntoCask(distillate_09,cask_04,15,LocalDate.parse("2024-05-01"));
-		Production.fillDistillateIntoCask(distillate_10,cask_04,75,LocalDate.parse("2024-06-01"));
+		Production.fillDistillateIntoCask(distillate_07, cask_04, 50, LocalDate.parse("2024-03-01"));
+		Production.fillDistillateIntoCask(distillate_08, cask_04, 25, LocalDate.parse("2024-04-01"));
+		Production.fillDistillateIntoCask(distillate_09, cask_04, 15, LocalDate.parse("2024-05-01"));
+		Production.fillDistillateIntoCask(distillate_10, cask_04, 75, LocalDate.parse("2024-06-01"));
+		Production.fillDistillateIntoCask(distillate_14, cask_10, 50, LocalDate.parse("2024-03-01"));
+		Production.fillDistillateIntoCask(distillate_15, cask_10, 25, LocalDate.parse("2024-04-01"));
+		Production.fillDistillateIntoCask(distillate_16, cask_10, 15, LocalDate.parse("2024-05-01"));
+		Production.fillDistillateIntoCask(distillate_17, cask_10, 75, LocalDate.parse("2024-06-01"));
 
-		// Casks that are ready for bottling
-		Production.fillDistillateIntoCask(distillate_11,cask_05,100,LocalDate.parse("2024-07-01"));
-		Production.fillDistillateIntoCask(distillate_12,cask_06,100,LocalDate.parse("2024-08-01"));
+		Production.fillDistillateIntoCask(distillate_11, cask_05, 100, LocalDate.parse("2024-07-01"));
+		Production.fillDistillateIntoCask(distillate_12, cask_06, 100, LocalDate.parse("2024-08-01"));
+		Production.fillDistillateIntoCask(distillate_12, cask_11, 100, LocalDate.parse("2024-07-01"));
+		Production.fillDistillateIntoCask(distillate_13, cask_12, 100, LocalDate.parse("2024-08-01"));
+		Production.fillDistillateIntoCask(distillate_14, cask_13, 100, LocalDate.parse("2024-09-01"));
+		Production.fillDistillateIntoCask(distillate_15, cask_14, 100, LocalDate.parse("2024-10-01"));
+		Production.fillDistillateIntoCask(distillate_16, cask_15, 100, LocalDate.parse("2024-11-01"));
+		
 
 		// *** Bottling ***
-		Production.caskBottling(cask_04,25,LocalDate.parse("2024-12-01"));
+		// M� IKKE KALDES DIREKTE P� DENNE MEDE UDEN OM BATCHAREA CONTROLLER
+		//Production.caskBottling(cask_04,25,LocalDate.parse("2024-12-01"));
 
 	}
 
@@ -785,7 +1041,7 @@ public abstract class initStorage {
 		// =================== TASTE PROFILES =================
 
 		ArrayList<TastingNote> notes1 = new ArrayList<>();
-		tasteProfile1 = BatchArea.createNewTasteProfile("Velvet Ember",
+		tasteProfile1 = BatchArea.createNewTasteProfile("Vienna Malt",
 				"\'Velvet Ember\' is a taste profile that combines the silky smoothness of honeyed vanilla with a subtle smoky warmth, finished with a whisper of spiced citrus zest for a lingering, refined complexity.",
 				notes1);
 
@@ -804,6 +1060,36 @@ public abstract class initStorage {
 				"\'Golden Harvest\' combines the buttery sweetness of caramelized pears with toasted almonds, complemented by a hint of nutmeg and a smooth, creamy finish reminiscent of warm custard.",
 				notes4);
 
+		ArrayList<TastingNote> notes7 = new ArrayList<>();
+		tasteProfile7 = BatchArea.createNewTasteProfile("Apple Delight",
+				"\'Apple Delight\' brings crisp apple flavors with hints of vanilla, caramel, and subtle smoky undertones, creating a balanced and refreshing profile.",
+				notes7);
+
+		ArrayList<TastingNote> notes8 = new ArrayList<>();
+		tasteProfile8 = BatchArea.createNewTasteProfile("Golden Delights",
+				"\'Golden Delights\' features rich vanilla and caramel, with a touch of oak creating a luxurious and sweet profile.",
+				notes8);
+
+		ArrayList<TastingNote> notes9 = new ArrayList<>();
+		tasteProfile9 = BatchArea.createNewTasteProfile("Smoky Delight",
+				"\'Smoky Delight\' blends peaty and smoky flavors with roasted coffee for a robust and warming experience.",
+				notes9);
+
+		ArrayList<TastingNote> notes10 = new ArrayList<>();
+		tasteProfile10 = BatchArea.createNewTasteProfile("Spiced Orchard",
+				"\'Spiced Orchard\' highlights pear and cinnamon, with hints of raisin creating a sweet and spiced profile.",
+				notes10);
+
+		ArrayList<TastingNote> notes11 = new ArrayList<>();
+		tasteProfile11 = BatchArea.createNewTasteProfile("Rich Chocolate Oak",
+				"\'Rich Chocolate Oak\' offers dark chocolate and toffee flavors, complemented by oak for a deep and luxurious profile.",
+				notes11);
+
+		ArrayList<TastingNote> notes12 = new ArrayList<>();
+		tasteProfile12 = BatchArea.createNewTasteProfile("Lemon Zest Edition",
+				"\'Lemon Zest Edition\' combines zesty lemon with vanilla and a touch of black pepper for a bright and refreshing finish.",
+				notes12);
+
 		notes1.add(TastingNote.SMOKEY);
 		notes1.add(TastingNote.APPLE);
 		notes1.add(TastingNote.LEMON);
@@ -815,16 +1101,38 @@ public abstract class initStorage {
 		notes4.add(TastingNote.OAK);
 		notes4.add(TastingNote.BLACK_PEPPER);
 		notes4.add(TastingNote.HONEY);
+		notes7.add(TastingNote.APPLE);
+		notes7.add(TastingNote.VANILLA);
+		notes7.add(TastingNote.CARAMEL);
+		notes7.add(TastingNote.SMOKEY);
+		notes8.add(TastingNote.VANILLA);
+		notes8.add(TastingNote.CARAMEL);
+		notes8.add(TastingNote.OAK);
+		notes9.add(TastingNote.PEATY);
+		notes9.add(TastingNote.SMOKEY);
+		notes9.add(TastingNote.COFFEE);
+		notes10.add(TastingNote.PEAR);
+		notes10.add(TastingNote.CINNAMON);
+		notes10.add(TastingNote.RAISIN);
+		notes11.add(TastingNote.DARK_CHOCOLATE);
+		notes11.add(TastingNote.OAK);
+		notes11.add(TastingNote.TOFFEE);
+		notes12.add(TastingNote.LEMON);
+		notes12.add(TastingNote.VANILLA);
+		notes12.add(TastingNote.BLACK_PEPPER);
 
 		// =================== FORMULAE =================
 
 		HashMap<TasteProfile, Double> blueprint1 = new HashMap<>();
-
 		HashMap<TasteProfile, Double> blueprint2 = new HashMap<>();
-
 		HashMap<TasteProfile, Double> blueprint3 = new HashMap<>();
-
 		HashMap<TasteProfile, Double> blueprint4 = new HashMap<>();
+		HashMap<TasteProfile, Double> blueprint7 = new HashMap<>();
+		HashMap<TasteProfile, Double> blueprint8 = new HashMap<>();
+		HashMap<TasteProfile, Double> blueprint9 = new HashMap<>();
+		HashMap<TasteProfile, Double> blueprint10 = new HashMap<>();
+		HashMap<TasteProfile, Double> blueprint11 = new HashMap<>();
+		HashMap<TasteProfile, Double> blueprint12 = new HashMap<>();
 
 		blueprint1.put(tasteProfile1, 100.0);
 		blueprint2.put(tasteProfile4, 100.0);
@@ -833,26 +1141,52 @@ public abstract class initStorage {
 		blueprint4.put(tasteProfile1, 25.0);
 		blueprint4.put(tasteProfile3, 50.0);
 		blueprint4.put(tasteProfile4, 25.0);
+		blueprint7.put(tasteProfile7, 100.0);
+		blueprint8.put(tasteProfile8, 100.0);
+		blueprint9.put(tasteProfile9, 100.0);
+		blueprint10.put(tasteProfile10, 100.0);
+		blueprint11.put(tasteProfile11, 100.0);
+		blueprint12.put(tasteProfile12, 100.0);
 
-		Formula formula1 = BatchArea.createNewFormula("Formula 1", blueprint1);
-		Formula formula2 = BatchArea.createNewFormula("Formula 2", blueprint2);
-		Formula formula3 = BatchArea.createNewFormula("Formula 3", blueprint3);
-		Formula formula4 = BatchArea.createNewFormula("Formula 4", blueprint4);
+		Formula formula1 = BatchArea.createNewFormula("STEKKJASTAUR", blueprint1);
+		Formula formula2 = BatchArea.createNewFormula("Single Malt", blueprint2);
+		Formula formula3 = BatchArea.createNewFormula("Blended Deep #5", blueprint3);
+		Formula formula4 = BatchArea.createNewFormula("Secret Formula", blueprint4);
+		Formula formula7 = BatchArea.createNewFormula("Apple Delight", blueprint7);
+		Formula formula8 = BatchArea.createNewFormula("Golden Delights", blueprint8);
+		Formula formula9 = BatchArea.createNewFormula("Smoky Delight", blueprint9);
+		Formula formula10 = BatchArea.createNewFormula("Spiced Orchard", blueprint10);
+		Formula formula11 = BatchArea.createNewFormula("Rich Chocolate Oak", blueprint11);
+		Formula formula12 = BatchArea.createNewFormula("Lemon Zest Edition", blueprint12);
 
-		for(TastingNote tn : notes1) {
+		for (TastingNote tn : notes1) {
 			tasteProfile1.addTastingNote(tn);
 		}
+
 		// =================== PRODUCTS =================
 
-		Product product1 = BatchArea.createNewProduct("Product 1", 1000);
-		Product product2 = BatchArea.createNewProduct("Product 2", 500);
-		Product product3 = BatchArea.createNewProduct("Product 3", 1000);
-		Product product4 = BatchArea.createNewProduct("Product 4", 1000);
+		Product product1 = BatchArea.createNewProduct("STEKKJASTAUR", 1000);
+		Product product2 = BatchArea.createNewProduct("Glød 3.1", 500);
+		Product product3 = BatchArea.createNewProduct("Muld 1.1", 1000);
+		Product product4 = BatchArea.createNewProduct("New Years Special Edition", 1000);
+		Product product7 = BatchArea.createNewProduct("Apple Delight", 1000);
+		Product product8 = BatchArea.createNewProduct("Golden Delights", 1000);
+		Product product9 = BatchArea.createNewProduct("Smoky Delight", 750);
+		Product product10 = BatchArea.createNewProduct("Spiced Orchard", 1000);
+		Product product11 = BatchArea.createNewProduct("Rich Chocolate Oak", 800);
+		Product product12 = BatchArea.createNewProduct("Lemon Zest Edition", 1000);
 
 		product1.defineFormula(formula1);
 		product2.defineFormula(formula2);
 		product3.defineFormula(formula3);
 		product4.defineFormula(formula4);
+		product7.defineFormula(formula7);
+		product8.defineFormula(formula8);
+		product9.defineFormula(formula9);
+		product10.defineFormula(formula10);
+		product11.defineFormula(formula11);
+		product12.defineFormula(formula12);
+
 		// =================== CASKS =================
 
 		cask_01.setTasteProfile(tasteProfile1);
@@ -861,6 +1195,16 @@ public abstract class initStorage {
 		cask_04.setTasteProfile(tasteProfile4);
 		cask_05.setTasteProfile(tasteProfile1);
 		cask_06.setTasteProfile(tasteProfile2);
+		cask_07.setTasteProfile(tasteProfile9); // Smoky Delight
+		cask_08.setTasteProfile(tasteProfile8); // Golden Delights
+		cask_09.setTasteProfile(tasteProfile10); // Spiced Orchard
+		cask_10.setTasteProfile(tasteProfile11); // Rich Chocolate Oak
+		cask_11.setTasteProfile(tasteProfile12); // Lemon Zest Edition
+		cask_12.setTasteProfile(tasteProfile7); // Apple Delight
+		cask_13.setTasteProfile(tasteProfile3); // Crimson Ember
+		cask_14.setTasteProfile(tasteProfile4); // Golden Harvest
+		cask_15.setTasteProfile(tasteProfile9); // Coffee & Dark Chocolate
+
 	}
 
 }

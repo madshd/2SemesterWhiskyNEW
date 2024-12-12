@@ -60,7 +60,22 @@ public class ProduceBatchWindow {
 		remainingBottles.setText(String.valueOf(batch.getNumRemainingBottles()));
 		ObservableList<Cask> caskList = FXCollections.observableArrayList(batch.getReservedCasks().keySet());
 		reservedCasks.setItems(caskList);
-		readyBottles.setText(Integer.toString(Controllers.BatchArea.calculateReadyBottles(batch)));
+		setReadyBottles();
+		updateTable();
+	}
+
+	private void updateTable() {
+		configureTableView();
+	}
+
+	public void setReadyBottles() {
+		int readyBottlesNum = Controllers.BatchArea.calculateReadyBottles(batch);
+		int batchRemaining = batch.getNumRemainingBottles();
+		if (readyBottlesNum >= batchRemaining) {
+			readyBottles.setText(String.valueOf(batchRemaining));
+		} else {
+			readyBottles.setText(String.valueOf(readyBottlesNum));
+		}
 	}
 
 	private void initContent(GridPane mainPane) {
@@ -158,6 +173,8 @@ public class ProduceBatchWindow {
 
 	@SuppressWarnings("unchecked")
 	private void configureTableView() {
+		reservedCasks.getColumns().clear();
+
 		// Cask ID Column
 		TableColumn<Cask, String> caskIDColumn = new TableColumn<>("Cask ID");
 		caskIDColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCaskIDString()));

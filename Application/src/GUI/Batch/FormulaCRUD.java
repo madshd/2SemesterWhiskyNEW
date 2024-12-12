@@ -1,6 +1,8 @@
 package GUI.Batch;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import BatchArea.Formula;
 import BatchArea.TasteProfile;
@@ -18,7 +20,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import GUI.Common.ErrorWindow;
 
-@SuppressWarnings("unused")
 public class FormulaCRUD {
 
 	private final ErrorWindow errorWindow = new ErrorWindow();
@@ -30,7 +31,7 @@ public class FormulaCRUD {
 	private Button createButton = new Button("Create");
 	private Label header = new Label("Create New Formula");
 	private ListView<TasteProfile> tasteProfiles = new ListView<>();
-	private HashMap<TasteProfile, Double> blueprint = new HashMap<>();
+	private HashMap<TasteProfile, Double> blueprint;
 
 	public FormulaCRUD() {
 		formulaCrudStage.setTitle("Formula Manager");
@@ -49,16 +50,14 @@ public class FormulaCRUD {
 	}
 
 	public void showFPCRUDWindow() {
-		// Show the modal and wait for it to be closed
-		updateList();
+		updateList(); // Refresh the ListView
 		formulaCrudStage.showAndWait();
 	}
 
-	// IF UPDATING
 	public void showFPCRUDWindow(Formula formula) {
-		updateList();
 		this.formula = formula;
-		setFields(formula);
+		blueprint = new HashMap<>(formula.getBlueprint());
+		setFields(formula); // Set fields and refresh ListView
 		formulaCrudStage.showAndWait();
 	}
 
@@ -67,9 +66,9 @@ public class FormulaCRUD {
 		header.setText("Update Existing Formula");
 		updating = true;
 		nameInput.setText(formula.getFormulaName());
-		blueprint.clear(); // Clear before repopulating
-		formula.getBlueprint().forEach((tp, percentage) -> blueprint.put(tp, percentage));
-		tasteProfiles.refresh();
+		totalPercentageInput.setText("100.0");
+
+		updateList(); // Refresh items based on the new blueprint
 	}
 
 	private void initContent(GridPane mainPane) {
@@ -106,10 +105,10 @@ public class FormulaCRUD {
 		mainPane.add(labelBox1, 0, 2);
 
 		tasteProfiles.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
-		tasteProfiles.setMaxWidth(250);
-		tasteProfiles.setMinWidth(250);
-		tasteProfiles.setMinHeight(350);
-		tasteProfiles.setMaxHeight(350);
+		tasteProfiles.setMaxWidth(350);
+		tasteProfiles.setMinWidth(350);
+		tasteProfiles.setMinHeight(400);
+		tasteProfiles.setMaxHeight(400);
 		mainPane.add(tasteProfiles, 0, 3, 1, 2);
 
 		// For TasteProfile ListView
@@ -125,28 +124,26 @@ public class FormulaCRUD {
 					setText(item.getProfileName());
 					TextField percentageField = createPercentageField(item);
 					setGraphic(percentageField);
+
+					// Set the field value from the blueprint map
+					Double percentage = blueprint.get(item);
+					if (percentage != null) {
+						percentageField.setText(String.valueOf(percentage));
+						percentageField
+								.setStyle(percentage < 0 ? "-fx-border-color: red;" : "-fx-border-color: #d4a373;");
+					}
 				}
 			}
 
 			private TextField createPercentageField(TasteProfile item) {
 				TextField percentageField = new TextField();
-				percentageField.setPromptText("Enter Percentage");
+				percentageField.setPromptText("0");
 				percentageField.setMaxWidth(75);
 				percentageField.setFocusTraversable(true);
-
-				// Initialize with the value from the blueprint map
-				percentageField.setText(blueprint.getOrDefault(item, (double) 0).toString());
 
 				// Add a listener to handle percentage input changes
 				percentageField.textProperty().addListener((observable, oldValue, newValue) -> {
 					handlePercentageInputChange(item, percentageField, newValue);
-				});
-
-				// If the field is left empty, reset the value to 0
-				percentageField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-					if (!newValue && percentageField.getText().isEmpty()) {
-						resetPercentageToZero(item, percentageField);
-					}
 				});
 
 				return percentageField;
@@ -154,26 +151,24 @@ public class FormulaCRUD {
 
 			private void handlePercentageInputChange(TasteProfile item, TextField percentageField, String newValue) {
 				try {
-					if (newValue.isEmpty())
+					double percentage;
+					if (newValue.isEmpty()) {
+						percentage = 0;
+						percentageField.setText("0");
 						return;
-					int percentage = Integer.parseInt(newValue);
+					}
+					percentage = Double.parseDouble(newValue);
 					if (percentage < 0) {
 						percentageField.setStyle("-fx-border-color: red;");
 						return;
 					}
-					// Valid input
+					blueprint.put(item, percentage); // Update blueprint
 					percentageField.setStyle("-fx-border-color: #d4a373;");
-					blueprint.put(item, (double) percentage);
 					updateTotalPercentage();
 				} catch (NumberFormatException e) {
+					System.out.println("NumberFormatException: " + e.getMessage());
 					percentageField.setStyle("-fx-border-color: red;");
 				}
-			}
-
-			private void resetPercentageToZero(TasteProfile item, TextField percentageField) {
-				percentageField.setText("0");
-				blueprint.put(item, (double) 0);
-				updateTotalPercentage();
 			}
 		});
 
@@ -184,7 +179,7 @@ public class FormulaCRUD {
 		totalPercentageInput.setEditable(false);
 		totalPercentageInput.setPromptText("Total Percentage");
 		totalPercentageInput.setFocusTraversable(false);
-		totalPercentageInput.setMaxWidth(50);
+		totalPercentageInput.setMaxWidth(75);
 		HBox totalPercentageBox = new HBox(totalLabel, totalPercentageInput);
 		mainPane.add(totalPercentageBox, 0, 5);
 		totalPercentageBox.setAlignment(Pos.CENTER_LEFT);
@@ -208,6 +203,7 @@ public class FormulaCRUD {
 			clearFields();
 			formulaCrudStage.close();
 		});
+
 	}
 
 	// Create a new Formula
@@ -216,10 +212,21 @@ public class FormulaCRUD {
 			errorWindow.showError("Name cannot be empty");
 			return;
 		}
-		if (totalPercentageInput.getText().isEmpty() || Double.parseDouble(totalPercentageInput.getText()) != 100) {
-			errorWindow.showError("Total percentage must be 100");
+		if (totalPercentageInput.getText().isEmpty() || Double.parseDouble(totalPercentageInput.getText()) != 100.0) {
+			errorWindow.showError("Total percentage must be 100.0");
 			return;
 		}
+
+		List<TasteProfile> toRemove = new ArrayList<>();
+		blueprint.keySet().forEach(tp -> {
+			if (blueprint.get(tp) <= 0) {
+				toRemove.add(tp);
+			}
+		});
+		toRemove.forEach(tp -> {
+			blueprint.remove(tp);
+		});
+
 		// Create or update the formula with selected TasteProfiles and their
 		// percentages
 		if (updating) {
@@ -238,38 +245,84 @@ public class FormulaCRUD {
 			total += value;
 		}
 		totalPercentageInput.setText(String.valueOf(total));
-		if (total != 100) {
+		if (total != 100.0) {
 			totalPercentageInput.setStyle("-fx-border-color: red;");
 		} else {
-			totalPercentageInput.setStyle("-fx-border-color: #d4a373;");
+			totalPercentageInput.setStyle("-fx-border-color: black;");
 		}
 	}
 
-	// Clear all percentage inputs in the ListView tasteProfiles
-	private void clearPercentageInputs() {
-		for (TasteProfile tp : tasteProfiles.getItems()) {
-			blueprint.put(tp, (double) 0);
-		}
-		tasteProfiles.refresh();
-		updateTotalPercentage();
-	}
+	private void updateList() {
+		List<TasteProfile> profiles = Controllers.BatchArea.getAllTasteProfiles();
 
-	public void updateList() {
-		blueprint.clear();
-		clearPercentageInputs();
+		// Re-populate the ListView
 		tasteProfiles.getItems().clear();
-		tasteProfiles.getItems().addAll(Controllers.BatchArea.getAllTasteProfiles());
+		tasteProfiles.getItems().addAll(profiles);
+
+		// Manually refresh each item's percentage value in the blueprint
+		tasteProfiles.setCellFactory(param -> new ListCell<>() {
+			@Override
+			protected void updateItem(TasteProfile item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty || item == null) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					setText(item.getProfileName());
+					TextField percentageField = createPercentageField(item);
+					setGraphic(percentageField);
+
+					// Set the field value from the blueprint map
+					Double percentage = blueprint.get(item);
+					if (percentage != null) {
+						percentageField.setText(String.valueOf(percentage));
+						percentageField
+								.setStyle(percentage < 0 ? "-fx-border-color: red;" : "-fx-border-color: #d4a373;");
+					}
+				}
+			}
+
+			private TextField createPercentageField(TasteProfile item) {
+				TextField percentageField = new TextField();
+				percentageField.setPromptText("0");
+				percentageField.setMaxWidth(75);
+				percentageField.setFocusTraversable(true);
+
+				// Add a listener to handle percentage input changes
+				percentageField.textProperty().addListener((observable, oldValue, newValue) -> {
+					handlePercentageInputChange(item, percentageField, newValue);
+				});
+
+				return percentageField;
+			}
+
+			private void handlePercentageInputChange(TasteProfile item, TextField percentageField, String newValue) {
+				try {
+					double percentage;
+					if (newValue.isEmpty()) {
+						percentage = 0;
+						percentageField.setText("0");
+						return;
+					}
+					percentage = Double.parseDouble(newValue);
+					if (percentage < 0) {
+						percentageField.setStyle("-fx-border-color: red;");
+						return;
+					}
+					blueprint.put(item, percentage); // Update blueprint
+					percentageField.setStyle("-fx-border-color: #d4a373;");
+					updateTotalPercentage();
+				} catch (NumberFormatException e) {
+					percentageField.setStyle("-fx-border-color: red;");
+				}
+			}
+		});
 	}
 
-	// Clear all fields
 	private void clearFields() {
-		formula = null;
-		updating = false;
-		createButton.setText("Create");
-		header.setText("Create New Formula");
 		nameInput.clear();
 		totalPercentageInput.clear();
-		blueprint.clear();
-		clearPercentageInputs();
+		tasteProfiles.refresh();
+		updating = false;
 	}
 }

@@ -34,12 +34,6 @@ public class Batch implements Serializable {
 		this.numExpectedBottles = numExpectedBottles;
 	}
 
-	/**
-	 * This marks the production of the batch as complete and sets the number of
-	 * actual produced bottles and the completion date.
-	 * 
-	 * @param producedBottles
-	 */
 	public void markProductionComplete() {
 		this.productionComplete = true;
 		this.completionDate = LocalDate.now();

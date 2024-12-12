@@ -139,7 +139,7 @@ public class BatchArea {
 		gridPane.add(batchSection, 0, 1);
 		gridPane.add(productSection, 0, 2);
 		gridPane.add(formulaSection, 1, 1, 1, 2);
-		GridPane.setMargin(formulaSection, new Insets(0, 0, 40, 0));
+		GridPane.setMargin(formulaSection, new Insets(0, 0, 80, 0));
 		gridPane.setGridLinesVisible(false);
 		GridPane.setHalignment(lblHeader, HPos.CENTER);
 	}
@@ -501,7 +501,7 @@ public class BatchArea {
 		// Formula List
 		formulaList.setPlaceholder(new Label("No Formulae Available"));
 		formulaList.setPrefWidth(300);
-		formulaList.setMinHeight(708);
+		formulaList.setMinHeight(745);
 		formulaList.setFocusTraversable(false);
 		formulaList.setEditable(false);
 

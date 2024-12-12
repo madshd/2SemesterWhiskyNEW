@@ -30,7 +30,7 @@ public class SearchCaskWindow {
 
 	private final Stage searchCaskStage = new Stage();
 	private final TableView<Cask> casksTable = new TableView<>();
-	private final ArrayList<Cask> casksFound = new ArrayList<>();
+	private ArrayList<Cask> casksFound;
 	private final Button okButton = new Button("OK");
 	private final Label header = new Label("Casks that fit selected product or formula");
 
@@ -49,6 +49,7 @@ public class SearchCaskWindow {
 	}
 
 	public void show(Formula formula, Product product) {
+		casksFound = new ArrayList<>();
 		if(formula != null) {
 		searchCasks(formula);
 		} else {
@@ -107,6 +108,7 @@ public class SearchCaskWindow {
 			@Override
 			public void handle(WindowEvent event) {
 				clearFields();
+				System.out.println("cask search closed");
 				BatchArea.updateLists();
 			}
 		});
@@ -127,10 +129,13 @@ public class SearchCaskWindow {
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getQuantityStatus())));
 
 		TableColumn<Cask, String> caskLegalVolumeColumn = new TableColumn<>("Legal Volume");
-		caskVolumeColumn.setCellValueFactory(
-				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getLegalQuantity())));
+		caskLegalVolumeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getLegalQuantity())));
 
-		casksTable.getColumns().addAll(caskIDColumn, caskTypeColumn, caskVolumeColumn, caskLegalVolumeColumn);
+		TableColumn<Cask, String> caskMaturityMonths = new TableColumn<>("Age (Months)");
+		caskMaturityMonths.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getMaturityMonths())));
+
+		casksTable.getColumns().addAll(caskIDColumn, caskTypeColumn, caskVolumeColumn, caskLegalVolumeColumn, caskMaturityMonths);
+			
 	}
 
 	public void updateContent() { 

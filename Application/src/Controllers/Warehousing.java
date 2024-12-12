@@ -307,7 +307,7 @@ public static Ingredient createIngredientAndAdd(
 	}
 
 	public static double getCaskTotalReservedAmount(Cask cask) {
-		return cask.getTotalReservedAmount();
+		return cask.getTotalReservedQuantity();
 	}
 
 	public static double getLegalQuantity(Cask cask) {
