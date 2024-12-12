@@ -5,17 +5,14 @@ import Interfaces.WarehousingObserver;
 import Interfaces.WarehousingSubject;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Warehouse implements WarehousingSubject, Serializable {
     private String name;
     private String address;
     private Map<String, StorageRack> racks = new HashMap<>();
 
-    private transient final List<WarehousingObserver> warehousingObservers;
+    private transient List<WarehousingObserver> warehousingObservers;
 
     public Warehouse(String name, String address) {
         this.name = name;
@@ -48,8 +45,7 @@ public class Warehouse implements WarehousingSubject, Serializable {
         }
     }
 
-
-public void removeStorageRack(StorageRack storageRack) {
+    public void removeStorageRack(StorageRack storageRack) {
     if (storageRack != null && racks.containsValue(storageRack)) {
         boolean isEmpty = true;
         for (Item item : storageRack.getList()) {
@@ -107,5 +103,16 @@ public void removeStorageRack(StorageRack storageRack) {
                 observer.update(this, "General update in warehouse: " + this.name);
             }
         }
+    }
+
+    /**
+     * Restore observers list after deserialization if necessary
+     * @return
+     */
+    private Object readResolve() {
+        if (warehousingObservers == null) {
+            this.warehousingObservers = new ArrayList<>();
+        }
+        return this;
     }
 }

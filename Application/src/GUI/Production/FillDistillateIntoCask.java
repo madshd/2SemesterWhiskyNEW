@@ -19,6 +19,7 @@ import javafx.scene.layout.GridPane;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static Controllers.Warehousing.getCasksMinQuantity;
@@ -177,6 +178,16 @@ public abstract class FillDistillateIntoCask {
             pa.fillInputElement.calculateFilling(distillate,(Cask) lvwCasks.getSelectionModel().getSelectedItem());
             if (distillate != null) {
                 List<Item> casks = new ArrayList<>(getCasksMinQuantity(0.0));
+
+                Iterator<Item> itemIterator = casks.iterator();
+
+                while (itemIterator.hasNext()){
+                    Cask c = (Cask) itemIterator.next();
+                    if (c.getTotalReservedAmount() > 0){
+                        itemIterator.remove();
+                    }
+                }
+
                 lvwCasks.getItems().setAll(casks);
 
                 Common.useSpecifiedListView(lvwCasks);

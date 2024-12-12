@@ -355,7 +355,7 @@ public class Cask implements OberverQuantitySubject, Item, Serializable {
 			}
 			return newQuantity;
 		} else {
-			throw new IllegalArgumentException("Provided quantity does not fit into this cask");
+			throw new IllegalArgumentException("Provided quantity does not fit into this cask.");
 		}
 	}
 
