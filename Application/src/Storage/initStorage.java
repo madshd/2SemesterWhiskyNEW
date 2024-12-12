@@ -206,14 +206,14 @@ public abstract class initStorage {
 		cask_04 = Warehousing.createCaskAndAdd(4, 500, Unit.LITERS, sub_03, "Large European Oak Cask", warehouse, rack1); // Large European Oak cask from Oak Master Barrels
 		cask_05 = Warehousing.createCaskAndAdd(5, 300, Unit.LITERS, sub_05, "Seasoned Sherry Cask", warehouse, rack1); // Seasoned sherry cask from Sherry Bliss Co.
 		cask_06 = Warehousing.createCaskAndAdd(6, 200, Unit.LITERS, sub_03, "Toasted Oak Cask", warehouse, rack1); // Toasted Oak cask from Oak Master Barrels
-		cask_07 = Warehousing.createCaskAndAdd(7, 225, Unit.LITERS, sub_03, "Ex-Port Cask", warehouse, rack1); // Ex-Port cask from Oak Master Barrels
-		cask_08 = Warehousing.createCaskAndAdd(8, 180, Unit.LITERS, sub_03, "Peated Oak Cask", warehouse, rack1); // Peated Oak cask from Peat & Smolder
+		cask_07 = Warehousing.createCaskAndAdd(7, 500, Unit.LITERS, sub_03, "Ex-Port Cask", warehouse, rack1); // Ex-Port cask from Oak Master Barrels
+		cask_08 = Warehousing.createCaskAndAdd(8, 400, Unit.LITERS, sub_03, "Peated Oak Cask", warehouse, rack1); // Peated Oak cask from Peat & Smolder
 		cask_09 = Warehousing.createCaskAndAdd(9, 300, Unit.LITERS, sub_05, "Spanish Oak Cask", warehouse, rack1); // Spanish Oak cask from Sherry Bliss Co.
 		cask_10 = Warehousing.createCaskAndAdd(10, 600, Unit.LITERS, sub_03, "Large Blending Cask", warehouse, rack1); // Large blending cask from Oak Master
-		cask_11 = Warehousing.createCaskAndAdd(11, 150, Unit.LITERS, sub_03, "French Oak Cask", warehouse, rack1); // French Oak cask from Oak Master Barrels
-		cask_12 = Warehousing.createCaskAndAdd(12, 275, Unit.LITERS, sub_05, "Rum Cask", warehouse, rack1); // Rum cask from Caribbean Spirits
-		cask_13 = Warehousing.createCaskAndAdd(13, 350, Unit.LITERS, sub_03, "Maple Wood Cask", warehouse, rack1); // Maple Wood cask from Maple Masters
-		cask_14 = Warehousing.createCaskAndAdd(14, 400, Unit.LITERS, sub_05, "Cherry Wood Cask", warehouse, rack1); // Cherry Wood cask from Cherry Bliss Co.
+		cask_11 = Warehousing.createCaskAndAdd(11, 450, Unit.LITERS, sub_03, "French Oak Cask", warehouse, rack1); // French Oak cask from Oak Master Barrels
+		cask_12 = Warehousing.createCaskAndAdd(12, 675, Unit.LITERS, sub_05, "Rum Cask", warehouse, rack1); // Rum cask from Caribbean Spirits
+		cask_13 = Warehousing.createCaskAndAdd(13, 650, Unit.LITERS, sub_03, "Maple Wood Cask", warehouse, rack1); // Maple Wood cask from Maple Masters
+		cask_14 = Warehousing.createCaskAndAdd(14, 600, Unit.LITERS, sub_05, "Cherry Wood Cask", warehouse, rack1); // Cherry Wood cask from Cherry Bliss Co.
 		cask_15 = Warehousing.createCaskAndAdd(15, 500, Unit.LITERS, sub_03, "Chestnut Cask", warehouse, rack1); // Chestnut cask from Oak Master Barrels
 
 		Distillate caskIsEmpty = Production.createDistillate(
@@ -324,7 +324,7 @@ public abstract class initStorage {
 			"Highland Harmony",
 			LocalDate.parse("2020-03-01"),
 			LocalDate.parse("2020-04-01"),
-			350,
+			800,
 			distiller_06,
 			Unit.LITERS);
 
@@ -610,47 +610,48 @@ public abstract class initStorage {
 		addIngredientToDistillate(distillate_10, sugarFermentation, 12.5, LocalDate.parse("2024-02-10"));
 		addIngredientToDistillate(distillate_10, peatMoss, 18.75, LocalDate.parse("2024-01-20"));
 
-		addIngredientToDistillate(distillate_11, barleyEvergreen, 850.0, LocalDate.parse("2024-03-01"));
-		addIngredientToDistillate(distillate_11, waterSpring, 3750.0, LocalDate.parse("2024-02-15"));
-		addIngredientToDistillate(distillate_11, yeastBrewers, 11.0, LocalDate.parse("2024-02-01"));
-		addIngredientToDistillate(distillate_11, sugarFermentation, 22.0, LocalDate.parse("2024-02-10"));
-		addIngredientToDistillate(distillate_11, peatMoss, 33.0, LocalDate.parse("2024-01-20"));
-
-		addIngredientToDistillate(distillate_12, barleyGoldenPromise, 700.0, LocalDate.parse("2024-03-01"));
-		addIngredientToDistillate(distillate_12, waterSpring, 3062.5, LocalDate.parse("2024-02-15"));
-		addIngredientToDistillate(distillate_12, yeastBrewers, 8.75, LocalDate.parse("2024-02-01"));
-		addIngredientToDistillate(distillate_12, sugarFermentation, 17.5, LocalDate.parse("2024-02-10"));
-		addIngredientToDistillate(distillate_12, peatMoss, 26.25, LocalDate.parse("2024-01-20"));
-
-		addIngredientToDistillate(distillate_13, barleyEvergreen, 900.0, LocalDate.parse("2024-03-01"));
-		addIngredientToDistillate(distillate_13, waterSpring, 3937.5, LocalDate.parse("2024-02-15"));
-		addIngredientToDistillate(distillate_13, yeastBrewers, 11.25, LocalDate.parse("2024-02-01"));
-		addIngredientToDistillate(distillate_13, sugarFermentation, 22.5, LocalDate.parse("2024-02-10"));
-		addIngredientToDistillate(distillate_13, peatMoss, 33.75, LocalDate.parse("2024-01-20"));
-
-		addIngredientToDistillate(distillate_14, barleyStairway, 800.0, LocalDate.parse("2024-03-01"));
-		addIngredientToDistillate(distillate_14, waterSpring, 3500.0, LocalDate.parse("2024-02-15"));
-		addIngredientToDistillate(distillate_14, yeastBrewers, 10.0, LocalDate.parse("2024-02-01"));
-		addIngredientToDistillate(distillate_14, sugarFermentation, 20.0, LocalDate.parse("2024-02-10"));
-		addIngredientToDistillate(distillate_14, peatMoss, 30.0, LocalDate.parse("2024-01-20"));
-
-		addIngredientToDistillate(distillate_15, barleyIrna, 750.0, LocalDate.parse("2024-03-01"));
-		addIngredientToDistillate(distillate_15, waterSpring, 3281.25, LocalDate.parse("2024-02-15"));
-		addIngredientToDistillate(distillate_15, yeastBrewers, 9.375, LocalDate.parse("2024-02-01"));
-		addIngredientToDistillate(distillate_15, sugarFermentation, 18.75, LocalDate.parse("2024-02-10"));
-		addIngredientToDistillate(distillate_15, peatMoss, 28.125, LocalDate.parse("2024-01-20"));
-
-		addIngredientToDistillate(distillate_16, barleyIrna, 500.0, LocalDate.parse("2024-03-01"));
-		addIngredientToDistillate(distillate_16, waterSpring, 2187.5, LocalDate.parse("2024-02-15"));
-		addIngredientToDistillate(distillate_16, yeastBrewers, 6.25, LocalDate.parse("2024-02-01"));
-		addIngredientToDistillate(distillate_16, sugarFermentation, 12.5, LocalDate.parse("2024-02-10"));
-		addIngredientToDistillate(distillate_16, peatMoss, 18.75, LocalDate.parse("2024-01-20"));
-
-		addIngredientToDistillate(distillate_17, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
-		addIngredientToDistillate(distillate_17, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
-		addIngredientToDistillate(distillate_17, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
-		addIngredientToDistillate(distillate_17, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
-		addIngredientToDistillate(distillate_17, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
+		// MF tilføj ingredienser
+		// addIngredientToDistillate(distillate_11, barleyEvergreen, 850.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_11, waterSpring, 3750.0, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_11, yeastBrewers, 11.0, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_11, sugarFermentation, 22.0, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_11, peatMoss, 33.0, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_12, barleyGoldenPromise, 700.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_12, waterSpring, 3062.5, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_12, yeastBrewers, 8.75, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_12, sugarFermentation, 17.5, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_12, peatMoss, 26.25, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_13, barleyEvergreen, 900.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_13, waterSpring, 3937.5, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_13, yeastBrewers, 11.25, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_13, sugarFermentation, 22.5, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_13, peatMoss, 33.75, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_14, barleyStairway, 800.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_14, waterSpring, 3500.0, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_14, yeastBrewers, 10.0, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_14, sugarFermentation, 20.0, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_14, peatMoss, 30.0, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_15, barleyIrna, 750.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_15, waterSpring, 3281.25, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_15, yeastBrewers, 9.375, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_15, sugarFermentation, 18.75, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_15, peatMoss, 28.125, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_16, barleyIrna, 500.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_16, waterSpring, 2187.5, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_16, yeastBrewers, 6.25, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_16, sugarFermentation, 12.5, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_16, peatMoss, 18.75, LocalDate.parse("2024-01-20"));
+		//
+		// addIngredientToDistillate(distillate_17, barleyEvergreen, 1000.0, LocalDate.parse("2024-03-01"));
+		// addIngredientToDistillate(distillate_17, waterSpring, 4375.0, LocalDate.parse("2024-02-15"));
+		// addIngredientToDistillate(distillate_17, yeastBrewers, 12.5, LocalDate.parse("2024-02-01"));
+		// addIngredientToDistillate(distillate_17, sugarFermentation, 25.0, LocalDate.parse("2024-02-10"));
+		// addIngredientToDistillate(distillate_17, peatMoss, 37.5, LocalDate.parse("2024-01-20"));
 		
 		// Measuring alcohol percentage
 		// MÃ¥linger for Highland Essence
@@ -973,10 +974,8 @@ public abstract class initStorage {
 		Production.fillDistillateIntoCask(distillate_06, cask_02, 100, LocalDate.parse("2024-01-01"));
 		Production.fillDistillateIntoCask(distillate_06, cask_03, 100, LocalDate.parse("2024-01-01"));
 		Production.fillDistillateIntoCask(distillate_06, cask_04, 150, LocalDate.parse("2024-01-01"));
-		Production.fillDistillateIntoCask(distillate_11, cask_07, 100, LocalDate.parse("2024-01-01"));
 		Production.fillDistillateIntoCask(distillate_11, cask_08, 100, LocalDate.parse("2024-01-01"));
 		Production.fillDistillateIntoCask(distillate_11, cask_09, 100, LocalDate.parse("2024-01-01"));
-		Production.fillDistillateIntoCask(distillate_11, cask_10, 150, LocalDate.parse("2024-01-01"));
 
 		// Cask holding more than two distillates and fully used
 		Production.fillDistillateIntoCask(distillate_10, cask_02, 50, LocalDate.parse("2024-02-01"));
