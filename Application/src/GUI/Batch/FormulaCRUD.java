@@ -50,6 +50,7 @@ public class FormulaCRUD {
 	}
 
 	public void showFPCRUDWindow() {
+		blueprint = new HashMap<>();
 		updateList(); // Refresh the ListView
 		formulaCrudStage.showAndWait();
 	}
@@ -111,66 +112,6 @@ public class FormulaCRUD {
 		tasteProfiles.setMaxHeight(400);
 		mainPane.add(tasteProfiles, 0, 3, 1, 2);
 
-		// For TasteProfile ListView
-		tasteProfiles.setCellFactory(param -> new ListCell<TasteProfile>() {
-			@Override
-			protected void updateItem(TasteProfile item, boolean empty) {
-				super.updateItem(item, empty);
-
-				if (empty || item == null) {
-					setText(null);
-					setGraphic(null);
-				} else {
-					setText(item.getProfileName());
-					TextField percentageField = createPercentageField(item);
-					setGraphic(percentageField);
-
-					// Set the field value from the blueprint map
-					Double percentage = blueprint.get(item);
-					if (percentage != null) {
-						percentageField.setText(String.valueOf(percentage));
-						percentageField
-								.setStyle(percentage < 0 ? "-fx-border-color: red;" : "-fx-border-color: #d4a373;");
-					}
-				}
-			}
-
-			private TextField createPercentageField(TasteProfile item) {
-				TextField percentageField = new TextField();
-				percentageField.setPromptText("0");
-				percentageField.setMaxWidth(75);
-				percentageField.setFocusTraversable(true);
-
-				// Add a listener to handle percentage input changes
-				percentageField.textProperty().addListener((observable, oldValue, newValue) -> {
-					handlePercentageInputChange(item, percentageField, newValue);
-				});
-
-				return percentageField;
-			}
-
-			private void handlePercentageInputChange(TasteProfile item, TextField percentageField, String newValue) {
-				try {
-					double percentage;
-					if (newValue.isEmpty()) {
-						percentage = 0;
-						percentageField.setText("0");
-						return;
-					}
-					percentage = Double.parseDouble(newValue);
-					if (percentage < 0) {
-						percentageField.setStyle("-fx-border-color: red;");
-						return;
-					}
-					blueprint.put(item, percentage); // Update blueprint
-					percentageField.setStyle("-fx-border-color: #d4a373;");
-					updateTotalPercentage();
-				} catch (NumberFormatException e) {
-					System.out.println("NumberFormatException: " + e.getMessage());
-					percentageField.setStyle("-fx-border-color: red;");
-				}
-			}
-		});
 
 		GridPane.setValignment(tasteProfiles, VPos.TOP);
 
