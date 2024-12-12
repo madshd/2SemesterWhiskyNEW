@@ -422,30 +422,23 @@ public static Ingredient createIngredientAndAdd(
 			throw new IllegalArgumentException("Quantity cannot be negative.");
 		} else {
 			if (quantity == 0) {
+				// Existing logic for quantity == 0
 				if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
 					if (selectedWarehouse != null && selectedStorageRack != null) {
 						int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
 						int toIndex = selectedStorageRack.getFreeShelf();
 						moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
 					}
-				} if (selectedWarehouse == ingredient.getStorageRack().getWarehouse() && selectedStorageRack != ingredient.getStorageRack()) {
+				}
+				if (selectedWarehouse == ingredient.getStorageRack().getWarehouse() && selectedStorageRack != ingredient.getStorageRack()) {
 					int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
 					int toIndex = selectedStorageRack.getFreeShelf();
 					moveItemBetweenStorageRacks(ingredient, ingredient.getStorageRack(), fromIndex, selectedStorageRack, toIndex);
 				}
+			} else {
+				// New logic for quantity > 0
 				FillIngredient fill = new FillIngredient(LocalDate.now(), quantity, null, ingredient, false);
 				ingredient.updateQuantity(fill);
-				if (selectedWarehouse != ingredient.getStorageRack().getWarehouse()) {
-					if (selectedWarehouse != null && selectedStorageRack != null) {
-						int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
-						int toIndex = selectedStorageRack.getFreeShelf();
-						moveItemBetweenWarehouses(ingredient, ingredient.getStorageRack().getWarehouse(), ingredient.getStorageRack(), fromIndex, selectedWarehouse, selectedStorageRack, toIndex);
-					}
-				} if (selectedWarehouse == ingredient.getStorageRack().getWarehouse() && selectedStorageRack != ingredient.getStorageRack()) {
-					int fromIndex = ingredient.getStorageRack().getItemLocation(ingredient);
-					int toIndex = selectedStorageRack.getFreeShelf();
-					moveItemBetweenStorageRacks(ingredient, ingredient.getStorageRack(), fromIndex, selectedStorageRack, toIndex);
-				}
 			}
 		}
 	}
