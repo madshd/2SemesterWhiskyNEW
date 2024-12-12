@@ -175,11 +175,11 @@ public abstract class Production {
 		double caskToRemainingQuantity = caskTo.getRemainingQuantity();
 
 		if (caskFromQuantity < quantity){
-			throw new IllegalArgumentException("Quantity exeeds what remaining in 'From Cask': " + caskFrom.getName());
+			throw new IllegalArgumentException("Quantity exceeds what remaining in 'From Cask': " + caskFrom.getName());
 		}
 
 		if (caskToRemainingQuantity < quantity){
-			throw new IllegalArgumentException("Quantity exeeds the capacity of 'To Cask': " + caskTo.getName());
+			throw new IllegalArgumentException("Quantity exceeds the capacity of 'To Cask': " + caskTo.getName());
 		}
 
 		if (((Cask)caskTo).getFillingsStackByLifeCycle(((Cask) caskTo).getLifeCycle()).isEmpty()){
