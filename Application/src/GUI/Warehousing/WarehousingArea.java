@@ -261,12 +261,14 @@ public class WarehousingArea {
 					Warehouse selectedWarehouse = warehouseList.getSelectionModel().getSelectedItem();
 					StorageRack selectedStorageRack = storageRacksList.getSelectionModel().getSelectedItem();
 					if (selectedWarehouse != null && selectedStorageRack != null) {
+						if (Warehousing.isStorageRackInUse(selectedStorageRack)) {
+							ErrorWindow errorWindow = new ErrorWindow();
+							errorWindow.showError("Storage rack is in use and can't be deleted.");
+						} else
 						Warehousing.deleteStorageRack(selectedWarehouse, selectedStorageRack);
 						updateLists();
 					}
 				} catch (Exception e) {
-					ErrorWindow errorWindow = new ErrorWindow();
-					errorWindow.showError("Storage rack is in use, and can't be deleted.");
 					e.printStackTrace();
 				}
 			}
