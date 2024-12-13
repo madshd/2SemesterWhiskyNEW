@@ -588,4 +588,18 @@ public static Ingredient createIngredientAndAdd(
 		return LoggerObserver.getLogsByWarehouse(warehouse);
 	}
 
+	public static boolean isStorageRackInUse(StorageRack storageRack) {
+		for (Warehouse warehouse : storage.getWarehouses()) {
+			for (StorageRack sr : warehouse.getRacks().values()) {
+				if (sr == storageRack) {
+					for (Item item : sr.getList()) {
+						if (item != null) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
 }

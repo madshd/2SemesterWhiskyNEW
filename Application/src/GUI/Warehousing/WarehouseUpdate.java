@@ -17,9 +17,9 @@ import javafx.stage.Stage;
 
 public class WarehouseUpdate extends Application {
     private Label lblName = new Label("Name");
-    private TextField txfName = new TextField();
+    private TextField txfName = new TextField() {{ setDisable(true); }};
     private Label lblAddress = new Label("Address");
-    private TextField txfAddress = new TextField();
+    private TextField txfAddress = new TextField() {{ setDisable(true); }};
     private Label lblStorageRacks = new Label("Storage racks");
     private ListView<StorageRack> lvwStorageRacks = new ListView<>();
     private Label lblUnusedStorageRacks = new Label("Unused storage racks");
@@ -107,10 +107,14 @@ public class WarehouseUpdate extends Application {
 
     private void moveStorageRackToUnused() {
         StorageRack selectedRack = lvwStorageRacks.getSelectionModel().getSelectedItem();
-        if (selectedRack != null) {
-            lvwStorageRacks.getItems().remove(selectedRack);
-            lvwUnusedStorageRacks.getItems().add(selectedRack);
-            Warehousing.removeStorageRackFromWarehouse(selectedRack);
+        if (Warehousing.isStorageRackInUse(selectedRack) == true) {
+            new ErrorWindow().showError("Storage rack is in use");
+        } else {
+            if (selectedRack != null) {
+                lvwStorageRacks.getItems().remove(selectedRack);
+                lvwUnusedStorageRacks.getItems().add(selectedRack);
+                Warehousing.removeStorageRackFromWarehouse(selectedRack);
+            }
         }
     }
 
